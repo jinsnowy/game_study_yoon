@@ -1,0 +1,3 @@
+﻿  Texture.cpp
+d:\soulseek_work\d3dx\d3dx\texture\texture.cpp(247): warning C4002: 함수 같은 매크로 호출 'CreateWindowW'에 대해 인수가 너무 많습니다.
+  Texture.vcxproj -> D:\SoulSeek_Work\D3DX\D3DX\x64\Debug\Texture.exe
