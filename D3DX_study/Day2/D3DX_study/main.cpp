@@ -29,14 +29,14 @@ HRESULT InitVB()
 
 	// 정점 버퍼 생성
 	/*
-	STDMETHOD(CreateVertexBuffer)
-	(THIS_ UINT Length, 메모리 할당 사이즈
-	DWORD Usage,        정점 버퍼 종류 혹은 처리 방식 (SW, HW)
-	DWORD FVF,          정점 정보 구조체에 따라 선언된 FVF 플래그 값
-	D3DPOOL Pool,       정점 버퍼가 저장될 메모리 위치 (비디오/시스템 메모리)
-	IDirect3DVertexBuffer9** ppVertexBuffer,  정점 버퍼
-	HANDLE* pSharedHandle)  반환될 정점 버퍼의 인터페이스
-	PURE;
+		STDMETHOD(CreateVertexBuffer)
+		(THIS_ UINT Length, 메모리 할당 사이즈
+		DWORD Usage,        정점 버퍼 종류 혹은 처리 방식 (SW, HW)
+		DWORD FVF,          정점 정보 구조체에 따라 선언된 FVF 플래그 값
+		D3DPOOL Pool,       정점 버퍼가 저장될 메모리 위치 (비디오/시스템 메모리)
+		IDirect3DVertexBuffer9** ppVertexBuffer,  정점 버퍼
+		HANDLE* pSharedHandle)  반환될 정점 버퍼의 인터페이스
+		PURE;
 	*/
 	if (FAILED(g_pd3dDevice->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX),
 												0,
@@ -53,22 +53,23 @@ HRESULT InitVB()
 	void* pVertices;
 
 	/*
-	(Lock)
-	(THIS_ UINT OffsetToLock, Lock을 할 버퍼의 시작점
-	UINT SizeToLock, Lock을 할 버퍼의 크기
-	void** ppbData, 읽고 쓸 수 있게 된 메모리 영역의 포인터
-	DWORD Flags) Lock을 수행할 때 함께 사용하는 플래그
-	PURE;
+		(Lock)
+		(THIS_ UINT OffsetToLock,   Lock을 할 버퍼의 시작점
+		UINT SizeToLock,			Lock을 할 버퍼의 크기
+		void** ppbData,				읽고 쓸 수 있게 된 메모리 영역의 포인터
+		DWORD Flags)				Lock을 수행할 때 함께 사용하는 플래그
+		PURE;
 	*/
 	if (FAILED(g_pVB->Lock(
 		0,
-		sizeof(vertices), // 내가 만든 정점
-		(void**)&pVertices,
+		sizeof(vertices), // 내가 만든 정점의 데이터 크기
+		(void**)&pVertices, // 데이터를 접근할 수 있는 포인터를 얻어옴
 		0)))
 	{
 		return E_FAIL;
 	}
 
+	// 메모리 값 복사
 	memcpy(pVertices, vertices, sizeof(vertices));
 
 	g_pVB->Unlock();
@@ -94,14 +95,14 @@ HRESULT InitD3D(HWND hWnd)
 	// 디폴트 비디오 카드를 사용하고, HAL 디바이스를 생성한다.
 	// 정점 처리는 모든 카드에서 지원하는 SW처리로 생성한다.
 	/*
-	STDMETHOD(CreateDevice)(THIS_ UINT Adapter,  = D3DADAPTER_DEFAULT (출력할 모니터 설정, 모니터 한개면 DEFAULT)
-	D3DDEVTYPE DeviceType,  = (D3DDEVTYPE_HAL, D3DDEVTYPE_SW, D3DDEVTYPE_REF) HAL 타입 고급 디바이스
-	HWND hFocusWindow, = 디바이스가 출력할 윈도우 핸들, 최상위 핸들로 설정
-	DWORD BehaviorFlags, = (D3DCREATE_HARDWARE_VERTEXPROCESSING, D3DCREATE_SOFTWARE_VERTEXPROCESSING, D3DCREATE_MIXED_VERTEX_PROCESSING)
-	                       정점 프로세싱을 하드웨어/소프트웨어/혼합 사용 방식을 채택
-	D3DPRESENT_PARAMETERS* pPresentationParameters, = Direct3D Device를 설정하기 위한 전달 파라미터
-	IDirect3DDevice9** ppReturnedDeviceInterface)  = 최종 생성되는 Direct3D 디바이스 결과물
-	PURE;
+		STDMETHOD(CreateDevice)(THIS_ UINT Adapter,  = D3DADAPTER_DEFAULT (출력할 모니터 설정, 모니터 한개면 DEFAULT)
+		D3DDEVTYPE DeviceType,  = (D3DDEVTYPE_HAL, D3DDEVTYPE_SW, D3DDEVTYPE_REF) HAL 타입 고급 디바이스
+		HWND hFocusWindow, = 디바이스가 출력할 윈도우 핸들, 최상위 핸들로 설정
+		DWORD BehaviorFlags, = (D3DCREATE_HARDWARE_VERTEXPROCESSING, D3DCREATE_SOFTWARE_VERTEXPROCESSING, D3DCREATE_MIXED_VERTEX_PROCESSING)
+							   정점 프로세싱을 하드웨어/소프트웨어/혼합 사용 방식을 채택
+		D3DPRESENT_PARAMETERS* pPresentationParameters, = Direct3D Device를 설정하기 위한 전달 파라미터
+		IDirect3DDevice9** ppReturnedDeviceInterface)  = 최종 생성되는 Direct3D 디바이스 결과물
+		PURE;
 	*/
 	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT,
 									D3DDEVTYPE_HAL,
@@ -140,8 +141,6 @@ void Render()
 	// 랜더링 시작
 	if (SUCCEEDED(g_pd3dDevice->BeginScene()))
 	{
-		// 렌더링 내용
-		
 		// 정점 정보가 담겨 있는 정점 버퍼를 출력 스트림으로 할당
 		g_pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
 
@@ -173,7 +172,7 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_PAINT:
 		// 그리기
-		Render();
+		// Render();
 		ValidateRect(hWnd, NULL);
 		return 0;
 	}
@@ -188,34 +187,20 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT)
 {
 	//윈도우 클래스 등록
 	WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, MsgProc, 0L, 0L,
-		GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
-		"D3D Init", NULL };
+						GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
+						"D3D Init", NULL };
 
 	//winclass 레지스터에 등록
 	RegisterClassEx(&wc);
 
 	HWND hWnd = CreateWindow("D3D Init", "D3D Init", WS_OVERLAPPEDWINDOW, 100, 100, 1024, 768,
-		GetDesktopWindow(), NULL, NULL, wc.hInstance, NULL);
+							  GetDesktopWindow(), NULL, NULL, wc.hInstance, NULL);
 
-	// Direc3D 디바이스 초기화
+	// Direct3D 디바이스 초기화 && Vertex Buffer 초기화
 	if (SUCCEEDED(InitD3D(hWnd)) && SUCCEEDED(InitVB()))
 	{
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 		UpdateWindow(hWnd);
-
-		/*
-		typedef struct tagMSG {
-			HWND        hwnd;
-			UINT        message;
-			WPARAM      wParam;
-			LPARAM      lParam;
-			DWORD       time;
-			POINT       pt;
-		#ifdef _MAC
-			DWORD       lPrivate;
-		#endif
-		} MSG, *PMSG, NEAR *NPMSG, FAR *LPMSG;
-		*/
 
 		MSG msg;
 		ZeroMemory(&msg, sizeof(msg));
@@ -225,15 +210,32 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT)
 		//	TranslateMessage(&msg);
 		//	DispatchMessage(&msg);
 		//}
+		/*
+		BOOL PeekMessage(
+			LPMSG lpMsg, // MSG 구조체 포인터
+			HWND hWnd,   // 윈도우 핸들
+			UINT wMsgFilterMin, // 첫번째 메세지
+			UINT wMsgFilterMax, // 마지막 메세지
+			UINT wRemoveMsg     // 제거 플래그
+		)
+
+		GetMessage()와 차이점
+		GetMessage() 메세지 수신될 때만 return (blocking 함수) 
+		PeekMessage() 메세지 수신안 되도 return (non-blocking 함수)
+		*/
 
 		while (msg.message != WM_QUIT)
 		{
+			// PM_REMOVE return 후 메세지 큐에서 메세지 삭제 
 			if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 			{
+				// 메세지 가공 (키보드 어떤 글자 눌렀나)
 				TranslateMessage(&msg);
+
+				// 메세지 처리함수 MsgProc로 전달
 				DispatchMessage(&msg);
 			}
-			else Render();
+			else Render(); // ValidateRect() 대신 Direct3D에서 렌더링하는 방식을 채택
 		}
 	}
 

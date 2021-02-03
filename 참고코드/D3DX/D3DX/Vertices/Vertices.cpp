@@ -144,7 +144,6 @@ void Render()
 		// 기하 정보를 출력하기 위한 DrawPrimitive() 함수를 호출한다.
 		g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
 
-
 		//렌더링 종료
 		g_pd3dDevice->EndScene();
 	}

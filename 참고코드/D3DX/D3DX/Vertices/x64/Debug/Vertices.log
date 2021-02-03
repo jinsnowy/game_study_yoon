@@ -1,4 +1,2 @@
 ﻿  Vertices.cpp
-c:\users\a10\desktop\game_study_yoon\참고코드\d3dx\d3dx\vertices\vertices.cpp(186): warning C4002: 함수 같은 매크로 호출 'CreateWindowA'에 대해 인수가 너무 많습니다.
-  LINK : C:\Users\A10\Desktop\game_study_yoon\참고코드\D3DX\D3DX\x64\Debug\Vertices.exe을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
-  Vertices.vcxproj -> C:\Users\A10\Desktop\game_study_yoon\참고코드\D3DX\D3DX\x64\Debug\Vertices.exe
+C:\Users\yhjin\Desktop\game_study_yoon\참고코드\D3DX\D3DX\Vertices\Vertices.cpp(8,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'd3dx9.h': No such file or directory
