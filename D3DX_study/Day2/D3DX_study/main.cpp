@@ -10,7 +10,7 @@ LPDIRECT3DVERTEXBUFFER9 g_pVB = NULL;
 
 // x,y,z,rhw 값 그리고 diffuse 색상으로 이루어짐
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
-
+#define UNIFORM_COLOR (0xFFFFFFFF)
 struct CUSTOMVERTEX
 {
 	FLOAT x, y, z, rhw;  // 12 bytes
@@ -22,9 +22,10 @@ HRESULT InitVB()
 {
 	// 삼각형을 렌더링하기 위해 3개의 정점 선언
 	CUSTOMVERTEX vertices[] = {
-		{150.0f, 50.0f,  0.5f, 1.0f, (DWORD) 0xFFFF0000},
-		{250.0f, 250.0f, 0.5f, 1.0f, (DWORD) 0xFF00FF00},
-		{50.0f,  250.0f, 0.5f, 1.0f, (DWORD) 0xFF00FFFF}
+		{200.0f, 300.0f, 0.5f, 1.0f, (DWORD) UNIFORM_COLOR},	
+		{200.0f, 200.0f, 0.5f, 1.0f, (DWORD) UNIFORM_COLOR},
+		{300.0f, 300.0f, 0.5f, 1.0f, (DWORD) UNIFORM_COLOR},
+		{300.0f, 200.0f, 0.5f, 1.0f, (DWORD) UNIFORM_COLOR},
 	};
 
 	// 정점 버퍼 생성
@@ -38,7 +39,9 @@ HRESULT InitVB()
 		HANDLE* pSharedHandle)  반환될 정점 버퍼의 인터페이스
 		PURE;
 	*/
-	if (FAILED(g_pd3dDevice->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX),
+	int num_vertices = sizeof(vertices) / sizeof(CUSTOMVERTEX);
+
+	if (FAILED(g_pd3dDevice->CreateVertexBuffer( num_vertices * sizeof(CUSTOMVERTEX),
 												0,
 												D3DFVF_CUSTOMVERTEX,
 												D3DPOOL_DEFAULT,
@@ -148,7 +151,7 @@ void Render()
 		g_pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
 
 		// 기하 정보 출력
-		g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
+		g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
 		// 렌더링 종료
 		g_pd3dDevice->EndScene();
