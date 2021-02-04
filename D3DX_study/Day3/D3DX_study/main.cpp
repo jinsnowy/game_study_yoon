@@ -9,6 +9,19 @@ LPDIRECT3D9 g_pD3D = NULL;
 LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 // 정점을 보관할 정점 버퍼 Vertext Buffer
 LPDIRECT3DVERTEXBUFFER9 g_pVB = NULL;
+// 인덱스를 보관할 인덱스 버퍼 Index Buffer
+LPDIRECT3DINDEXBUFFER9 g_pIB = NULL;
+
+struct CUSTOMVERTEX
+{
+	FLOAT x, y, z;  // 12 bytes
+	DWORD color; // 8 bytes
+}; // 20 bytes
+
+struct TRIANGLEINDEX
+{
+	WORD _0, _1, _2;
+};
 
 // x,y,z,rhw 값 그리고 diffuse 색상으로 이루어짐
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE)
@@ -16,16 +29,12 @@ LPDIRECT3DVERTEXBUFFER9 g_pVB = NULL;
 #define mat4f D3DXMATRIXA16
 #define vec3f D3DXVECTOR3
 
-struct CUSTOMVERTEX
-{
-	FLOAT x, y, z, rhw;  // 12 bytes
-	DWORD color; // 8 bytes
-}; // 20 bytes
-
 void InitMatrix()
 {
 	/* world space conversion */
 	mat4f matWorld;
+
+	D3DXMatrixIdentity(&matWorld);
 
 	UINT iTime = timeGetTime() % 1000;
 
@@ -38,7 +47,7 @@ void InitMatrix()
 	/* view space conversion */
 	mat4f matView;
 
-	vec3f vEyePt(0.0f, -10.0f, -10.0f); // 월드 좌표계에서 카메라 위치
+	vec3f vEyePt(0.0f, 0.0f, -5.0f); // 월드 좌표계에서 카메라 위치
 	vec3f vLookatPt(0.0f, 0.0f, 0.0f);  // 월드 좌표계에서 카메라 방향
 	vec3f vUpVec(0.0f, 1.0f, 0.0f);     // 월드 좌표계에서 up vector
 
@@ -50,21 +59,25 @@ void InitMatrix()
 	mat4f matProj;
 
 	// fov, ratio w/h , near z, far z
-	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 2, 1.0f, 1.0f, 100.0f);
+	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 2, 1.0f, 0.01f, 100.0f);
 
 	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 }
 // g_pVB 정점 버퍼를 초기화
 HRESULT InitVB()
 {
-	// 삼각형을 렌더링하기 위해 3개의 정점 선언
-	CUSTOMVERTEX vertices[] = {
-		{0.0f, 0.0f, 0.0f,  (DWORD) UNIFORM_COLOR},	
-		{1.0f, 0.0f, 0.0f, (DWORD) UNIFORM_COLOR},
-		{0.0f, 1.0f, 0.0f,  (DWORD) UNIFORM_COLOR},
-	};
+	//// 삼각형을 렌더링하기 위해 3개의 정점 선언
+	const CUSTOMVERTEX cube_vertices[8] = { 1.0f,1.0f,1.0f,0xffff0000,
+								1.0f,1.0f,-1.0f,0xff00ff00,
+								-1.0f,1.0f,-1.0f,0xff0000ff,
+								-1.0f,1.0f,1.0f,0xffffff00,
 
-	int num_vertices = sizeof(vertices) / sizeof(CUSTOMVERTEX);
+								1.0f,-1.0f,1.0f,0xffff0000,
+								1.0f,-1.0f,-1.0f,0xff00ff00,
+								-1.0f,-1.0f,-1.0f,0xff0000ff,
+								-1.0f,-1.0f,1.0f,0xffffff00 };
+
+	int num_vertices = sizeof(cube_vertices) / sizeof(CUSTOMVERTEX);
 	if (FAILED(g_pd3dDevice->CreateVertexBuffer( num_vertices * sizeof(CUSTOMVERTEX),
 												0,
 												D3DFVF_CUSTOMVERTEX,
@@ -80,17 +93,44 @@ HRESULT InitVB()
 	void* pVertices;
 	if (FAILED(g_pVB->Lock(
 		0,
-		sizeof(vertices), // 내가 만든 정점의 데이터 크기
+		sizeof(cube_vertices), // 내가 만든 정점의 데이터 크기
 		(void**)&pVertices, // 데이터를 접근할 수 있는 포인터를 얻어옴
 		0)))
 	{
 		return E_FAIL;
 	}
-	memcpy(pVertices, vertices, sizeof(vertices));
+	memcpy(pVertices, cube_vertices, sizeof(cube_vertices));
 	g_pVB->Unlock();
 	return S_OK;
 }
+HRESULT InitIB()
+{
+	TRIANGLEINDEX cube_indices[] = {
+								{3,2,1}, {3,1,0}, // up
+								{7,6,2}, {7,2,3}, // left
+								{0,1,5}, {0,5,4}, // right
+								{2,6,5}, {2,5,1}, // front
+								{7,3,0}, {7,0,4}, // back
+								{4,5,6}, {4,6,7}, // down
+	};
 
+	if (FAILED(g_pd3dDevice->CreateIndexBuffer(12 * sizeof(TRIANGLEINDEX), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &g_pIB, NULL)))
+	{
+		return E_FAIL;
+	}
+
+	void* pIndices;
+	if (FAILED(g_pIB->Lock(0, sizeof(cube_indices), (void**)&pIndices, 0)))
+	{
+		return E_FAIL;
+	}
+
+	memcpy(pIndices, cube_indices, sizeof(cube_indices));
+
+	g_pIB->Unlock();
+
+	return S_OK;
+}
 // g_pd3dDevice를 초기화
 HRESULT InitD3D(HWND hWnd)
 {
@@ -105,6 +145,9 @@ HRESULT InitD3D(HWND hWnd)
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD; // 가장 효율적인 SWAP 효과
 	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN; // 후면버퍼 생성 ?
 
+	d3dpp.EnableAutoDepthStencil = TRUE; // 깊이가 있는 z버퍼가 필요하므로 설정한다.
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+
 	// 디바이스를 설정해서 생성
 	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT,
 									D3DDEVTYPE_HAL,
@@ -116,10 +159,11 @@ HRESULT InitD3D(HWND hWnd)
 		return E_FAIL;
 	}
 	
-	// 컬링 기능
-	g_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	g_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
-	// 광원 기능 off
+	//Z 버퍼 기능을 켠다.
+	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+
 	g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	return S_OK;
@@ -127,6 +171,9 @@ HRESULT InitD3D(HWND hWnd)
 
 void Cleanup()
 {
+	if (g_pIB != NULL)
+		g_pIB->Release();
+
 	if (g_pVB != NULL)
 		g_pVB->Release();
 
@@ -143,8 +190,7 @@ void Render()
 		return;
 
 	// 후면 버퍼 파란색(0, 0, 255)로 지운다.
-	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 255),
-		1.0f, 0);
+	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
 
 	// world, view, projection matrix
 	InitMatrix();
@@ -159,7 +205,15 @@ void Render()
 		g_pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
 
 		// 기하 정보 출력
-		g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 1);
+		g_pd3dDevice->SetIndices(g_pIB);
+		// DrawIndexedPrimitive
+		// 첫 번째 : 그리고자 하는 기본 타입형
+		// 두 번째 : 여러 오브젝트를 하나로 묶을때 더해질 넘버.
+		// 세 번째 : 참조할 최소 인덱스 값
+		// 네 번째 : 이번 호출에 참조될 버텍스의 수
+		// 다섯 번째 : 인덱스 버퍼 내에서 읽기를 시작할 요소로의 인덱스
+		// 여섯 번째 : 그리고자 하는 기본형의 수
+		g_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 12);
 
 		// 렌더링 종료
 		g_pd3dDevice->EndScene();
@@ -203,7 +257,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT)
 							  GetDesktopWindow(), NULL, NULL, wc.hInstance, NULL);
 
 	// Direct3D 디바이스 초기화 && Vertex Buffer 초기화
-	if (SUCCEEDED(InitD3D(hWnd)) && SUCCEEDED(InitVB()))
+	if (SUCCEEDED(InitD3D(hWnd)) && SUCCEEDED(InitVB()) && SUCCEEDED(InitIB()))
 	{
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 		UpdateWindow(hWnd);
