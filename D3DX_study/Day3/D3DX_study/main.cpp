@@ -1,8 +1,6 @@
-#include <Windows.h>
 #include <d3d9.h>
 #include <d3dx9.h>
-#include <mmsystem.h> 
-
+#include <mmsystem.h>
 // D3D 디바이스를 생성할 D3D 객체 변수 Driect3D
 LPDIRECT3D9 g_pD3D = NULL;
 // 랜더링에 사용될 D3D 디바이스 Direct3D Device
@@ -29,25 +27,31 @@ struct TRIANGLEINDEX
 #define mat4f D3DXMATRIXA16
 #define vec3f D3DXVECTOR3
 
-void InitMatrix()
+void InitMatrix(bool left_box)
 {
 	/* world space conversion */
-	mat4f matWorld;
+	mat4f matWorld, matRot;
 
-	D3DXMatrixIdentity(&matWorld);
+	if (left_box) D3DXMatrixTranslation(&matWorld, -2, 0, 0);
+	else D3DXMatrixTranslation(&matWorld, 2, 0, 0);
+
+	D3DXMatrixIdentity(&matRot);
 
 	UINT iTime = timeGetTime() % 1000;
 
 	FLOAT fAngle = iTime * (2.0f * D3DX_PI) / 1000.0f; // 0 ~ 2pi 
 
-	D3DXMatrixRotationY(&matWorld, fAngle); // rotation about Y axis
+	if (left_box) D3DXMatrixRotationY(&matRot, fAngle); // rotation about Y axis
+	else D3DXMatrixRotationX(&matRot, fAngle); // rotation about X axis
+
+	D3DXMatrixMultiply(&matWorld, &matRot, &matWorld);
 
 	g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld); // set this matrix as world
 
 	/* view space conversion */
 	mat4f matView;
 
-	vec3f vEyePt(0.0f, 0.0f, -5.0f); // 월드 좌표계에서 카메라 위치
+	vec3f vEyePt(0.0f, 0.0f, -5.0f);    // 월드 좌표계에서 카메라 위치
 	vec3f vLookatPt(0.0f, 0.0f, 0.0f);  // 월드 좌표계에서 카메라 방향
 	vec3f vUpVec(0.0f, 1.0f, 0.0f);     // 월드 좌표계에서 up vector
 
@@ -68,14 +72,14 @@ HRESULT InitVB()
 {
 	//// 삼각형을 렌더링하기 위해 3개의 정점 선언
 	const CUSTOMVERTEX cube_vertices[8] = { 1.0f,1.0f,1.0f,0xffff0000,
-								1.0f,1.0f,-1.0f,0xff00ff00,
-								-1.0f,1.0f,-1.0f,0xff0000ff,
-								-1.0f,1.0f,1.0f,0xffffff00,
+											1.0f,1.0f,-1.0f,0xff00ff00,
+											-1.0f,1.0f,-1.0f,0xff0000ff,
+											-1.0f,1.0f,1.0f,0xffffff00,
 
-								1.0f,-1.0f,1.0f,0xffff0000,
-								1.0f,-1.0f,-1.0f,0xff00ff00,
-								-1.0f,-1.0f,-1.0f,0xff0000ff,
-								-1.0f,-1.0f,1.0f,0xffffff00 };
+											1.0f,-1.0f,1.0f,0xffff0000,
+											1.0f,-1.0f,-1.0f,0xff00ff00,
+											-1.0f,-1.0f,-1.0f,0xff0000ff,
+											-1.0f,-1.0f,1.0f,0xffffff00 };
 
 	int num_vertices = sizeof(cube_vertices) / sizeof(CUSTOMVERTEX);
 	if (FAILED(g_pd3dDevice->CreateVertexBuffer( num_vertices * sizeof(CUSTOMVERTEX),
@@ -106,12 +110,12 @@ HRESULT InitVB()
 HRESULT InitIB()
 {
 	TRIANGLEINDEX cube_indices[] = {
-								{3,2,1}, {3,1,0}, // up
-								{7,6,2}, {7,2,3}, // left
-								{0,1,5}, {0,5,4}, // right
-								{2,6,5}, {2,5,1}, // front
-								{7,3,0}, {7,0,4}, // back
-								{4,5,6}, {4,6,7}, // down
+								{1,2,3}, {0,1,3}, // up
+								{2,6,7}, {3,2,7}, // left
+								{5,1,0}, {4,5,0}, // right
+								{5,6,2}, {1,5,2}, // front
+								{0,3,7}, {4,0,7}, // back
+								{6,5,4}, {7,6,4}, // down
 	};
 
 	if (FAILED(g_pd3dDevice->CreateIndexBuffer(12 * sizeof(TRIANGLEINDEX), 0, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &g_pIB, NULL)))
@@ -193,7 +197,7 @@ void Render()
 	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
 
 	// world, view, projection matrix
-	InitMatrix();
+
 
 	// 랜더링 시작
 	if (SUCCEEDED(g_pd3dDevice->BeginScene()))
@@ -213,6 +217,10 @@ void Render()
 		// 네 번째 : 이번 호출에 참조될 버텍스의 수
 		// 다섯 번째 : 인덱스 버퍼 내에서 읽기를 시작할 요소로의 인덱스
 		// 여섯 번째 : 그리고자 하는 기본형의 수
+		InitMatrix(true);
+		g_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 12);
+
+		InitMatrix(false);
 		g_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 12);
 
 		// 렌더링 종료
