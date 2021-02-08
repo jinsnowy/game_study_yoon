@@ -24,7 +24,8 @@ struct TRIANGLEINDEX
 #define quatf D3DXQUATERNION
 
 vec3f g_aniPos[2];
-quatf g_aniRot[2];
+quatf g_aniYaw[2];
+quatf g_aniPitch[2];
 
 mat4f g_matTMParent;
 mat4f g_matRParent;
@@ -32,8 +33,10 @@ mat4f g_matRParent;
 mat4f g_matTMChild;
 mat4f g_matRChild;
 
-constexpr float rot_delta = 0.1f;
-float g_fRot = 0.0f;
+constexpr float period = 5.0f;
+constexpr float rot_delta = 0.05f;
+float g_yaw = 0.0f;
+float g_pitch = 0.0f;
 
 // g_pd3dDevice를 초기화
 HRESULT InitD3D(HWND hWnd)
@@ -79,8 +82,8 @@ void SetupCamera()
 	g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
 	/* view space conversion */
-	vec3f vEyePt(3.0f, 0.0f, -10.0f);
-	vec3f vLookatPt(3.0f, 0.0f, 0.0f);
+	vec3f vEyePt(0.0f, 0.0f, -10.0f);
+	vec3f vLookatPt(0.0f, 0.0f, 0.0f);
 	vec3f vUpVec(0.0f, 1.0f, 0.0f);
 
 	mat4f matView;
@@ -89,35 +92,36 @@ void SetupCamera()
 	
 	/* perspective projection */
 	mat4f matProj;
-	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4, 1.0f, 0.01f, 100.0f);
+	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 2, 1.0f, 0.01f, 100.0f);
 	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 }
 
 void Animate()
 {
 	static float t = 0;
-	float x, y, z;
-	quatf quat;
+	quatf quat_yaw, quat_pitch;
 
-	t = (GetTickCount() % 1000) / 1000.0f;  // 1 초 주기 애니메이션
+	t = (int(GetTickCount() / period) % 1000) / 1000.0f;  // T초 주기 애니메이션
 
 	vec3f v;
 	// 선형 보간
 	D3DXVec3Lerp(&v, &g_aniPos[0], &g_aniPos[1], t);
 	// translation
-	D3DXMatrixTranslation(&g_matTMParent, v.x, v.y, v.z);
-
+	D3DXMatrixTranslation(&g_matTMParent, v.x - 2.5, v.y, v.z);
 	// 구면 선형 보간
-	D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], t);
-	// 사원수를 회전 행렬값으로 변환
-	D3DXMatrixRotationQuaternion(&g_matRParent, &quat);
+	D3DXQuaternionSlerp(&quat_yaw, &g_aniYaw[0], &g_aniYaw[1], g_yaw);
+	D3DXQuaternionSlerp(&quat_pitch, &g_aniPitch[0], &g_aniPitch[1], g_pitch);
 
+	quatf quat_result = quat_yaw * quat_pitch;
+	// 사원수를 회전 행렬값으로 변환
+	D3DXMatrixRotationQuaternion(&g_matRParent, &quat_result);
 
 	// 자식 오브젝트 회전
-	D3DXMatrixRotationZ(&g_matRChild, GetTickCount() / 500.0f);
+	D3DXMatrixIdentity(&g_matRChild);
+	// D3DXMatrixRotationZ(&g_matRChild, GetTickCount() / 500.0f);
 
 	// 자식 오브젝트 이동
-	D3DXMatrixTranslation(&g_matTMChild, 3, 3, 3);
+	D3DXMatrixTranslation(&g_matTMChild, 5.0, 0, 0);
 }
 
 void DrawMesh(mat4f* pMat)
@@ -198,6 +202,19 @@ HRESULT InitIB()
 
 	return S_OK;
 }
+
+void InitAnimation()
+{
+	g_aniPos[0] = D3DXVECTOR3(-10, 0, 0); // 위치 변화에 사용 할 벡터 값
+	g_aniPos[1] = D3DXVECTOR3(10, 0, 0);  // 위치 변화에 사용 할 벡터 값
+
+	D3DXQuaternionRotationYawPitchRoll(&g_aniYaw[0], 0, 0.0f, 0.0f);
+	D3DXQuaternionRotationYawPitchRoll(&g_aniYaw[1], D3DX_PI, 0.0f, 0.0f);
+
+	D3DXQuaternionRotationYawPitchRoll(&g_aniPitch[0], 0.0f, 0, 0.0f);
+	D3DXQuaternionRotationYawPitchRoll(&g_aniPitch[1], 0.0f, D3DX_PI, 0.0f);
+}
+
 // 기하 정보 초기화
 HRESULT InitGeometry()
 {
@@ -207,19 +224,7 @@ HRESULT InitGeometry()
 	if (FAILED(InitIB()))
 		return E_FAIL;
 
-	g_aniPos[0] = D3DXVECTOR3(0, 0, 0); // 위치 변화에 사용 할 벡터 값
-	g_aniPos[1] = D3DXVECTOR3(5, 5, 5); // 위치 변화에 사용 할 벡터 값
-
-	FLOAT Yaw = D3DX_PI * 90.0f / 180.0f; // Y축 90도 회전
-	FLOAT Pitch = 0;
-	FLOAT Roll = 0;
-
-	D3DXQuaternionRotationYawPitchRoll(&g_aniRot[0], Yaw, Pitch, Roll); // 사원수(Y축 90도)
-
-	Yaw = 0;
-	Pitch = D3DX_PI * 90.0f / 180.0f; // X축 90도 회전
-	Roll = 0;
-	D3DXQuaternionRotationYawPitchRoll(&g_aniRot[1], Yaw, Pitch, Roll); // 사원수(X축 90도)
+	InitAnimation();
 	return S_OK;
 }
 
@@ -284,6 +289,21 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		Cleanup();
 		PostQuitMessage(0);
 		return 0;
+	case WM_KEYDOWN:
+	{
+		if (wParam == VK_LEFT)
+			g_yaw += rot_delta;
+		if (wParam == VK_RIGHT)
+			g_yaw -= rot_delta;
+		if (wParam == VK_UP)
+			g_pitch += rot_delta;
+		if (wParam == VK_DOWN)
+			g_pitch -= rot_delta;
+
+		g_yaw = max(0.0f, min(1.0f, g_yaw));
+		g_pitch = max(0.0f, min(1.0f, g_pitch));
+		break;
+	}
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
