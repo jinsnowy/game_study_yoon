@@ -1,13 +1,10 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <mmsystem.h>
-// D3D 디바이스를 생성할 D3D 객체 변수 Driect3D
+
 LPDIRECT3D9 g_pD3D = NULL;
-// 랜더링에 사용될 D3D 디바이스 Direct3D Device
 LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
-// 정점을 보관할 정점 버퍼 Vertext Buffer
 LPDIRECT3DVERTEXBUFFER9 g_pVB = NULL;
-// 인덱스를 보관할 인덱스 버퍼 Index Buffer
 LPDIRECT3DINDEXBUFFER9 g_pIB = NULL;
 
 struct CUSTOMVERTEX
@@ -19,54 +16,119 @@ struct CUSTOMVERTEX
 struct TRIANGLEINDEX
 {
 	WORD _0, _1, _2;
-};
+}; // 6 bytes
 
-// x,y,z,rhw 값 그리고 diffuse 색상으로 이루어짐
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE)
-#define UNIFORM_COLOR (0xFF00FFFF)
 #define mat4f D3DXMATRIXA16
 #define vec3f D3DXVECTOR3
+#define quatf D3DXQUATERNION
 
-void InitMatrix(bool left_box)
+vec3f g_aniPos[2];
+quatf g_aniRot[2];
+
+mat4f g_matTMParent;
+mat4f g_matRParent;
+
+mat4f g_matTMChild;
+mat4f g_matRChild;
+
+constexpr float rot_delta = 0.1f;
+float g_fRot = 0.0f;
+
+// g_pd3dDevice를 초기화
+HRESULT InitD3D(HWND hWnd)
 {
-	/* world space conversion */
-	mat4f matWorld, matRot;
+	// 디바이스를 생성하기 위한 D3D 객체 생성
+	if (NULL == (g_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
+		return E_FAIL;
 
-	if (left_box) D3DXMatrixTranslation(&matWorld, -2, 0, 0);
-	else D3DXMatrixTranslation(&matWorld, 2, 0, 0);
+	D3DPRESENT_PARAMETERS d3dpp;   // 디바이스 생성을 위한 구조체 (파라미터 셋팅)
+	ZeroMemory(&d3dpp, sizeof(d3dpp)); // 구조체 비우기
 
-	D3DXMatrixIdentity(&matRot);
+	d3dpp.Windowed = TRUE;
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
 
-	UINT iTime = timeGetTime() % 1000;
+	d3dpp.EnableAutoDepthStencil = TRUE; // 깊이가 있는 z버퍼가 필요하므로 설정한다.
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
-	FLOAT fAngle = iTime * (2.0f * D3DX_PI) / 1000.0f; // 0 ~ 2pi 
+	// 디바이스를 설정해서 생성
+	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT,
+									D3DDEVTYPE_HAL,
+									hWnd,
+									D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+									&d3dpp,
+									&g_pd3dDevice)))
+	{
+		return E_FAIL;
+	}
 
-	if (left_box) D3DXMatrixRotationY(&matRot, fAngle); // rotation about Y axis
-	else D3DXMatrixRotationX(&matRot, fAngle); // rotation about X axis
+	g_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
-	D3DXMatrixMultiply(&matWorld, &matRot, &matWorld);
+	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
-	g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld); // set this matrix as world
+	g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+	return S_OK;
+}
+
+void SetupCamera()
+{
+	mat4f matWorld;
+	D3DXMatrixIdentity(&matWorld);
+	g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
 	/* view space conversion */
+	vec3f vEyePt(3.0f, 0.0f, -10.0f);
+	vec3f vLookatPt(3.0f, 0.0f, 0.0f);
+	vec3f vUpVec(0.0f, 1.0f, 0.0f);
+
 	mat4f matView;
-
-	vec3f vEyePt(0.0f, 0.0f, -5.0f);    // 월드 좌표계에서 카메라 위치
-	vec3f vLookatPt(0.0f, 0.0f, 0.0f);  // 월드 좌표계에서 카메라 방향
-	vec3f vUpVec(0.0f, 1.0f, 0.0f);     // 월드 좌표계에서 up vector
-
 	D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUpVec);
-
-	g_pd3dDevice->SetTransform(D3DTS_VIEW, &matView); // set this matrix as local pose
-
+	g_pd3dDevice->SetTransform(D3DTS_VIEW, &matView);
+	
 	/* perspective projection */
 	mat4f matProj;
-
-	// fov, ratio w/h , near z, far z
-	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 2, 1.0f, 0.01f, 100.0f);
-
+	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4, 1.0f, 0.01f, 100.0f);
 	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 }
+
+void Animate()
+{
+	static float t = 0;
+	float x, y, z;
+	quatf quat;
+
+	t = (GetTickCount() % 1000) / 1000.0f;  // 1 초 주기 애니메이션
+
+	vec3f v;
+	// 선형 보간
+	D3DXVec3Lerp(&v, &g_aniPos[0], &g_aniPos[1], t);
+	// translation
+	D3DXMatrixTranslation(&g_matTMParent, v.x, v.y, v.z);
+
+	// 구면 선형 보간
+	D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], t);
+	// 사원수를 회전 행렬값으로 변환
+	D3DXMatrixRotationQuaternion(&g_matRParent, &quat);
+
+
+	// 자식 오브젝트 회전
+	D3DXMatrixRotationZ(&g_matRChild, GetTickCount() / 500.0f);
+
+	// 자식 오브젝트 이동
+	D3DXMatrixTranslation(&g_matTMChild, 3, 3, 3);
+}
+
+void DrawMesh(mat4f* pMat)
+{
+	g_pd3dDevice->SetTransform(D3DTS_WORLD, pMat);
+	g_pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
+	g_pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
+	g_pd3dDevice->SetIndices(g_pIB);
+	g_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 12);
+}
+
 // g_pVB 정점 버퍼를 초기화
 HRESULT InitVB()
 {
@@ -107,6 +169,7 @@ HRESULT InitVB()
 	g_pVB->Unlock();
 	return S_OK;
 }
+
 HRESULT InitIB()
 {
 	TRIANGLEINDEX cube_indices[] = {
@@ -135,43 +198,31 @@ HRESULT InitIB()
 
 	return S_OK;
 }
-// g_pd3dDevice를 초기화
-HRESULT InitD3D(HWND hWnd)
+// 기하 정보 초기화
+HRESULT InitGeometry()
 {
-	// 디바이스를 생성하기 위한 D3D 객체 생성
-	if (NULL == (g_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
+	if (FAILED(InitVB()))
 		return E_FAIL;
 
-	D3DPRESENT_PARAMETERS d3dpp;   // 디바이스 생성을 위한 구조체 (파라미터 셋팅)
-	ZeroMemory(&d3dpp, sizeof(d3dpp)); // 구조체 비우기
-
-	d3dpp.Windowed = TRUE; // 창 모드
-	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD; // 가장 효율적인 SWAP 효과
-	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN; // 후면버퍼 생성 ?
-
-	d3dpp.EnableAutoDepthStencil = TRUE; // 깊이가 있는 z버퍼가 필요하므로 설정한다.
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
-
-	// 디바이스를 설정해서 생성
-	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT,
-									D3DDEVTYPE_HAL,
-									hWnd,
-									D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-									&d3dpp,
-									&g_pd3dDevice)))
-	{
+	if (FAILED(InitIB()))
 		return E_FAIL;
-	}
-	
-	g_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
-	//Z 버퍼 기능을 켠다.
-	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	g_aniPos[0] = D3DXVECTOR3(0, 0, 0); // 위치 변화에 사용 할 벡터 값
+	g_aniPos[1] = D3DXVECTOR3(5, 5, 5); // 위치 변화에 사용 할 벡터 값
 
-	g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	FLOAT Yaw = D3DX_PI * 90.0f / 180.0f; // Y축 90도 회전
+	FLOAT Pitch = 0;
+	FLOAT Roll = 0;
 
+	D3DXQuaternionRotationYawPitchRoll(&g_aniRot[0], Yaw, Pitch, Roll); // 사원수(Y축 90도)
+
+	Yaw = 0;
+	Pitch = D3DX_PI * 90.0f / 180.0f; // X축 90도 회전
+	Roll = 0;
+	D3DXQuaternionRotationYawPitchRoll(&g_aniRot[1], Yaw, Pitch, Roll); // 사원수(X축 90도)
 	return S_OK;
 }
+
 
 void Cleanup()
 {
@@ -193,35 +244,25 @@ void Render()
 	if (NULL == g_pd3dDevice)
 		return;
 
-	// 후면 버퍼 파란색(0, 0, 255)로 지운다.
-	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
+	mat4f matWorld;
 
-	// world, view, projection matrix
+	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(225, 225, 225), 1.0f, 0);
 
+	Animate();
 
 	// 랜더링 시작
 	if (SUCCEEDED(g_pd3dDevice->BeginScene()))
 	{
-		// 정점 정보가 담겨 있는 정점 버퍼를 출력 스트림으로 할당
-		g_pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
+		// 부모 변환 행렬
+		matWorld = g_matRParent * g_matTMParent;
 
-		// D3D에게 정점 셰이더 정보를 지정
-		g_pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
+		mat4f matworld = g_matTMParent * g_matRParent;
+		DrawMesh(&matWorld);
 
-		// 기하 정보 출력
-		g_pd3dDevice->SetIndices(g_pIB);
-		// DrawIndexedPrimitive
-		// 첫 번째 : 그리고자 하는 기본 타입형
-		// 두 번째 : 여러 오브젝트를 하나로 묶을때 더해질 넘버.
-		// 세 번째 : 참조할 최소 인덱스 값
-		// 네 번째 : 이번 호출에 참조될 버텍스의 수
-		// 다섯 번째 : 인덱스 버퍼 내에서 읽기를 시작할 요소로의 인덱스
-		// 여섯 번째 : 그리고자 하는 기본형의 수
-		InitMatrix(true);
-		g_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 12);
-
-		InitMatrix(false);
-		g_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 12);
+		// 자식 변환 행렬
+		matWorld = g_matRChild * g_matTMChild * g_matRParent * g_matTMParent;
+		
+		DrawMesh(&matWorld);
 
 		// 렌더링 종료
 		g_pd3dDevice->EndScene();
@@ -265,8 +306,10 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT)
 							  GetDesktopWindow(), NULL, NULL, wc.hInstance, NULL);
 
 	// Direct3D 디바이스 초기화 && Vertex Buffer 초기화
-	if (SUCCEEDED(InitD3D(hWnd)) && SUCCEEDED(InitVB()) && SUCCEEDED(InitIB()))
+	if (SUCCEEDED(InitD3D(hWnd)) && SUCCEEDED(InitGeometry()))
 	{
+		SetupCamera();
+
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 		UpdateWindow(hWnd);
 
@@ -278,10 +321,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT)
 			// PM_REMOVE return 후 메세지 큐에서 메세지 삭제 
 			if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 			{
-				// 메세지 가공 (키보드 어떤 글자 눌렀나)
 				TranslateMessage(&msg);
-
-				// 메세지 처리함수 MsgProc로 전달
 				DispatchMessage(&msg);
 			}
 			else Render(); // ValidateRect() 대신 Direct3D에서 렌더링하는 방식을 채택
