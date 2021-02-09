@@ -5,29 +5,30 @@
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "winmm.lib")
-
 #include <Windows.h>
 #include <mmsystem.h>
 #include <d3d9.h>
 #include <d3dx9.h>
 
-//SHOW_HOW_TO_USE_TCT가 선언된 것과 선언되지 않은 것의 컴파일 결과를 반드시 비교하자.
-//#define SHOW_HOW_TO_USE_TCT
+// SHOW_HOW_TO_USE_TCT가 선언된 것과 선언되지 않은 것의 컴파일 결과를 반드시 비교하자.
+#define SHOW_HOW_TO_USE_TCI
 
-/**========================================================================
- * 전역 변수
- *=========================================================================*/
+ /**========================================================================
+  * 전역 변수
+  *=========================================================================*/
 
-LPDIRECT3D9				g_pD3D			= NULL;
-LPDIRECT3DDEVICE9		g_pd3dDevice	= NULL;
-LPDIRECT3DVERTEXBUFFER9	g_pVB			= NULL;
-LPDIRECT3DTEXTURE9		g_pTexture		= NULL; // 텍스처 인터페이스 선언
+LPDIRECT3D9				g_pD3D = NULL;
+LPDIRECT3DDEVICE9		g_pd3dDevice = NULL;
+LPDIRECT3DVERTEXBUFFER9	g_pVB = NULL;
+LPDIRECT3DTEXTURE9		g_pTexture = NULL; // 텍스처 인터페이스 선언
 
 struct CUSTOMVERTEX
 {
 	D3DXVECTOR3 position;
 	D3DCOLOR	color;
+#ifndef SHOW_HOW_TO_USE_TCI
 	FLOAT		tu, tv; // 텍스처 좌표
+#endif
 };
 
 //사용자 정점 구조체에 관한 정보를 나타내는 FVF 값
@@ -36,6 +37,8 @@ struct CUSTOMVERTEX
 #else
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 #endif
+
+float gx = 0, gy = 0;
 
 /**========================================================================
  * 초기화
@@ -53,8 +56,8 @@ HRESULT InitD3D(HWND hWnd)
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 
-	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, 
-								D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &g_pd3dDevice)))
+	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
+		D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &g_pd3dDevice)))
 	{
 		return E_FAIL;
 	}
@@ -83,8 +86,8 @@ HRESULT InitGeometry()
 		}
 	}
 
-	if (FAILED(g_pd3dDevice->CreateVertexBuffer(50 * 2 * sizeof(CUSTOMVERTEX), 0, 
-							D3DFVF_CUSTOMVERTEX, D3DPOOL_DEFAULT, &g_pVB, NULL)))
+	if (FAILED(g_pd3dDevice->CreateVertexBuffer(52 * 2 * sizeof(CUSTOMVERTEX), 0,
+		D3DFVF_CUSTOMVERTEX, D3DPOOL_DEFAULT, &g_pVB, NULL)))
 	{
 		return E_FAIL;
 	}
@@ -95,7 +98,7 @@ HRESULT InitGeometry()
 	{
 		return E_FAIL;
 	}
-	
+
 	for (DWORD i = 0; i < 50; i++)
 	{
 		FLOAT theta = (2 * D3DX_PI * i) / (50 - 1);
@@ -107,7 +110,6 @@ HRESULT InitGeometry()
 		//자동으로 좌표를 생성하지 않고 설정하는 방법.
 		pVertices[2 * i + 0].tu = ((FLOAT)i) / (50 - 1);
 		pVertices[2 * i + 0].tv = 1.0f;
-
 #endif
 
 		pVertices[2 * i + 1].position = D3DXVECTOR3(sinf(theta), 1.0f, cosf(theta));
@@ -117,10 +119,31 @@ HRESULT InitGeometry()
 		//자동으로 좌표를 생성하지 않고 설정하는 방법.
 		pVertices[2 * i + 1].tu = ((FLOAT)i) / (50 - 1);
 		pVertices[2 * i + 1].tv = 0.0f;
-
 #endif
 	}
 
+	pVertices[100].position = { -5.0f, -5.0f, 0.0f };
+	pVertices[100].color = INT_MAX;
+	pVertices[101].position = { -5.0f, 5.0f, 0.0f };
+	pVertices[101].color = INT_MAX;
+	pVertices[102].position = { 5.0f, -5.0f, 0.0f };
+	pVertices[102].color = INT_MAX;
+	pVertices[103].position = { 5.0f, 5.0f, 0.0f };
+	pVertices[103].color = INT_MAX;
+
+#ifndef SHOW_HOW_TO_USE_TCI
+	pVertices[100].tu = 0.0;
+	pVertices[100].tv = 1.0;
+
+	pVertices[101].tu = 0.0;
+	pVertices[101].tv = 0.0;
+
+	pVertices[102].tu = 1.0;
+	pVertices[102].tv = 1.0;
+
+	pVertices[103].tu = 1.0;
+	pVertices[103].tv = 0.0;
+#endif
 	g_pVB->Unlock();
 
 	return S_OK;
@@ -150,12 +173,7 @@ void Cleanup()
  *=========================================================================*/
 void SetupMatrices()
 {
-	D3DXMATRIXA16 matWorld;
-	D3DXMatrixIdentity(&matWorld);
-	D3DXMatrixRotationX(&matWorld, timeGetTime() / 1000.0f);
-	g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
-
-	D3DXVECTOR3 vEyePt(0.0f, 3.0f, -5.0f);
+	D3DXVECTOR3 vEyePt(0.0f, 3.0, -20.0f);
 	D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);
 
@@ -165,7 +183,7 @@ void SetupMatrices()
 	g_pd3dDevice->SetTransform(D3DTS_VIEW, &matView);
 
 	D3DXMATRIXA16 matProj;
-	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI / 4, 1.0f, 1.0f, 100.0f);
+	D3DXMatrixPerspectiveFovLH(&matProj, D3DX_PI/4 , 1.0f, 1.0f, 100.0f);
 	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &matProj);
 }
 
@@ -178,13 +196,16 @@ void Render()
 		return;
 
 	// 후면 버퍼를 파란색(0, 0, 255)으로 지운다.
-	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 255), 1.0f, 0);
+	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(25, 25, 25), 1.0f, 0);
 
-	SetupMatrices();
+	D3DXMATRIXA16 matWorld;
 
 	// 랜더링 시작
 	if (SUCCEEDED(g_pd3dDevice->BeginScene()))
 	{
+
+		SetupMatrices();
+
 		//생성한 텍스처를 0번 텍스처 스테이지에 올린다.
 		//텍스처 스테이지는 여러 장의 텍스처와 색깔 정보를 섞어서 출력할 때 사용한다.
 		//여기서는 텍스처의 색깔과 정점의 색깔 정보를 modulate 연산으로 섞어서 출력한다.
@@ -194,18 +215,21 @@ void Render()
 		g_pd3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE); // 두 번째 섞을 색은 정점의 색
 		g_pd3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_DISABLE); // alpha 연산을 사용하지 않음 설정
 
-#ifndef SHOW_HOW_TO_USE_TCI
+#ifdef SHOW_HOW_TO_USE_TCI
 		//D3D의 텍스처 좌표 생성 기능을 사용
 		//카메라 좌표계에서의 정점 정보를 사용하여 텍스처 좌표를 생성.
 		//4*4 크기의 텍스처 변환 행렬을 텍스처 좌표 인덱스(TCI=Texture Coord Index)전달 인자를
 		//사용하여 x, y, z TCI 좌표를 u, v 텍스처 좌표로 변환한다.
 		//사용한 것은 단순히(-1.0 ~ +1.0) 값을 (0.0 ~ 1.0)사이의 값으로 변환한는 행렬이다.
 		// 월드, 뷰, 프로젝션 변환을 거친 정점은 (-1.0 ~ +1.0)사이의 값을 갖게 된다.
+		D3DXMATRIXA16 proj;
+		g_pd3dDevice->GetTransform(D3DTS_PROJECTION, &proj);
+
 		D3DXMATRIXA16 mat;
 		mat._11 = 0.25f; mat._12 = 0.00f; mat._13 = 0.00f; mat._14 = 0.00f;
-		mat._21 = 0.25f; mat._22 = 0.00f; mat._23 = 0.00f; mat._24 = 0.00f;
-		mat._31 = 0.25f; mat._32 = 0.00f; mat._33 = 0.00f; mat._34 = 0.00f;
-		mat._41 = 0.25f; mat._42 = 0.00f; mat._43 = 0.00f; mat._44 = 0.00f;
+		mat._21 = 0.00f; mat._22 = -0.25f; mat._23 = 0.00f; mat._24 = 0.00f;
+		mat._31 = 0.00f; mat._32 = 0.00f; mat._33 = 1.00f; mat._34 = 1.00f;
+		mat._41 = 0.5f; mat._42 = 0.5f; mat._43 = 0.00f; mat._44 = 1.00f;
 
 		//텍스처 변환행렬
 		g_pd3dDevice->SetTransform(D3DTS_TEXTURE0, &mat);
@@ -213,11 +237,43 @@ void Render()
 		g_pd3dDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
 		//카메라 좌표계 변환
 		g_pd3dDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEPOSITION);
+
+		// in the 0 to 1 range.
+		D3DXMATRIXA16 mTextureTransform;
+		D3DXMATRIXA16 mProj;
+		D3DXMATRIXA16 mTrans;
+		D3DXMATRIXA16 mScale;
+		g_pd3dDevice->GetTransform(D3DTS_PROJECTION, &mProj);
+		D3DXMatrixTranslation(&mTrans, 0.5f, 0.5f, 0.0f);
+		D3DXMatrixScaling(&mScale, 0.5f, -0.5f, 1.0f);
+		/*
+			cameraSpace x Projection  x   scale     x  trans
+			               [-1, 1]   -> [-0.5, 0.5] -> [0, 1]
+		*/
+		mTextureTransform = mProj * mScale * mTrans;
+
+		g_pd3dDevice->SetTransform(D3DTS_TEXTURE0, &mTextureTransform);
+		g_pd3dDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS,
+			D3DTTFF_COUNT4 | D3DTTFF_PROJECTED);
+		g_pd3dDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEPOSITION);
+
+
 #endif
+	
+		D3DXMatrixIdentity(&matWorld);
+		D3DXMatrixRotationY(&matWorld, timeGetTime() / 1000.0f);
+
+		g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
 
 		g_pd3dDevice->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
 		g_pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
-		g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2 * 50 - 2);
+		g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2 * 50-2);
+
+		D3DXMatrixIdentity(&matWorld);
+		g_pd3dDevice->SetTransform(D3DTS_WORLD, &matWorld);
+		g_pd3dDevice->SetStreamSource(0, g_pVB, 100*sizeof(CUSTOMVERTEX), sizeof(CUSTOMVERTEX));
+		g_pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
+		g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
 		//렌더링 종료
 		g_pd3dDevice->EndScene();
@@ -238,6 +294,16 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		Cleanup();
 		PostQuitMessage(0);
 		return 0;
+	case WM_KEYDOWN:
+		if (wParam == VK_LEFT)
+			gx--;
+		if (wParam == VK_RIGHT)
+			gx++;
+		if (wParam == VK_UP)
+			gy++;
+		if (wParam == VK_DOWN)
+			gy--;
+		break;
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
