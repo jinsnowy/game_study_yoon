@@ -99,29 +99,6 @@ void Window::SetTitle(const std::string& title)
 		throw WND_LAST_EXCEPT();
 	}
 }
-INT Window::Run()
-{
-	MSG msg;
-	while (true)
-	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-
-			if (msg.message == WM_QUIT)
-			{
-				return -1;
-			}
-		}
-		else {
-			// Game Frame goes
-			SendMessage(hWnd, WM_RENDER_RESET, 0, 0);
-		}
-	}
-
-	return (INT) msg.wParam;
-}
 
 LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {

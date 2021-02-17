@@ -1,11 +1,9 @@
-#include "Window.h"
+#include "App.h"
 
 INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	try {
-		Window wnd(800, 600, "Game Name");
-		INT Exit = wnd.Run();
-		return Exit;
+		return App{}.Go();
 	}
 	catch (const UserException& e)
 	{
