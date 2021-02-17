@@ -62,7 +62,8 @@ public:
 	// 카메라 좌표계의 Y축으로 angle만큼 회전한다.
 	D3DXMATRIXA16*	RotateLocalY( float angle );
 
-//	D3DXMATRIXA16*	RotateLocalZ( float angle );
+	// 카메라 좌표계의 Z축으로 angle만큼 회전한다.
+	D3DXMATRIXA16*	RotateLocalZ( float angle );
 
 	// 월드좌표계의 *pv값의 위치로 이동한다.
 	D3DXMATRIXA16*	MoveTo( D3DXVECTOR3* pv );

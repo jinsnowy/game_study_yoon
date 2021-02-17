@@ -494,7 +494,7 @@ LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 					else
 					{
 						g_dt += 0.01f;
-						g_pCamera->RotateLocalY(0.01f);
+						g_pCamera->RotateLocalZ(0.01f);
 						D3DXMATRIXA16* pmatView = g_pCamera->GetViewMatrix();		// 카메라 행렬을 얻는다.
 						g_pd3dDevice->SetTransform(D3DTS_VIEW, pmatView);			// 카메라 행렬 셋팅
 					}
@@ -508,7 +508,7 @@ LRESULT WINAPI MsgProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 			{
 				if (initPrev)
 				{
-					g_pCamera->RotateLocalY(-g_dt);
+					g_pCamera->RotateLocalZ(-g_dt);
 					initPrev = FALSE;
 				}
 			}break;

@@ -65,6 +65,19 @@ D3DXMATRIXA16* ZCamera::RotateLocalY( float angle )
 	return SetView( &m_vEye, &vNewDst, &m_vUp );
 }
 
+D3DXMATRIXA16* ZCamera::RotateLocalZ(float angle)
+{
+	D3DXMATRIXA16 matRot;
+	D3DXMatrixRotationAxis(&matRot, &m_vView, angle);
+
+	D3DXVECTOR3 at = m_vEye + m_vView;
+	D3DXVECTOR3 vNewUp;
+	D3DXVec3TransformCoord(&vNewUp, &m_vUp, &matRot);
+	D3DXVec3Normalize(&vNewUp, &vNewUp);
+
+	return SetView(&m_vEye, &at, &vNewUp);
+}
+
 // 카메라 좌표계의 X축방향으로 dist만큼 전진한다.(후진은 -dist를 넣으면 된다.)
 D3DXMATRIXA16* ZCamera::MoveLocalX( float dist )
 {
