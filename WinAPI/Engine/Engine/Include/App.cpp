@@ -22,9 +22,12 @@ int App::Go()
 		}
 		else {
 			// Game Frame goes
-
-			msg.message = WM_RENDER_RESET;
-			DispatchMessage(&msg);
+			DoFrame();
+			// optional to deal with some functions after frame update
+			/*
+			  msg.message = WM_RENDER_RESET;
+			  DispatchMessage(&msg);
+			*/
 		}
 	}
 
@@ -33,4 +36,7 @@ int App::Go()
 
 void App::DoFrame()
 {
+	const float c = sin(timer.Peek()) / 2.0f + 0.5f;
+	wnd.Gfx().ClearBuffer(c, c, 1.0f);
+ 	wnd.Gfx().EndFrame();
 }

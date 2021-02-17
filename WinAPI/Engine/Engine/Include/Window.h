@@ -2,6 +2,7 @@
 
 #include "framework.h"
 #include "UserException.h"
+#include "Graphics.h"
 
 // error exception helper macro
 #define WND_EXCEPT(hr) Window::Exception(__LINE__, __FILE__, hr);
@@ -43,12 +44,14 @@ private:
 	int mWidth = 600;
 	int mHeight = 800;
 	HWND hWnd;
+	std::unique_ptr<Graphics> pGfx;
 public:
-	Window(int width, int height, const char* name);
 	~Window();
+	Window(int width, int height, const char* name);
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 	void SetTitle(const std::string& title);
+	Graphics& Gfx();
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;

@@ -10,7 +10,8 @@ public:
 	FrameTimer& operator=(const FrameTimer&&) = delete;
 
 	FrameTimer();
+	float Peek();
 	float Tick();
 private:
-	std::chrono::high_resolution_clock::time_point mTic;
+	std::chrono::steady_clock::time_point mTic;
 };
