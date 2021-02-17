@@ -19,6 +19,9 @@
     <Filter Include="Manager">
       <UniqueIdentifier>{269d0953-c9f3-432a-a077-fc86d933cb72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utilites">
+      <UniqueIdentifier>{39b57bde-1493-4a9e-a236-b7e48f41f91b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -39,14 +42,17 @@
     <ClInclude Include="UserException.h">
       <Filter>Other</Filter>
     </ClInclude>
-    <ClInclude Include="Keyboard.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Mouse.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="App.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Utilites</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Utilites</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameTimer.h">
+      <Filter>Utilites</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,14 +68,17 @@
     <ClCompile Include="UserException.cpp">
       <Filter>Other</Filter>
     </ClCompile>
-    <ClCompile Include="Keyboard.cpp">
+    <ClCompile Include="App.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Utilites</Filter>
     </ClCompile>
-    <ClCompile Include="App.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Utilites</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameTimer.cpp">
+      <Filter>Utilites</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
