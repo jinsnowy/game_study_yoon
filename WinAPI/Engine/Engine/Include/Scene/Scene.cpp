@@ -51,40 +51,120 @@ bool Scene::Init()
 
 void Scene::Input(float dt)
 {
-	for (auto it = m_LayerList.begin(); it != m_LayerList.end(); it++)
+	auto iterEnd = m_LayerList.end();
+	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{
+		if (!(*it)->GetEnable())
+		{
+			++it;
+			continue;
+		}
+
 		(*it)->Input(dt);
+
+		if (!(*it)->GetLife())
+		{
+			it->reset();
+			it = m_LayerList.erase(it);
+			iterEnd = m_LayerList.end();
+			continue;
+		}
+		++it;
 	}
 }
 
 void Scene::Update(float dt)
 {
-	for (auto it = m_LayerList.begin(); it != m_LayerList.end(); it++)
+	auto iterEnd = m_LayerList.end();
+	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{
+		if (!(*it)->GetEnable())
+		{
+			++it;
+			continue;
+		}
+
 		(*it)->Update(dt);
+
+		if (!(*it)->GetLife())
+		{
+			it->reset();
+			it = m_LayerList.erase(it);
+			iterEnd = m_LayerList.end();
+			continue;
+		}
+		++it;
 	}
 }
 
 void Scene::LateUpdate(float dt)
 {
-	for (auto it = m_LayerList.begin(); it != m_LayerList.end(); it++)
+	auto iterEnd = m_LayerList.end();
+	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{
+		if (!(*it)->GetEnable())
+		{
+			++it;
+			continue;
+		}
+
 		(*it)->LateUpdate(dt);
+
+		if (!(*it)->GetLife())
+		{
+			it->reset();
+			it = m_LayerList.erase(it);
+			iterEnd = m_LayerList.end();
+			continue;
+		}
+		++it;
 	}
 }
 
 void Scene::Collision(float dt)
 {
-	for (auto it = m_LayerList.begin(); it != m_LayerList.end(); it++)
+	auto iterEnd = m_LayerList.end();
+	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{
+		if (!(*it)->GetEnable())
+		{
+			++it;
+			continue;
+		}
+
 		(*it)->Collision(dt);
+
+		if (!(*it)->GetLife())
+		{
+			it->reset();
+			it = m_LayerList.erase(it);
+			iterEnd = m_LayerList.end();
+			continue;
+		}
+		++it;
 	}
 }
 
 void Scene::Draw(HDC hdc, float dt)
 {
-	for (auto it = m_LayerList.begin(); it != m_LayerList.end(); it++)
+	auto iterEnd = m_LayerList.end();
+	for (auto it = m_LayerList.begin(); it != iterEnd; ++it)
 	{
+		if (!(*it)->GetEnable())
+		{
+			++it;
+			continue;
+		}
+
 		(*it)->Draw(hdc, dt);
+
+		if (!(*it)->GetLife())
+		{
+			it->reset();
+			it = m_LayerList.erase(it);
+			iterEnd = m_LayerList.end();
+			continue;
+		}
+		++it;
 	}
 }

@@ -5,8 +5,8 @@ class Layer;
 
 class Scene
 {
+friend class SceneManager;
 protected:
-	friend class SceneManager;
 	Scene();
 	virtual ~Scene() = 0;
 	std::list<std::shared_ptr<Layer>> m_LayerList;
