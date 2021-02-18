@@ -30,7 +30,7 @@ void MovableObject::Collision(float dt)
 {
 }
 
-void MovableObject::Render(HDC hDC, float dt)
+void MovableObject::Draw(HDC hDC, float dt)
 {
 }
 

@@ -64,8 +64,8 @@ void Minion::Collision(float dt)
 	MovableObject::Collision(dt);
 }
 
-void Minion::Render(HDC hDC, float dt)
+void Minion::Draw(HDC hDC, float dt)
 {
-	MovableObject::Render(hDC, dt);
+	MovableObject::Draw(hDC, dt);
 	Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
 }

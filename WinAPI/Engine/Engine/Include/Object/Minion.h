@@ -15,6 +15,6 @@ public:
 	virtual int Update(float dt);
 	virtual int LateUpdate(float dt);
 	virtual void Collision(float dt);
-	virtual void Render(HDC hDC, float dt);
+	virtual void Draw(HDC hDC, float dt);
 };
 

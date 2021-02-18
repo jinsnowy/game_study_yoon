@@ -36,6 +36,6 @@ void StaticObject::Collision(float dt)
 {
 }
 
-void StaticObject::Render(HDC hDC, float dt)
+void StaticObject::Draw(HDC hDC, float dt)
 {
 }

@@ -59,8 +59,8 @@ void Player::Collision(float dt)
 	MovableObject::Collision(dt);
 }
 
-void Player::Render(HDC hDC, float dt)
+void Player::Draw(HDC hDC, float dt)
 {
-	MovableObject::Render(hDC, dt);
+	MovableObject::Draw(hDC, dt);
 	Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
 }
