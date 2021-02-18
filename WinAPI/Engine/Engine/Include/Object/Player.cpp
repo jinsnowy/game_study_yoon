@@ -64,3 +64,8 @@ void Player::Draw(HDC hDC, float dt)
 	MovableObject::Draw(hDC, dt);
 	Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
 }
+
+Player* Player::Clone()
+{
+	return new Player(*this);
+}

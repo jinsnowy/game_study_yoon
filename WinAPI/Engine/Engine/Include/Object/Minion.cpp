@@ -18,7 +18,7 @@ Minion::~Minion()
 
 bool Minion::Init()
 {
-	SetPos(800.0f, 100.0f);
+	SetPos(500.0f, 100.0f);
 	SetSize(100.0f, 100.0f);
 	SetSpeed(300.0f);
 
@@ -32,7 +32,6 @@ void Minion::Input(float dt)
 
 	MoveYFromSpeed(dt, m_Dir);
 
-	
 	if (m_Pos.y + m_Size.y >= GETRESOLUTION.y)
 	{
 		m_Pos.y = GETRESOLUTION.y - m_Size.y;
@@ -68,4 +67,9 @@ void Minion::Draw(HDC hDC, float dt)
 {
 	MovableObject::Draw(hDC, dt);
 	Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
+}
+
+Minion* Minion::Clone()
+{
+	return new Minion(*this);
 }

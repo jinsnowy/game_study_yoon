@@ -14,4 +14,5 @@ public:
 	virtual int LateUpdate(float dt);
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
+	virtual StaticObject* Clone() = 0;
 };

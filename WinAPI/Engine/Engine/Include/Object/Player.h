@@ -16,5 +16,6 @@ public:
 	virtual int LateUpdate(float fDeltaTime);
 	virtual void Collision(float fDeltaTime);
 	virtual void Draw(HDC hDC, float fDeltaTime);
+	virtual Player* Clone();
 };
 
