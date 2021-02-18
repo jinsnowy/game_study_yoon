@@ -5,6 +5,7 @@ StaticObject::StaticObject()
 }
 
 StaticObject::StaticObject(const StaticObject& obj)
+    : Object(obj)
 {
 }
 

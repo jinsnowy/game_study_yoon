@@ -14,7 +14,10 @@ private:
 
 public:
     void SetAngle(float angle) { m_Angle = angle; }
-   
+    void SetSpeed(float speed) { m_Speed = speed; }
+    float GetAngle() const { return m_Angle; }
+    float GetSpeed() const { return m_Speed; }
+
     void Move(float x, float y);
     void Move(float x, float y, float dt);
     void Move(const Pos& tMove, float dt);
