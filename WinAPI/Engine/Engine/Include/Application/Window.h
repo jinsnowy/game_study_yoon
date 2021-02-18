@@ -27,16 +27,15 @@ private:
 	RESOLUTION m_RS;
 public:
 	BOOL Init(int width, int height, const char* name);
+	HDC GetWndDC() { return m_hDC; }
 	RESOLUTION GetResolution() noexcept { return m_RS; }
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 private:
 	friend class WindowBase;
-	friend class App;
 	Window();
 	~Window();
 	void MyRegisterClass();
-	HDC GetWndDC() { return m_hDC; }
 	void SetTitle(const std::string& title);
 
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;

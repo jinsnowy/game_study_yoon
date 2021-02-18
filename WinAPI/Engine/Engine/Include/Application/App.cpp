@@ -1,10 +1,11 @@
 #include "App.h"
+#include "Window.h"
 #include "../Utilites/FrameTimer.h"
 #include "../Scene/SceneManager.h"
 
 App::App()
 {
-	if (!m_Wnd.Init(800, 600, "My First Game"))
+	if (!WINDOW.Init(800, 600, "My First Game"))
 	{
 		throw APP_EXCEPT("Window init failed.\n");
 	}

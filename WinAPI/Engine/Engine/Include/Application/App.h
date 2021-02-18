@@ -1,8 +1,6 @@
 #pragma once
 #include "../framework.h"
 #include "../Other/UserException.h"
-#include "Window.h"
-
 #define APP_EXCEPT(MSG) App::AppException(__LINE__, __FILE__, MSG);
 
 class App
@@ -29,7 +27,5 @@ private:
 	void LateUpdate(float dt);
 	void Collision(float dt);
 	void Draw(float dt);
-private:
-	Window m_Wnd;
 };
 
