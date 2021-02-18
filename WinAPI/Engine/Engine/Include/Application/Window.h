@@ -5,18 +5,17 @@
 #include "Graphics.h"
 
 // error exception helper macro
-#define WND_EXCEPT(hr) Window::Exception(__LINE__, __FILE__, hr);
-#define WND_LAST_EXCEPT() Window::Exception(__LINE__, __FILE__, GetLastError());
+#define WND_EXCEPT(hr) Window::WindowException(__LINE__, __FILE__, hr);
+#define WND_LAST_EXCEPT() Window::WindowException(__LINE__, __FILE__, GetLastError());
 
 class Window
 {
 private:
 	// Window 초기화시 발생하는 예외 처리
-	class Exception : public UserException
+	class WindowException : public UserException
 	{
 	public:
-		Exception(int codeLine, const char* fileName, HRESULT hr) noexcept;
-		virtual const char* what() const noexcept override;
+		WindowException(int codeLine, const char* fileName, HRESULT hr) noexcept;
 		virtual const char* GetType() const noexcept override;
 		virtual std::string GetErrorMessage() const noexcept override;
 	private:

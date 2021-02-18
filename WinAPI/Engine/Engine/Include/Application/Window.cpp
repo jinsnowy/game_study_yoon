@@ -244,33 +244,28 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-Window::Exception::Exception(int codeLine, const char* fileName, HRESULT hr) noexcept
+Window::WindowException::WindowException(int codeLine, const char* fileName, HRESULT hr) noexcept
 	:
 	UserException(codeLine, fileName),
 	hr(hr)
 {
 }
 
-const char* Window::Exception::what() const noexcept
+const char* Window::WindowException::GetType() const noexcept
 {
-	return Window::Exception::UserException::what();
+	return "User Window WindowException";
 }
 
-const char* Window::Exception::GetType() const noexcept
-{
-	return "User Window Exception";
-}
-
-std::string Window::Exception::GetErrorMessage() const noexcept
+std::string Window::WindowException::GetErrorMessage() const noexcept
 {
 	std::ostringstream oss;
-	oss << Window::Exception::UserException::GetErrorMessage()
+	oss << Window::WindowException::UserException::GetErrorMessage()
 		<< "[Error Code] " << hr << std::endl
 		<< "[Description] " << TranslateErrorCode(hr) << std::endl;
 	return oss.str();
 }
 
-std::string Window::Exception::TranslateErrorCode(HRESULT hr) noexcept
+std::string Window::WindowException::TranslateErrorCode(HRESULT hr) noexcept
 {
 	char* pMsgBuf = nullptr;
 	DWORD nMsgLen = FormatMessage(
