@@ -14,6 +14,7 @@
 #define KEYBOARD (Keyboard::Instance())
 #define MOUSE (Mouse::Instance())
 #define TIMER (FrameTimer::Instance())
+#define SCENE_MANAGER (SceneManager::Instance())
 
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>

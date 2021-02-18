@@ -10,7 +10,7 @@ protected:
 	friend class SceneManager;
 	Scene();
 	virtual ~Scene() = 0;
-	std::vector<std::shared_ptr<Layer*>> m_LayerList;
+	std::vector<std::shared_ptr<Layer>> m_LayerList;
 public:
 	Layer* CreateLayer(const std::string& strTag, int iZOrder = 0);
 	static bool LayerSort(const Layer* const pL1, const Layer* const pL2);

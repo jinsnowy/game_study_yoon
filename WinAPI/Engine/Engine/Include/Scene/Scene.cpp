@@ -12,19 +12,18 @@ Scene::~Scene()
 
 Layer* Scene::CreateLayer(const std::string& strTag, int iZOrder)
 {
-	Layer* pLayer = new Layer;
+	std::shared_ptr<Layer> pLayer = std::make_shared<Layer>();
 
 	pLayer->SetTag(strTag);
 	pLayer->SetZOrder(iZOrder);
 	pLayer->SetScene(this);
-
 	m_LayerList.push_back(pLayer);
 	
 	if (m_LayerList.size() >= 2)
 	{
 		std::sort(m_LayerList.begin(), m_LayerList.end(), LayerSort);
 	}
-	return pLayer;
+	return pLayer.get();
 }
 
 bool Scene::LayerSort(const Layer* const pL1, const Layer* const pL2)
