@@ -10,12 +10,22 @@ Scene::~Scene()
 	Delete_SharedPtr_VecList(m_LayerList);
 }
 
-Layer* Scene::CreateLayer(const std::string& strTag, int iZOrder)
+Layer* Scene::FindLayer(const std::string& tag)
+{
+	for (auto it = m_LayerList.begin(); it != m_LayerList.end(); it++)
+	{
+		if ((*it)->GetTag() == tag)
+			return it->get();
+	}
+	return nullptr;
+}
+
+Layer* Scene::CreateLayer(const std::string& tag, int zOrder)
 {
 	Layer* pLayer = new Layer;
 
-	pLayer->SetTag(strTag);
-	pLayer->SetZOrder(iZOrder);
+	pLayer->SetTag(tag);
+	pLayer->SetZOrder(zOrder);
 	pLayer->SetScene(this);
 
 	m_LayerList.emplace_back(pLayer);

@@ -11,7 +11,8 @@ protected:
 	virtual ~Scene() = 0;
 	std::list<std::shared_ptr<Layer>> m_LayerList;
 public:
-	Layer* CreateLayer(const std::string& strTag, int iZOrder = 0);
+	Layer* FindLayer(const std::string& tag);
+	Layer* CreateLayer(const std::string& tag, int zOrder = 0);
 	static bool LayerSort(const std::shared_ptr<Layer> pL1, const std::shared_ptr<Layer> pL2);
 
 	virtual bool Init();
