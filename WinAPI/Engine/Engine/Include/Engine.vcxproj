@@ -151,8 +151,10 @@
     <ClInclude Include="Application\Window.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Macro.h" />
+    <ClInclude Include="Object\Minion.h" />
     <ClInclude Include="Object\MovableObject.h" />
     <ClInclude Include="Object\Object.h" />
+    <ClInclude Include="Object\Player.h" />
     <ClInclude Include="Object\StaticObject.h" />
     <ClInclude Include="Other\UserException.h" />
     <ClInclude Include="Other\WindowsMessageMap.h" />
@@ -172,8 +174,10 @@
   <ItemGroup>
     <ClCompile Include="Application\App.cpp" />
     <ClCompile Include="Application\Window.cpp" />
+    <ClCompile Include="Object\Minion.cpp" />
     <ClCompile Include="Object\MovableObject.cpp" />
     <ClCompile Include="Object\Object.cpp" />
+    <ClCompile Include="Object\Player.cpp" />
     <ClCompile Include="Object\StaticObject.cpp" />
     <ClCompile Include="Other\UserException.cpp" />
     <ClCompile Include="Other\WindowsMessageMap.cpp" />

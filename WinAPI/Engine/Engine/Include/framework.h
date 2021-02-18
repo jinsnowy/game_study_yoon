@@ -12,6 +12,7 @@
 // 매크로
 #define WM_RENDER_RESET (WM_USER + 1)
 
+#define GETRESOLUTION ()
 #define KEYBOARD (Keyboard::Instance())
 #define MOUSE (Mouse::Instance())
 #define TIMER (FrameTimer::Instance())

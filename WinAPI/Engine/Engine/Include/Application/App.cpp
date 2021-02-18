@@ -34,9 +34,7 @@ int App::Go()
 		}
 		else {
 			// Game Frame goes
-
-
-
+			Process();
 			// optional to deal with some functions after frame update
 			/*
 			  msg.message = WM_RENDER_RESET;
@@ -85,7 +83,7 @@ void App::Draw(float dt)
 }
 
 // Error handling
-App::AppException::AppException(int codeLine, const char* fileName, std::string message)
+App::AppException::AppException(int codeLine, const char* fileName, const char* message)
 	: UserException(codeLine, fileName), message(message)
 {
 }

@@ -4,8 +4,7 @@ MovableObject::MovableObject()
 {
 }
 
-MovableObject::MovableObject(const MovableObject& obj)
-	: Object(obj)
+MovableObject::MovableObject(const MovableObject& obj) : Object(obj)
 {
 }
 

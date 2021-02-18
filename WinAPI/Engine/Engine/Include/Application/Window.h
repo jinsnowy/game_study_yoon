@@ -20,7 +20,6 @@ private:
 		HRESULT hr;
 		static std::string TranslateErrorCode(HRESULT hr) noexcept;
 	};
-
 private:
 	class WindowClass {
 	private:
@@ -37,18 +36,21 @@ private:
 		WindowClass& operator=(const WindowClass&) = delete;
 	};
 private:
-	RESOLUTION m_RS = { 600, 800 };
 	HWND m_hWnd;
 	HDC m_hDC;
+	static RESOLUTION m_RS;
 public:
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 private:
 	friend class App;
+	Window(int width, int height, const char* name);
 	~Window();
 	HDC GetWndDC() { return m_hDC; }
+	static void SetResolution(int width, int height) noexcept { m_RS = { width, height }; }
+	static RESOLUTION GetResolution() noexcept { return m_RS; }
 	void SetTitle(const std::string& title);
-	Window(int width, int height, const char* name);
+
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;

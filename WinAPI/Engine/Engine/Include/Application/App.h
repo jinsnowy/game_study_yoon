@@ -13,7 +13,7 @@ public:
 	private:
 		std::string message;
 	public:
-		AppException(int codeLine, const char* fileName, std::string message);
+		AppException(int codeLine, const char* fileName, const char* message);
 		virtual const char* GetType() const noexcept;
 		virtual std::string GetErrorMessage() const noexcept;
 	};

@@ -61,8 +61,6 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 }
 
 Window::Window(int width, int height, const char* name)
-	: 
-	m_RS(width, height)
 {
 	// 커스텀 윈 API 메세지
 	if (RegisterWindowMessage("WM_RENDER_RESET") == 0)
@@ -88,6 +86,7 @@ Window::Window(int width, int height, const char* name)
 	RECT wr = {0,0,width, height };
 	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 	SetWindowPos(m_hWnd, HWND_TOPMOST, 100, 100, wr.right - wr.left, wr.bottom - wr.top, SWP_NOZORDER);
+	SetResolution(width, height);
 
 	ShowWindow(m_hWnd, SW_SHOWDEFAULT);
 	UpdateWindow(m_hWnd);

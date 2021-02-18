@@ -31,10 +31,11 @@ void Minion::Input(float dt)
 
 	MoveYFromSpeed(dt, m_Dir);
 
+	
 	if (m_Pos.y + m_Size.y >= GETRESOLUTION.iH)
 	{
 		m_Pos.y = GETRESOLUTION.iH - m_Size.y;
-		m_eDir = MD_BACK;
+		m_Dir = MD_BACK;
 	}
 
 	else if (m_Pos.y <= 0.f)
@@ -65,5 +66,5 @@ void Minion::Collision(float dt)
 void Minion::Render(HDC hDC, float dt)
 {
 	MovableObject::Render(hDC, dt);
-	Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, (int)m_Pos.x + m_Size.x, (int)m_Pos.y + m_Size.y);
+	Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
 }
