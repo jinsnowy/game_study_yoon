@@ -4,7 +4,7 @@
 
 class Player : public MovableObject
 {
-	friend class CObject;
+	friend class Object;
 private:
 	Player();
 	Player(const Player& obj);

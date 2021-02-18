@@ -3,6 +3,8 @@
 
 Scene::Scene()
 {
+	Layer* pLayer = CreateLayer("Default");
+	pLayer = CreateLayer("UI", INT_MAX);
 }
 
 Scene::~Scene()

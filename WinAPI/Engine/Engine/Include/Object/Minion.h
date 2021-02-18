@@ -2,7 +2,7 @@
 #include "MovableObject.h"
 class Minion : public MovableObject
 {
-	friend class CObject;
+	friend class Object;
 private:
 	MOVE_DIR m_Dir;
 private:
