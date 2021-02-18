@@ -1,7 +1,82 @@
 #include "Object.h"
+#include "../Scene/Layer.h"
+
+std::list<std::shared_ptr<Object>> Object::m_ObjList;
+std::unordered_map<std::string, Object*> Object::m_mapProtoType;
+
+void Object::AddObject(Object* pObj)
+{
+    m_ObjList.emplace_back(pObj);
+}
+
+Object* Object::FindObject(const std::string& tag)
+{
+    auto iterEnd = m_ObjList.end();
+    for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
+    {
+        if ((*it)->GetTag() == tag)
+        {
+            return it->get();
+        }
+    }
+    return nullptr;
+}
+
+void Object::EraseObject(Object* pObj)
+{
+    auto iterEnd = m_ObjList.end();
+    for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
+    {
+        if (it->get() == pObj)
+        {
+            it->reset();
+            it = m_ObjList.erase(it);
+            return;
+        }
+    }
+}
+
+void Object::EraseObject(const std::string& tag)
+{
+    auto iterEnd = m_ObjList.end();
+    for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
+    {
+        if ((*it)->GetTag() == tag)
+        {
+            it->reset();
+            it = m_ObjList.erase(it);
+            return;
+        }
+    }
+}
+
+void Object::ErasePrototype(const std::string& strPrototypeKey)
+{
+    auto it = m_mapProtoType.find(strPrototypeKey);
+    if (!it->second)
+        return;
+
+    SAFE_DELETE(it->second);
+    m_mapProtoType.erase(it);
+}
+
+void Object::EraseAllObjects()
+{
+    Delete_SharedPtr_VecList(m_ObjList);
+}
+
+void Object::EraseAllPrototypes()
+{
+    Safe_Delete_Map(m_mapProtoType);
+}
 
 Object::Object():
+    m_bEnable(true),
+    m_bLife(true),
+    m_pScene(nullptr),
+    m_pLayer(nullptr),
     m_Pos(0,0),
+    m_Pivot(0,0),
     m_Size(0,0)
 {
 }
@@ -35,4 +110,31 @@ void Object::Collision(float dt)
 
 void Object::Draw(HDC hdc, float dt)
 {
+}
+
+Object* Object::CreateCloneObject(const std::string& strPrototypeKey, const std::string& strTag, class Layer* pLayer)
+{
+    Object* pProto = FindPrototype(strPrototypeKey);
+    if (!pProto)
+        return nullptr;
+
+     Object* pObj = pProto->Clone();
+     pObj->SetTag(strTag);
+
+     if (pLayer)
+     {
+         pLayer->AddObject(pObj);
+     }
+
+     AddObject(pObj);
+
+     return pObj;
+}
+
+Object* Object::FindPrototype(const std::string& strkey)
+{
+    auto it = m_mapProtoType.find(strkey);
+    if (it == m_mapProtoType.end())
+        return nullptr;
+    return it->second;
 }
