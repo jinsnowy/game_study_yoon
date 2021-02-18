@@ -27,6 +27,9 @@ public:
 	Pos GetPos() const { return m_Pos; }
 	Size GetSize() const { return m_Size; }
 	std::string GetTag() const { return m_Tag; }
+
+	void SetPos(float x, float y) { m_Pos.x = x; m_Pos.y = y; }
+	void SetSize(float x, float y) { m_Size.x = x; m_Size.y = y; }
 	void SetPos(const Pos& pos) { m_Pos = pos; }
 	void SetSize(const Size& size) { m_Size = size; }
 	void SetTag(const std::string& tag) { m_Tag = tag; }
