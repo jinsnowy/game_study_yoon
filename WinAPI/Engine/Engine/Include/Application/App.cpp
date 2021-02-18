@@ -1,7 +1,17 @@
 #include "App.h"
+#include "../Utilites/FrameTimer.h"
+#include "../Scene/SceneManager.h"
 
 App::App()
     : wnd(800, 600, "My First Game")
+{
+	// TODO: handling init error
+	TIMER.Init();
+	SCENE_MANAGER.Init();
+
+}
+
+App::~App()
 {
 }
 
@@ -22,7 +32,9 @@ int App::Go()
 		}
 		else {
 			// Game Frame goes
-			DoFrame();
+
+
+
 			// optional to deal with some functions after frame update
 			/*
 			  msg.message = WM_RENDER_RESET;
@@ -34,9 +46,51 @@ int App::Go()
 	return (int)msg.wParam;
 }
 
-void App::DoFrame()
+void App::Process()
 {
-	const float c = sin(TIMER.Peek()) / 2.0f + 0.5f;
-	wnd.Gfx().ClearBuffer(c, c, 1.0f);
- 	wnd.Gfx().EndFrame();
+	const float dt = TIMER.Tick();
+
+	Input(dt);
+	Update(dt);
+	LateUpdate(dt);
+	Collision(dt);
+	Draw(dt);
+	Present();
 }
+
+void App::Input(float dt)
+{
+	SCENE_MANAGER.Input(dt);
+}
+
+void App::Update(float dt)
+{
+	SCENE_MANAGER.Update(dt);
+}
+
+void App::LateUpdate(float dt)
+{
+	SCENE_MANAGER.LateUpdate(dt);
+}
+
+void App::Collision(float dt)
+{
+	SCENE_MANAGER.Collision(dt);
+}
+
+void App::Draw(float dt)
+{
+	SCENE_MANAGER.Draw(wnd.Gfx(), dt);
+}
+
+void App::Present()
+{
+	wnd.Gfx().EndFrame();
+}
+
+//void App::DoFrame()
+//{
+//	const float c = sin(TIMER.Peek()) / 2.0f + 0.5f;
+//	wnd.Gfx().ClearBuffer(c, c, 1.0f);
+// 	wnd.Gfx().EndFrame();
+//}
