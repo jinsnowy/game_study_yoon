@@ -12,6 +12,7 @@
 // 매크로
 #define WM_RENDER_RESET (WM_USER + 1)
 
+#define WINDOW (Window::Instance())
 #define GETRESOLUTION (Window::Instance().GetResolution())
 #define GETDC (Window::Instance().GetWndDC())
 #define KEYBOARD (Keyboard::Instance())
@@ -36,6 +37,7 @@
 #include <vector>
 #include <queue>
 #include <list>
+#include <unordered_map>
 
 // 알고리즘
 #include <algorithm>
@@ -87,6 +89,20 @@ void Delete_SharedPtr_VecList(T& p)
 	for (iter = p.begin(); iter != iterEnd; ++iter)
 	{
 		iter->reset();
+	}
+
+	p.clear();
+}
+
+template <typename T>
+void Safe_Delete_Map(T& p)
+{
+	typename T::iterator iter;
+	typename T::iterator iterEnd = p.end();
+
+	for (iter = p.begin(); iter != iterEnd; ++iter)
+	{
+		SAFE_DELETE(iter->second)
 	}
 
 	p.clear();

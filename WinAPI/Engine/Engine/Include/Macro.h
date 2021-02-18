@@ -6,14 +6,15 @@
 #define SAFE_DELETE_ARRAY(p)	if(p)	{delete[] p; p = nullptr;}
 #define SAFE_RELEASE(p)			if(p)	{p->Release(); p = nullptr;}
 
+#define DEFINITION_SINGLE(Type) Type Type::INSTANCE;
 #define DECLARE_SINGLE(Type)	\
 		private:\
+			static Type INSTANCE;\
 			Type();\
 			~Type();\
 		public:\
 			static Type& Instance()\
 			{\
-				static Type INSTANCE;\
 				return INSTANCE;\
 			}\
 			Type(const Type&) = delete;\
