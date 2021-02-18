@@ -151,7 +151,9 @@
     <ClInclude Include="Application\Window.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Macro.h" />
+    <ClInclude Include="Object\MovableObject.h" />
     <ClInclude Include="Object\Object.h" />
+    <ClInclude Include="Object\StaticObject.h" />
     <ClInclude Include="Other\UserException.h" />
     <ClInclude Include="Other\WindowsMessageMap.h" />
     <ClInclude Include="Resource.h" />
@@ -161,6 +163,7 @@
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Types\Rect.h" />
+    <ClInclude Include="Types\Types.h" />
     <ClInclude Include="Types\Vec2.h" />
     <ClInclude Include="Utilites\FrameTimer.h" />
     <ClInclude Include="Utilites\Keyboard.h" />
@@ -169,7 +172,9 @@
   <ItemGroup>
     <ClCompile Include="Application\App.cpp" />
     <ClCompile Include="Application\Window.cpp" />
+    <ClCompile Include="Object\MovableObject.cpp" />
     <ClCompile Include="Object\Object.cpp" />
+    <ClCompile Include="Object\StaticObject.cpp" />
     <ClCompile Include="Other\UserException.cpp" />
     <ClCompile Include="Other\WindowsMessageMap.cpp" />
     <ClCompile Include="Scene\InGameScene.cpp" />

@@ -19,12 +19,14 @@ void Object::Input(float dt)
 {
 }
 
-void Object::Update(float dt)
+int Object::Update(float dt)
 {
+    return 0;
 }
 
-void Object::LateUpdate(float dt)
+int Object::LateUpdate(float dt)
 {
+    return 0;
 }
 
 void Object::Collision(float dt)

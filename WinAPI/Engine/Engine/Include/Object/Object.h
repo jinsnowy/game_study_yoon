@@ -1,5 +1,6 @@
 #pragma once
 #include "../framework.h"
+#include "../Scene/Layer.h"
 
 class Object
 {
@@ -32,8 +33,8 @@ public:
 public:
 	virtual bool Init();
 	virtual void Input(float dt);
-	virtual void Update(float dt);
-	virtual void LateUpdate(float dt);
+	virtual int Update(float dt);
+	virtual int LateUpdate(float dt);
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hdc, float dt);
 public:

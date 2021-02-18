@@ -40,6 +40,7 @@
 
 #include "Types/Vec2.h"
 #include "Types/Rect.h"
+#include "Types/Types.h"
 #include "Resource.h"
 #include "Macro.h"
 
