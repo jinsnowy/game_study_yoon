@@ -39,7 +39,7 @@ void SceneManager::Collision(float dt)
 	m_pScene->Collision(dt);
 }
 
-void SceneManager::Draw(Graphics& gfx, float dt)
+void SceneManager::Draw(HDC hdc, float dt)
 {
-	m_pScene->Draw(gfx, dt);
+	m_pScene->Draw(hdc, dt);
 }

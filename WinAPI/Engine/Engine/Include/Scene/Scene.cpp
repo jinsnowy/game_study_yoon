@@ -7,26 +7,27 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	Safe_Delete_VecList(m_LayerList);
+	Delete_SharedPtr_VecList(m_LayerList);
 }
 
 Layer* Scene::CreateLayer(const std::string& strTag, int iZOrder)
 {
-	std::shared_ptr<Layer> pLayer = std::make_shared<Layer>();
+	Layer* pLayer = new Layer;
 
 	pLayer->SetTag(strTag);
 	pLayer->SetZOrder(iZOrder);
 	pLayer->SetScene(this);
-	m_LayerList.push_back(pLayer);
+
+	m_LayerList.emplace_back(pLayer);
 	
 	if (m_LayerList.size() >= 2)
 	{
-		std::sort(m_LayerList.begin(), m_LayerList.end(), LayerSort);
+		m_LayerList.sort(LayerSort);
 	}
-	return pLayer.get();
+	return pLayer;
 }
 
-bool Scene::LayerSort(const Layer* const pL1, const Layer* const pL2)
+bool Scene::LayerSort(const std::shared_ptr<Layer> pL1, const std::shared_ptr<Layer> pL2)
 {
 	return pL1->GetZOrder() < pL2->GetZOrder();
 }
@@ -68,10 +69,10 @@ void Scene::Collision(float dt)
 	}
 }
 
-void Scene::Draw(Graphics& gfx, float dt)
+void Scene::Draw(HDC hdc, float dt)
 {
 	for (auto it = m_LayerList.begin(); it != m_LayerList.end(); it++)
 	{
-		(*it)->Draw(gfx, dt);
+		(*it)->Draw(hdc, dt);
 	}
 }

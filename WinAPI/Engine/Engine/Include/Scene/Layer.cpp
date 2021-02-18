@@ -7,12 +7,12 @@ Layer::Layer()
     m_tag(""),
     m_pScene(nullptr)
 {
+
 }
 Layer::~Layer()
 {
-    Safe_Release_VecList(m_ObjList);
+    Delete_SharedPtr_VecList(m_ObjList);
 }
-
 
 void Layer::Input(float dt)
 {
@@ -46,10 +46,10 @@ void Layer::Collision(float dt)
     }
 }
 
-void Layer::Draw(Graphics& gfx, float dt)
+void Layer::Draw(HDC hdc, float dt)
 {
     for (auto it = m_ObjList.begin(); it != m_ObjList.end(); it++)
     {
-        (*it)->Draw(gfx, dt);
+        (*it)->Draw(hdc, dt);
     }
 }
