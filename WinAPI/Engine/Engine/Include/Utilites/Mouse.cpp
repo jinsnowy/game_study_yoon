@@ -21,7 +21,10 @@
 #include "Mouse.h"
 #include <Windows.h>
 
+DEFINITION_SINGLE(Mouse)
+
 Mouse::Mouse()
+	: mPosX(0), mPosY(0)
 {
 
 }

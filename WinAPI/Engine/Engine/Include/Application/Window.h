@@ -1,14 +1,14 @@
 #pragma once
 #include "../framework.h"
 #include "../Other/UserException.h"
-#include "WindowBase.h"
 
 // error exception helper macro
 #define WND_EXCEPT(hr) Window::WindowException(__LINE__, __FILE__, hr);
 #define WND_LAST_EXCEPT() Window::WindowException(__LINE__, __FILE__, GetLastError());
 
-class Window : public WindowBase<Window>
+class Window
 {
+	DECLARE_SINGLE(Window)
 private:
 	class WindowException : public UserException
 	{
@@ -21,20 +21,19 @@ private:
 		static std::string TranslateErrorCode(HRESULT hr) noexcept;
 	};
 private:
+	static constexpr const char* wndClassName = "myEngine";
+private:
 	HINSTANCE m_hInst;
 	HWND m_hWnd;
 	HDC m_hDC;
 	RESOLUTION m_RS;
 public:
 	BOOL Init(int width, int height, const char* name);
-	HDC GetWndDC() { return m_hDC; }
+	HDC GetWndDC() noexcept	{ return m_hDC; }
 	RESOLUTION GetResolution() noexcept { return m_RS; }
-	Window(const Window&) = delete;
-	Window& operator=(const Window&) = delete;
+	static const char* GetName() { return wndClassName; }
 private:
 	friend class WindowBase;
-	Window();
-	~Window();
 	void MyRegisterClass();
 	void SetTitle(const std::string& title);
 

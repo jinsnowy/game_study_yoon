@@ -2,6 +2,8 @@
 
 using namespace std::chrono;
 
+DEFINITION_SINGLE(FrameTimer)
+
 FrameTimer::FrameTimer()
     :m_Tic(steady_clock::now()),
      m_TimeScale(1.f)

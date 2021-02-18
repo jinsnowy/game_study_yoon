@@ -1,6 +1,8 @@
 #include "Keyboard.h"
 #include <Windows.h>
 
+DEFINITION_SINGLE(Keyboard)
+
 Keyboard::Keyboard()
 {
 

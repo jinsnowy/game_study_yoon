@@ -23,19 +23,22 @@
 #include "../Utilites/Mouse.h"
 #include "../Utilites/Keyboard.h"
 
+DEFINITION_SINGLE(Window)
+
 Window::~Window()
 {
-	UnregisterClass(Window::WindowBase::GetName(), m_hInst);
+	UnregisterClass(GetName(), m_hInst);
 	DestroyWindow(m_hWnd);
 }
+
 Window::Window() 
 	: m_hInst(GetModuleHandle(nullptr)),
 	  m_hWnd(nullptr),
 	  m_hDC(nullptr),
 	  m_RS(800, 600)
 {
-
 }
+
 BOOL Window::Init(int width, int height, const char* name)
 {
 	BOOL init = TRUE;
@@ -43,7 +46,7 @@ BOOL Window::Init(int width, int height, const char* name)
 
 	MyRegisterClass();
 
-	m_hWnd = CreateWindow(Window::WindowBase::GetName(), name, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+	m_hWnd = CreateWindow(GetName(), name, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
 		0, 0, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, m_hInst, this);
 
 	if (m_hWnd == nullptr)
