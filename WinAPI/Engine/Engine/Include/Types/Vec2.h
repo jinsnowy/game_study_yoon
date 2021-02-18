@@ -67,5 +67,5 @@ public:
 	T y;
 };
 
-typedef Vec2_<float> Vec2I;
-typedef Vec2_<int> Vec2F;
+typedef Vec2_<float> Vec2F;
+typedef Vec2_<int> Vec2I;

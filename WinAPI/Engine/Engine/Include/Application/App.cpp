@@ -5,9 +5,11 @@
 App::App()
     : wnd(800, 600, "My First Game")
 {
-	// TODO: handling init error
-	TIMER.Init();
-	SCENE_MANAGER.Init();
+	if (!TIMER.Init())
+		APP_EXCEPT("Timer init failed.\n");
+
+	if (!SCENE_MANAGER.Init())
+		APP_EXCEPT("SceneManager init failed.\n");
 
 }
 
@@ -55,7 +57,6 @@ void App::Process()
 	LateUpdate(dt);
 	Collision(dt);
 	Draw(dt);
-	Present();
 }
 
 void App::Input(float dt)
@@ -80,17 +81,21 @@ void App::Collision(float dt)
 
 void App::Draw(float dt)
 {
-	SCENE_MANAGER.Draw(wnd.Gfx(), dt);
+	SCENE_MANAGER.Draw(wnd.GetWndDC(), dt);
 }
 
-void App::Present()
+// Error handling
+App::AppException::AppException(int codeLine, const char* fileName, std::string message)
+	: UserException(codeLine, fileName), message(message)
 {
-	wnd.Gfx().EndFrame();
 }
 
-//void App::DoFrame()
-//{
-//	const float c = sin(TIMER.Peek()) / 2.0f + 0.5f;
-//	wnd.Gfx().ClearBuffer(c, c, 1.0f);
-// 	wnd.Gfx().EndFrame();
-//}
+const char* App::AppException::GetType() const noexcept
+{
+	return "App Exception";
+}
+
+std::string  App::AppException::GetErrorMessage() const noexcept
+{
+	return App::AppException::UserException::GetErrorMessage() + message;
+}

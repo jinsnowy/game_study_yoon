@@ -1,6 +1,8 @@
 #include "Object.h"
 
-Object::Object()
+Object::Object():
+    m_Pos(0,0),
+    m_Size(0,0)
 {
 }
 
@@ -29,6 +31,6 @@ void Object::Collision(float dt)
 {
 }
 
-void Object::Draw(Graphics& gfx, float dt)
+void Object::Draw(HDC hdc, float dt)
 {
 }

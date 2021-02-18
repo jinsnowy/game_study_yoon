@@ -1,6 +1,5 @@
 #pragma once
 #include "../framework.h"
-#include "../Application/Graphics.h"
 
 class Object
 {
@@ -23,6 +22,6 @@ public:
 	virtual void Update(float dt);
 	virtual void LateUpdate(float dt);
 	virtual void Collision(float dt);
-	virtual void Draw(Graphics& gfx, float dt);
+	virtual void Draw(HDC hdc, float dt);
 };
 

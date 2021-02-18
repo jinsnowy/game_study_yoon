@@ -62,8 +62,7 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 
 Window::Window(int width, int height, const char* name)
 	: 
-	mWidth(width),
-	mHeight(height)
+	m_RS(width, height)
 {
 	// 커스텀 윈 API 메세지
 	if (RegisterWindowMessage("WM_RENDER_RESET") == 0)
@@ -71,44 +70,44 @@ Window::Window(int width, int height, const char* name)
 		throw WND_LAST_EXCEPT();
 	}
 
-	hWnd = CreateWindow(WindowClass::GetName(), name, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+	m_hWnd = CreateWindow(WindowClass::GetName(), name, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
 		 0, 0,CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, WindowClass::GetInstance(), this);
 
-	if (hWnd == nullptr)
+	if (m_hWnd == nullptr)
+	{
+		throw WND_LAST_EXCEPT();
+	}
+
+	m_hDC = GetDC(m_hWnd);
+
+	if (m_hDC == nullptr)
 	{
 		throw WND_LAST_EXCEPT();
 	}
 
 	RECT wr = {0,0,width, height };
 	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
-	SetWindowPos(hWnd, HWND_TOPMOST, 100, 100, wr.right - wr.left, wr.bottom - wr.top, SWP_NOZORDER);
+	SetWindowPos(m_hWnd, HWND_TOPMOST, 100, 100, wr.right - wr.left, wr.bottom - wr.top, SWP_NOZORDER);
 
-	ShowWindow(hWnd, SW_SHOWDEFAULT);
-	UpdateWindow(hWnd);
-	// create graphics object
-	pGfx = std::make_unique<Graphics>(hWnd);
+	ShowWindow(m_hWnd, SW_SHOWDEFAULT);
+	UpdateWindow(m_hWnd);
 }
 
 
 Window::~Window()
 {
-	DestroyWindow(hWnd);
+	DestroyWindow(m_hWnd);
 }
 
 void Window::SetTitle(const std::string& title)
 {
-	if (SetWindowText(hWnd, title.c_str()) == 0)
+	if (SetWindowText(m_hWnd, title.c_str()) == 0)
 	{
 		throw WND_LAST_EXCEPT();
 	}
 }
 
-Graphics& Window::Gfx()
-{
-	return *pGfx;
-}
-
-LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT CALLBACK Window::HandleMsgSetup(HWND m_hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	// use create parameter passed in from CreateWindow() to store window class pointer at WinAPI side
 	if (msg == WM_NCCREATE)
@@ -117,25 +116,25 @@ LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPAR
 		const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
 		Window* const pWnd = static_cast<Window*>(pCreate->lpCreateParams);
 		// set WinAPI-managed user data to store ptr to window instance
-		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
+		SetWindowLongPtr(m_hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
 		// set message proc to normal (non-setup) handler now that setup is finished
-		SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
+		SetWindowLongPtr(m_hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::HandleMsgThunk));
 		// forward message to window instance handler
-		return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
+		return pWnd->HandleMsg(m_hWnd, msg, wParam, lParam);
 	}
 	// if we get a message before the WM_NCCREATE message, handle with default handler
-	return DefWindowProc(hWnd, msg, wParam, lParam);
+	return DefWindowProc(m_hWnd, msg, wParam, lParam);
 }
 
-LRESULT CALLBACK Window::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT CALLBACK Window::HandleMsgThunk(HWND m_hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	// retrieve ptr to window instance
-	Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+	Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(m_hWnd, GWLP_USERDATA));
 	// forward message to window instance handler
-	return pWnd->HandleMsg(hWnd, msg, wParam, lParam);
+	return pWnd->HandleMsg(m_hWnd, msg, wParam, lParam);
 }
 
-LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT Window::HandleMsg(HWND m_hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	/*
 		static WindowsMessageMap mm;
@@ -180,13 +179,13 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	case WM_MOUSEMOVE:
 	{
 		// in client region -> log move, and log enter + capture MOUSE (if not previously in window)
-		if (pt.x >= 0 && pt.x < mWidth && pt.y >= 0 && pt.y < mHeight)
+		if (pt.x >= 0 && pt.x < m_RS.x && pt.y >= 0 && pt.y < m_RS.y)
 		{
 			MOUSE.OnMouseMove(pt.x, pt.y);
 			if (!MOUSE.IsInWindow())
 			{
 				// to capture mousemove 
-				SetCapture(hWnd);
+				SetCapture(m_hWnd);
 				MOUSE.OnMouseEnter();
 			}
 		}
@@ -241,7 +240,7 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	/************** END MOUSE MESSAGES **************/
 	}
 
-	return DefWindowProc(hWnd, msg, wParam, lParam);
+	return DefWindowProc(m_hWnd, msg, wParam, lParam);
 }
 
 Window::WindowException::WindowException(int codeLine, const char* fileName, HRESULT hr) noexcept

@@ -3,7 +3,7 @@
 class InGameScene : public Scene
 {
 private:
-	friend class CSceneManager;
+	friend class SceneManager;
 
 private:
 	InGameScene();

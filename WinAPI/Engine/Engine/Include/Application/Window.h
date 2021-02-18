@@ -2,7 +2,6 @@
 
 #include "../framework.h"
 #include "../Other/UserException.h"
-#include "Graphics.h"
 
 // error exception helper macro
 #define WND_EXCEPT(hr) Window::WindowException(__LINE__, __FILE__, hr);
@@ -11,7 +10,6 @@
 class Window
 {
 private:
-	// Window 초기화시 발생하는 예외 처리
 	class WindowException : public UserException
 	{
 	public:
@@ -24,7 +22,6 @@ private:
 	};
 
 private:
-	// 초기화에 필요한 정보(mWndClassName)과 HINSTANCE를 숨긴다.
 	class WindowClass {
 	private:
 		static WindowClass wndClass;
@@ -40,18 +37,18 @@ private:
 		WindowClass& operator=(const WindowClass&) = delete;
 	};
 private:
-	int mWidth = 600;
-	int mHeight = 800;
-	HWND hWnd;
-	std::unique_ptr<Graphics> pGfx;
+	RESOLUTION m_RS = { 600, 800 };
+	HWND m_hWnd;
+	HDC m_hDC;
 public:
-	~Window();
-	Window(int width, int height, const char* name);
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
-	void SetTitle(const std::string& title);
-	Graphics& Gfx();
 private:
+	friend class App;
+	~Window();
+	HDC GetWndDC() { return m_hDC; }
+	void SetTitle(const std::string& title);
+	Window(int width, int height, const char* name);
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;

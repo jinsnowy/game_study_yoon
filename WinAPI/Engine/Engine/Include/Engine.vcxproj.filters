@@ -37,6 +37,12 @@
     <Filter Include="Object">
       <UniqueIdentifier>{5cacff0f-1ca1-4a67-94eb-a05e2ceb3f49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\01. MoveObj">
+      <UniqueIdentifier>{013026b5-8b56-4631-88a4-2f794bb4e1ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\02. StaticObj">
+      <UniqueIdentifier>{1e4bdc5a-a931-478e-aaf6-a41498e42789}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -49,9 +55,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Application\Window.h">
-      <Filter>Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Graphics.h">
       <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="Application\App.h">
@@ -102,9 +105,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Application\Window.cpp">
-      <Filter>Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Graphics.cpp">
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="Application\App.cpp">
