@@ -34,6 +34,9 @@
 #include "Resource.h"
 #include "Macro.h"
 
+typedef Vec2F Size;
+typedef Vec2F Pos;
+
 template <typename T>
 void Safe_Delete_VecList(T& p)
 {
