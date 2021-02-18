@@ -30,6 +30,6 @@ private:
 	void Collision(float dt);
 	void Draw(float dt);
 private:
-	Window wnd;
+	Window m_Wnd;
 };
 

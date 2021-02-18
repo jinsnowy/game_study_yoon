@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="Application\App.h" />
     <ClInclude Include="Application\Window.h" />
+    <ClInclude Include="Application\WindowBase.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="Object\Minion.h" />
@@ -174,6 +175,7 @@
   <ItemGroup>
     <ClCompile Include="Application\App.cpp" />
     <ClCompile Include="Application\Window.cpp" />
+    <ClCompile Include="Application\WindowBase.cpp" />
     <ClCompile Include="Object\Minion.cpp" />
     <ClCompile Include="Object\MovableObject.cpp" />
     <ClCompile Include="Object\Object.cpp" />

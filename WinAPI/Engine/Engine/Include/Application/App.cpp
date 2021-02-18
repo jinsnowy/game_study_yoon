@@ -3,14 +3,21 @@
 #include "../Scene/SceneManager.h"
 
 App::App()
-    : wnd(800, 600, "My First Game")
 {
+	if (!m_Wnd.Init(800, 600, "My First Game"))
+	{
+		throw APP_EXCEPT("Window init failed.\n");
+	}
 	if (!TIMER.Init())
-		APP_EXCEPT("Timer init failed.\n");
-
+	{
+		throw APP_EXCEPT("Timer init failed.\n");
+	}
 	if (!SCENE_MANAGER.Init())
-		APP_EXCEPT("SceneManager init failed.\n");
-
+	{
+		throw APP_EXCEPT("SceneManager init failed.\n");
+	}
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	// _CrtSetBreakAlloc(239);
 }
 
 App::~App()
@@ -79,7 +86,7 @@ void App::Collision(float dt)
 
 void App::Draw(float dt)
 {
-	SCENE_MANAGER.Draw(wnd.GetWndDC(), dt);
+	SCENE_MANAGER.Draw(GETDC, dt);
 }
 
 // Error handling
@@ -95,5 +102,5 @@ const char* App::AppException::GetType() const noexcept
 
 std::string  App::AppException::GetErrorMessage() const noexcept
 {
-	return App::AppException::UserException::GetErrorMessage() + message;
+	return App::AppException::UserException::GetErrorMessage() + "\n" + message;
 }

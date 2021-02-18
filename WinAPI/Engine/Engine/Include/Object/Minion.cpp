@@ -1,5 +1,6 @@
 #include "Minion.h"
 #include "../framework.h"
+#include "../Application/Window.h"
 
 Minion::Minion()
 {
@@ -32,9 +33,9 @@ void Minion::Input(float dt)
 	MoveYFromSpeed(dt, m_Dir);
 
 	
-	if (m_Pos.y + m_Size.y >= GETRESOLUTION.iH)
+	if (m_Pos.y + m_Size.y >= GETRESOLUTION.y)
 	{
-		m_Pos.y = GETRESOLUTION.iH - m_Size.y;
+		m_Pos.y = GETRESOLUTION.y - m_Size.y;
 		m_Dir = MD_BACK;
 	}
 

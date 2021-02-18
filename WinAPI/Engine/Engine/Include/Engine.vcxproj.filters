@@ -114,6 +114,9 @@
     <ClInclude Include="Object\Player.h">
       <Filter>Object\01. MoveObj</Filter>
     </ClInclude>
+    <ClInclude Include="Application\WindowBase.h">
+      <Filter>Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -166,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="Object\Minion.cpp">
       <Filter>Object\01. MoveObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\WindowBase.cpp">
+      <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

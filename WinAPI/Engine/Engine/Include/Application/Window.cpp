@@ -23,53 +23,28 @@
 #include "../Utilites/Mouse.h"
 #include "../Utilites/Keyboard.h"
 
-Window::WindowClass Window::WindowClass::wndClass;
-
-Window::WindowClass::WindowClass() noexcept
-	:
-	hInst(GetModuleHandle(nullptr))
+Window::~Window()
 {
-	WNDCLASSEX wc = { 0 };
-	wc.cbSize = sizeof(wc);
-	wc.style = CS_OWNDC;
-	wc.lpfnWndProc = HandleMsgSetup;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = GetInstance();
-	wc.hIcon = static_cast<HICON>(LoadImage(GetInstance(), MAKEINTRESOURCE(IDI_ENGINE), IMAGE_ICON, 32, 32, 0));
-	wc.hCursor = nullptr;
-	wc.hbrBackground = nullptr;
-	wc.lpszMenuName = nullptr;
-	wc.lpszClassName = GetName();
-	wc.hIconSm = static_cast<HICON>(LoadImage(GetInstance(), MAKEINTRESOURCE(IDI_SMALL), IMAGE_ICON, 16, 16, 0));
-	RegisterClassEx(&wc);
+	UnregisterClass(Window::WindowBase::GetName(), m_hInst);
+	DestroyWindow(m_hWnd);
 }
-
-Window::WindowClass::~WindowClass()
+Window::Window() 
+	: m_hInst(GetModuleHandle(nullptr)),
+	  m_hWnd(nullptr),
+	  m_hDC(nullptr),
+	  m_RS(800, 600)
 {
-	UnregisterClass(wndClassName, GetInstance());
+
 }
-
-const char* Window::WindowClass::GetName() noexcept
+BOOL Window::Init(int width, int height, const char* name)
 {
-	return wndClassName;
-}
+	BOOL init = TRUE;
+	m_RS = { width, height };
 
-HINSTANCE Window::WindowClass::GetInstance() noexcept
-{
-	return wndClass.hInst;
-}
+	MyRegisterClass();
 
-Window::Window(int width, int height, const char* name)
-{
-	// 커스텀 윈 API 메세지
-	if (RegisterWindowMessage("WM_RENDER_RESET") == 0)
-	{
-		throw WND_LAST_EXCEPT();
-	}
-
-	m_hWnd = CreateWindow(WindowClass::GetName(), name, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
-		 0, 0,CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, WindowClass::GetInstance(), this);
+	m_hWnd = CreateWindow(Window::WindowBase::GetName(), name, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
+		0, 0, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, m_hInst, this);
 
 	if (m_hWnd == nullptr)
 	{
@@ -83,19 +58,36 @@ Window::Window(int width, int height, const char* name)
 		throw WND_LAST_EXCEPT();
 	}
 
-	RECT wr = {0,0,width, height };
-	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
-	SetWindowPos(m_hWnd, HWND_TOPMOST, 100, 100, wr.right - wr.left, wr.bottom - wr.top, SWP_NOZORDER);
-	SetResolution(width, height);
+	RECT wr = { 0,0,width, height };
+	init &= AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+	init &= SetWindowPos(m_hWnd, HWND_TOPMOST, 100, 100, wr.right - wr.left, wr.bottom - wr.top, SWP_NOZORDER);
 
-	ShowWindow(m_hWnd, SW_SHOWDEFAULT);
+	ShowWindow(m_hWnd, SW_SHOW);
 	UpdateWindow(m_hWnd);
+	return init;
 }
 
-
-Window::~Window()
+void Window::MyRegisterClass()
 {
-	DestroyWindow(m_hWnd);
+	WNDCLASSEX wc = { 0 };
+	wc.cbSize = sizeof(wc);
+	wc.style = CS_OWNDC;
+	wc.lpfnWndProc = HandleMsgSetup;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = m_hInst;
+	wc.hIcon = static_cast<HICON>(LoadImage(m_hInst, MAKEINTRESOURCE(IDI_ENGINE), IMAGE_ICON, 32, 32, 0));
+	wc.hCursor = nullptr;
+	wc.hbrBackground = nullptr;
+	wc.lpszMenuName = nullptr;
+	wc.lpszClassName = GetName();
+	wc.hIconSm = static_cast<HICON>(LoadImage(m_hInst, MAKEINTRESOURCE(IDI_SMALL), IMAGE_ICON, 16, 16, 0));
+	RegisterClassEx(&wc);
+
+	if (RegisterWindowMessage("WM_RENDER_RESET") == 0)
+	{
+		throw WND_LAST_EXCEPT();
+	}
 }
 
 void Window::SetTitle(const std::string& title)
@@ -151,6 +143,15 @@ LRESULT Window::HandleMsg(HWND m_hWnd, UINT msg, WPARAM wParam, LPARAM lParam) n
 	case WM_RENDER_RESET:
 	{
 	}break;
+
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(m_hWnd, &ps);
+		// TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+		EndPaint(m_hWnd, &ps);
+	}
+	break;
 	// clear keystate when window loses focus to prevent input getting "stuck"
 	case WM_KILLFOCUS:
 		KEYBOARD.ClearState();
