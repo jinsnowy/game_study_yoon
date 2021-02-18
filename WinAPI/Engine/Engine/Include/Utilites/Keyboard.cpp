@@ -1,5 +1,16 @@
 #include "Keyboard.h"
 #include <Windows.h>
+
+Keyboard::Keyboard()
+{
+
+}
+
+Keyboard::~Keyboard()
+{
+
+}
+
 void Keyboard::OnKeyPressed(unsigned char key)
 {
 	mKeyState[key] = true;
@@ -14,12 +25,6 @@ void Keyboard::OnChar(char character)
 {
 	mCharBuffer.push(character);
 	TrimBuffer(mCharBuffer);
-}
-
-Keyboard& Keyboard::Instance()
-{
-	static Keyboard INSTANCE;
-	return INSTANCE;
 }
 
 void Keyboard::ClearState()

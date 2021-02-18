@@ -147,27 +147,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="App.h" />
-    <ClInclude Include="FrameTimer.h" />
+    <ClInclude Include="Application\App.h" />
+    <ClInclude Include="Application\Graphics.h" />
+    <ClInclude Include="Application\Window.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Graphics.h" />
-    <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Other\UserException.h" />
+    <ClInclude Include="Other\WindowsMessageMap.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UserException.h" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="WindowsMessageMap.h" />
+    <ClInclude Include="Utilites\FrameTimer.h" />
+    <ClInclude Include="Utilites\Keyboard.h" />
+    <ClInclude Include="Utilites\Mouse.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App.cpp" />
-    <ClCompile Include="FrameTimer.cpp" />
-    <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="Keyboard.cpp" />
-    <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="UserException.cpp" />
-    <ClCompile Include="Window.cpp" />
-    <ClCompile Include="WindowsMessageMap.cpp" />
+    <ClCompile Include="Application\App.cpp" />
+    <ClCompile Include="Application\Graphics.cpp" />
+    <ClCompile Include="Application\Window.cpp" />
+    <ClCompile Include="Other\UserException.cpp" />
+    <ClCompile Include="Other\WindowsMessageMap.cpp" />
+    <ClCompile Include="Utilites\FrameTimer.cpp" />
+    <ClCompile Include="Utilites\Keyboard.cpp" />
+    <ClCompile Include="Utilites\Mouse.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +176,9 @@
   <ItemGroup>
     <Image Include="Engine.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

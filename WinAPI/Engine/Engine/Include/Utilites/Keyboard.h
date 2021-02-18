@@ -19,12 +19,11 @@
  *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
  ******************************************************************************************/
 #pragma once
-#include <bitset>
-#include <unordered_set>
-#include <queue>
+#include "../framework.h"
 
 class Keyboard
 {
+	DECLARE_SINGLE(Keyboard)
 public:
 	class Event
 	{
@@ -66,15 +65,6 @@ public:
 			return code;
 		}
 	};
-private:
-	Keyboard() = default;
-public:
-	// ΩÃ±€≈Ê
-	Keyboard(const Keyboard&) = delete;
-	Keyboard(const Keyboard&&) = delete;
-	Keyboard& operator=(const Keyboard&) = delete;
-	Keyboard& operator=(const Keyboard&&) = delete;
-	static Keyboard& Instance();
 private:
 	static constexpr unsigned int kKeys = 256u;
 	static constexpr unsigned int kBufferSize = 16u;

@@ -7,6 +7,7 @@ UserException::UserException(int codeLine, const char* fileName) noexcept
 {
 }
 
+
 const char* UserException::what() const noexcept
 {
 	std::ostringstream oss;

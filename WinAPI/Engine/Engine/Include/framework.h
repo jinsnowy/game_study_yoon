@@ -9,13 +9,30 @@
 // Windows 헤더 파일
 #include <windows.h>
 
-#include "Keyboard.h"
-#include "Mouse.h"
-
 // 매크로
 #define WM_RENDER_RESET (WM_USER + 1)
-#define kbd (Keyboard::Instance())
-#define mouse (Mouse::Instance())
+#define SAFE_DELETE(p)			if(p)	{delete p; p = nullptr;}
+#define SAFE_DELETE_ARRAY(p)	if(p)	{delete[] p; p = nullptr;}
+#define SAFE_RELEASE(p)			if(p)	{p->Release(); p = nullptr;}
+
+#define DECLARE_SINGLE(Type)	\
+		private:\
+			Type();\
+			~Type();\
+		public:\
+			static Type& Instance()\
+			{\
+				static Type INSTANCE;\
+				return INSTANCE;\
+			}\
+			Type(const Type&) = delete;\
+			Type(const Type&&) = delete;\
+			Type& operator=(const Type&) = delete;\
+			Type& operator=(const Type&&) = delete;
+
+#define KEYBOARD (Keyboard::Instance())
+#define MOUSE (Mouse::Instance())
+#define TIMER (FrameTimer::Instance())
 
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>
@@ -28,5 +45,7 @@
 #include <vector>
 #include <sstream>
 #include <memory>
+#include <bitset>
+#include <queue>
 
 

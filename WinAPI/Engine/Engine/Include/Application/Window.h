@@ -1,7 +1,7 @@
 #pragma once
 
-#include "framework.h"
-#include "UserException.h"
+#include "../framework.h"
+#include "../Other/UserException.h"
 #include "Graphics.h"
 
 // error exception helper macro

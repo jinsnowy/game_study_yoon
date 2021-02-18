@@ -19,8 +19,9 @@
 ******************************************************************************************/
 
 #include "Window.h"
-#include "Resource.h"
-
+#include "../Resource.h"
+#include "../Utilites/Mouse.h"
+#include "../Utilites/Keyboard.h"
 
 Window::WindowClass Window::WindowClass::wndClass;
 
@@ -154,39 +155,39 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 	}break;
 	// clear keystate when window loses focus to prevent input getting "stuck"
 	case WM_KILLFOCUS:
-		kbd.ClearState();
+		KEYBOARD.ClearState();
 		break;
 		/*********** KEYBOARD MESSAGES ***********/
 	case WM_KEYDOWN:
 		// syskey commands need to be handled to track ALT key (VK_MENU) and F10
 	case WM_SYSKEYDOWN:
 	{
-		if (!(lParam & 0x40000000) || kbd.EnabledRepeatedInputCapture()) // filter autorepeat
+		if (!(lParam & 0x40000000) || KEYBOARD.EnabledRepeatedInputCapture()) // filter autorepeat
 		{
-			kbd.OnKeyPressed(static_cast<unsigned char>(wParam));
+			KEYBOARD.OnKeyPressed(static_cast<unsigned char>(wParam));
 		}
 	}break;
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		kbd.OnKeyReleased(static_cast<unsigned char>(wParam));
+		KEYBOARD.OnKeyReleased(static_cast<unsigned char>(wParam));
 		break;
 	case WM_CHAR:
-		kbd.OnChar(static_cast<unsigned char>(wParam));
+		KEYBOARD.OnChar(static_cast<unsigned char>(wParam));
 		break;
 		/*********** END KEYBOARD MESSAGES ***********/
 
 		/************* MOUSE MESSAGES ****************/
 	case WM_MOUSEMOVE:
 	{
-		// in client region -> log move, and log enter + capture mouse (if not previously in window)
+		// in client region -> log move, and log enter + capture MOUSE (if not previously in window)
 		if (pt.x >= 0 && pt.x < mWidth && pt.y >= 0 && pt.y < mHeight)
 		{
-			mouse.OnMouseMove(pt.x, pt.y);
-			if (!mouse.IsInWindow())
+			MOUSE.OnMouseMove(pt.x, pt.y);
+			if (!MOUSE.IsInWindow())
 			{
 				// to capture mousemove 
 				SetCapture(hWnd);
-				mouse.OnMouseEnter();
+				MOUSE.OnMouseEnter();
 			}
 		}
 		// not in client -> log move / maintain capture if button down
@@ -194,46 +195,46 @@ LRESULT Window::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noe
 		{
 			if (wParam & (MK_LBUTTON | MK_RBUTTON))
 			{
-				mouse.OnMouseMove(pt.x, pt.y);
+				MOUSE.OnMouseMove(pt.x, pt.y);
 			}
 			// button up -> release capture / log event for leaving
 			else
 			{
 				ReleaseCapture();
-				mouse.OnMouseLeave();
+				MOUSE.OnMouseLeave();
 			}
 		}
 		break;
 	}
 	case WM_LBUTTONDOWN:
 	{
-		mouse.OnLeftPressed(pt.x, pt.y);
+		MOUSE.OnLeftPressed(pt.x, pt.y);
 		break;
 	}
 	case WM_RBUTTONDOWN:
 	{
-		mouse.OnRightPressed(pt.x, pt.y);
+		MOUSE.OnRightPressed(pt.x, pt.y);
 		break;
 	}
 	case WM_LBUTTONUP:
 	{
-		mouse.OnLeftReleased(pt.x, pt.y);
+		MOUSE.OnLeftReleased(pt.x, pt.y);
 		break;
 	}
 	case WM_RBUTTONUP:
 	{
-		mouse.OnRightReleased(pt.x, pt.y);
+		MOUSE.OnRightReleased(pt.x, pt.y);
 		break;
 	}
 	case WM_MOUSEWHEEL:
 	{
 		if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
 		{
-			mouse.OnWheelUp(pt.x, pt.y);
+			MOUSE.OnWheelUp(pt.x, pt.y);
 		}
 		else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
 		{
-			mouse.OnWheelDown(pt.x, pt.y);
+			MOUSE.OnWheelDown(pt.x, pt.y);
 		}
 		break;
 	}

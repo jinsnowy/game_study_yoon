@@ -19,9 +19,11 @@
  *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
  ******************************************************************************************/
 #pragma once
-#include <queue>
+#include "../framework.h"
+
 class Mouse
 {
+	DECLARE_SINGLE(Mouse)
 public:
 	class Event
 	{
@@ -91,15 +93,6 @@ public:
 			return bRightIsPressed;
 		}
 	};
-// ΩÃ±€≈Ê
-private:
-	Mouse() = default;
-public:
-	Mouse(const Mouse&) = delete;
-	Mouse(const Mouse&&) = delete;
-	Mouse& operator=(const Mouse&) = delete;
-	Mouse& operator=(const Mouse&&) = delete;
-	static Mouse& Instance();
 public:
 	std::pair<int, int> GetPos() const;
 	int GetPosX() const;

@@ -7,6 +7,10 @@ FrameTimer::FrameTimer()
 {
 }
 
+FrameTimer::~FrameTimer()
+{
+}
+
 float FrameTimer::Peek()
 {
     return duration_cast<duration<float>>(mTic - steady_clock::now()).count();

@@ -21,10 +21,14 @@
 #include "Mouse.h"
 #include <Windows.h>
 
-Mouse& Mouse::Instance()
+Mouse::Mouse()
 {
-	static Mouse INSTANCE;
-	return INSTANCE;
+
+}
+
+Mouse::~Mouse()
+{
+
 }
 
 std::pair<int, int> Mouse::GetPos() const
