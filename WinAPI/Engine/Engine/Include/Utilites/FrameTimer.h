@@ -6,6 +6,7 @@ class FrameTimer
 {
 	DECLARE_SINGLE(FrameTimer)
 public:
+	bool Init();
 	float Peek();
 	float Tick();
 private:

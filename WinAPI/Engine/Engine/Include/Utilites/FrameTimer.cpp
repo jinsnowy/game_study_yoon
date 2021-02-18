@@ -11,6 +11,12 @@ FrameTimer::~FrameTimer()
 {
 }
 
+bool FrameTimer::Init()
+{
+    mTic = steady_clock::now();
+    return true;
+}
+
 float FrameTimer::Peek()
 {
     return duration_cast<duration<float>>(mTic - steady_clock::now()).count();
