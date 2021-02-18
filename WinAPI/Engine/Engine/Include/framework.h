@@ -9,26 +9,7 @@
 // Windows 헤더 파일
 #include <windows.h>
 
-// 매크로
 #define WM_RENDER_RESET (WM_USER + 1)
-#define SAFE_DELETE(p)			if(p)	{delete p; p = nullptr;}
-#define SAFE_DELETE_ARRAY(p)	if(p)	{delete[] p; p = nullptr;}
-#define SAFE_RELEASE(p)			if(p)	{p->Release(); p = nullptr;}
-
-#define DECLARE_SINGLE(Type)	\
-		private:\
-			Type();\
-			~Type();\
-		public:\
-			static Type& Instance()\
-			{\
-				static Type INSTANCE;\
-				return INSTANCE;\
-			}\
-			Type(const Type&) = delete;\
-			Type(const Type&&) = delete;\
-			Type& operator=(const Type&) = delete;\
-			Type& operator=(const Type&&) = delete;
 
 #define KEYBOARD (Keyboard::Instance())
 #define MOUSE (Mouse::Instance())
@@ -48,4 +29,35 @@
 #include <bitset>
 #include <queue>
 
+#include "Types/Vec2.h"
+#include "Types/Rect.h"
+#include "Resource.h"
+#include "Macro.h"
 
+template <typename T>
+void Safe_Delete_VecList(T& p)
+{
+	typename T::iterator iter;
+	typename T::iterator iterEnd = p.end();
+
+	for (iter = p.begin(); iter != iterEnd; ++iter)
+	{
+		SAFE_DELETE((*iter));
+	}
+
+	p.clear();
+}
+
+template <typename T>
+void Safe_Release_VecList(T& p)
+{
+	typename T::iterator iter;
+	typename T::iterator iterEnd = p.end();
+
+	for (iter = p.begin(); iter != iterEnd; ++iter)
+	{
+		SAFE_RELEASE((*iter));
+	}
+
+	p.clear();
+}

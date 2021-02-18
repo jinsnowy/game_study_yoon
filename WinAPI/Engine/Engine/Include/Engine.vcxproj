@@ -151,10 +151,13 @@
     <ClInclude Include="Application\Graphics.h" />
     <ClInclude Include="Application\Window.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Macro.h" />
     <ClInclude Include="Other\UserException.h" />
     <ClInclude Include="Other\WindowsMessageMap.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Types\Rect.h" />
+    <ClInclude Include="Types\Vec2.h" />
     <ClInclude Include="Utilites\FrameTimer.h" />
     <ClInclude Include="Utilites\Keyboard.h" />
     <ClInclude Include="Utilites\Mouse.h" />

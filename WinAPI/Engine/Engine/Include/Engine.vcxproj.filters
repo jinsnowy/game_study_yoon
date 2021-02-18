@@ -25,6 +25,15 @@
     <Filter Include="Other">
       <UniqueIdentifier>{ca6cf9ee-094f-4892-8a43-9de64b9b9315}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{e4a1fdb3-634c-44fa-abf5-0ba47b56eec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Layer">
+      <UniqueIdentifier>{d756f1b1-5e33-4f61-a4e0-19ecd764b843}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Types">
+      <UniqueIdentifier>{42ba16ef-635e-4d21-8c35-0de2a91093bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -59,6 +68,15 @@
     </ClInclude>
     <ClInclude Include="Utilites\Mouse.h">
       <Filter>Utilites</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\Vec2.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\Rect.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Macro.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
