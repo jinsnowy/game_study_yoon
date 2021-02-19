@@ -8,7 +8,7 @@ protected:
     MovableObject(const MovableObject& obj);
     virtual ~MovableObject();
 
-private:
+protected:
     float m_Angle;
     float m_Speed;
 
@@ -30,8 +30,8 @@ public:
     void MoveY(float y);
     void MoveY(float y, float dt);
 
-    void MoveAngle(float fSpeed);
-    void MoveAngle(float fSpeed, float dt);
+    void MoveAngle();
+    void MoveAngle(float dt);
 public:
     virtual bool Init() = 0;
     virtual void Input(float dt);

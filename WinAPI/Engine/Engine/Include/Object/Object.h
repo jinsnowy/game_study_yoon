@@ -75,6 +75,7 @@ public:
 
 		AddObject(pObj);
 
+		pObj->AddRef();
 		return pObj;
 	}
 	template<typename T>
@@ -91,6 +92,7 @@ public:
 		
 		m_mapProtoType.insert(make_pair<string, T*>(strTag, pObj));
 
+		pObj->AddRef();
 		return pObj;
 	}
 	static Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer = nullptr);

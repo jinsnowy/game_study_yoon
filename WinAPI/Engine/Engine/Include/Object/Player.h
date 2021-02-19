@@ -11,11 +11,15 @@ private:
 	~Player();
 public:
 	virtual bool Init();
-	virtual void Input(float fDeltaTime);
-	virtual int Update(float fDeltaTime);
-	virtual int LateUpdate(float fDeltaTime);
-	virtual void Collision(float fDeltaTime);
-	virtual void Draw(HDC hDC, float fDeltaTime);
+	virtual void Input(float dt);
+	virtual int Update(float dt);
+	virtual int LateUpdate(float dt);
+	virtual void Collision(float dt);
+	virtual void Draw(HDC hDC, float dt);
 	virtual Player* Clone();
+
+private:
+	void Fire();
+
 };
 

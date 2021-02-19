@@ -40,6 +40,10 @@ void Player::Input(float dt)
 	{
 		MoveXFromSpeed(dt, MD_FRONT);
 	}
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	{
+		Fire();
+	}
 }
 
 int  Player::Update(float dt)
@@ -68,4 +72,13 @@ void Player::Draw(HDC hDC, float dt)
 Player* Player::Clone()
 {
 	return new Player(*this);
+}
+
+void Player::Fire()
+{
+	Object* pBullet = Object::CreateCloneObject("Bullet", "PlayerBullet", m_pLayer);
+
+	pBullet->SetPos(m_Pos.x + m_Size.x, (m_Pos.y + m_Pos.y + m_Size.y) / 2.f - pBullet->GetSize().y / 2.f);
+
+	SAFE_RELEASE(pBullet);
 }

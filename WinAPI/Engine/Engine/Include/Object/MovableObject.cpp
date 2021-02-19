@@ -1,10 +1,14 @@
 #include "MovableObject.h"
 
-MovableObject::MovableObject()
+MovableObject::MovableObject() 
+	: m_Angle(0.f), m_Speed(100.f)
 {
 }
 
-MovableObject::MovableObject(const MovableObject& obj) : Object(obj)
+MovableObject::MovableObject(const MovableObject& obj) 
+	: Object(obj),
+	m_Angle(obj.m_Angle),
+	m_Speed(obj.m_Speed)
 {
 }
 
@@ -81,14 +85,14 @@ void MovableObject::MoveY(float y, float dt)
 	m_Pos.y += y * dt;
 }
 
-void MovableObject::MoveAngle(float fSpeed)
+void MovableObject::MoveAngle()
 {
-	m_Pos.x += cosf(m_Angle) * fSpeed;
-	m_Pos.y += sinf(m_Angle) * fSpeed;
+	m_Pos.x += cosf(m_Angle) * m_Speed;
+	m_Pos.y += sinf(m_Angle) * m_Speed;
 }
 
-void MovableObject::MoveAngle(float fSpeed, float fTime)
+void MovableObject::MoveAngle(float fTime)
 {
-	m_Pos.x += cosf(m_Angle) * fSpeed * fTime;
-	m_Pos.y += sinf(m_Angle) * fSpeed * fTime;
+	m_Pos.x += cosf(m_Angle) * m_Speed * fTime;
+	m_Pos.y += sinf(m_Angle) * m_Speed * fTime;
 }

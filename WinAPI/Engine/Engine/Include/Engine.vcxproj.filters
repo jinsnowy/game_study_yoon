@@ -43,6 +43,9 @@
     <Filter Include="Object\02. StaticObj">
       <UniqueIdentifier>{1e4bdc5a-a931-478e-aaf6-a41498e42789}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\03. Bullet">
+      <UniqueIdentifier>{59278991-4b16-4422-9d78-aefb846e36a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -117,6 +120,9 @@
     <ClInclude Include="Object\Ref.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Bullet.h">
+      <Filter>Object\01. MoveObj</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -172,6 +178,9 @@
     </ClCompile>
     <ClCompile Include="Object\Ref.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Bullet.cpp">
+      <Filter>Object\01. MoveObj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

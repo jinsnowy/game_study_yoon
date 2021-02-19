@@ -128,6 +128,7 @@ Object* Object::CreateCloneObject(const string& strPrototypeKey, const string& s
 
      AddObject(pObj);
 
+     pObj->AddRef();
      return pObj;
 }
 
