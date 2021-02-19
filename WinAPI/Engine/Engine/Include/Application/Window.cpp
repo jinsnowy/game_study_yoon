@@ -20,13 +20,14 @@
 
 #include "Window.h"
 #include "../Resource.h"
-#include "../Utilites/Mouse.h"
-#include "../Utilites/Keyboard.h"
+#include "../Core/Mouse.h"
+#include "../Core/Keyboard.h"
 
 DEFINITION_SINGLE(Window)
 
 Window::~Window()
 {
+	ReleaseDC(m_hWnd, m_hDC);
 	UnregisterClass(GetName(), m_hInst);
 	DestroyWindow(m_hWnd);
 }

@@ -29,11 +29,10 @@ private:
 	RESOLUTION m_RS;
 public:
 	BOOL Init(int width, int height, const char* name);
-	HDC GetWndDC() noexcept	{ return m_hDC; }
 	RESOLUTION GetResolution() noexcept { return m_RS; }
 	static const char* GetName() { return wndClassName; }
 private:
-	friend class WindowBase;
+	friend class App;
 	void MyRegisterClass();
 	void SetTitle(const string& title);
 
