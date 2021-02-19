@@ -34,7 +34,7 @@ Mouse::~Mouse()
 
 }
 
-std::pair<int, int> Mouse::GetPos() const
+pair<int, int> Mouse::GetPos() const
 {
 	return { mPosX,mPosY };
 }
@@ -80,7 +80,7 @@ Mouse::Event Mouse::Read()
 
 void Mouse::Flush()
 {
-	mBuffer = std::queue<Event>();
+	mBuffer = queue<Event>();
 }
 
 void Mouse::OnMouseMove(int newx, int newy)

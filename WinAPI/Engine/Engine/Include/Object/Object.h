@@ -5,15 +5,15 @@
 class Object
 {
 private:
-	static std::list<std::shared_ptr<Object>> m_ObjList;
-	static std::unordered_map<std::string, Object*> m_mapProtoType;
+	static list<shared_ptr<Object>> m_ObjList;
+	static unordered_map<string, Object*> m_mapProtoType;
 
 public:
 	static void AddObject(Object* pObj);
-	static Object* FindObject(const std::string& tag);
+	static Object* FindObject(const string& tag);
 	static void EraseObject(Object* pObj);
-	static void EraseObject(const std::string& tag);
-	static void ErasePrototype(const std::string& strPrototypeKey);
+	static void EraseObject(const string& tag);
+	static void ErasePrototype(const string& strPrototypeKey);
 	static void EraseAllObjects();
 	static void EraseAllPrototypes();
 protected:
@@ -28,7 +28,7 @@ protected:
 	Pos m_Pos;
 	Pos m_Pivot;
 	Size  m_Size;
-	std::string m_Tag;
+	string m_Tag;
 public:
 	Object();
 	virtual ~Object();
@@ -44,7 +44,7 @@ public:
 	bool GetLife() const { return m_bLife; }
 	Pos GetPos() const { return m_Pos; }
 	Size GetSize() const { return m_Size; }
-	std::string GetTag() const { return m_Tag; }
+	string GetTag() const { return m_Tag; }
 
 	void Die() { m_bLife = false; }
 	void SetEnable(bool bEnable) { m_bEnable = bEnable; }
@@ -52,7 +52,7 @@ public:
 	void SetSize(float x, float y) { m_Size.x = x; m_Size.y = y; }
 	void SetPos(const Pos& pos) { m_Pos = pos; }
 	void SetSize(const Size& size) { m_Size = size; }
-	void SetTag(const std::string& tag) { m_Tag = tag; }
+	void SetTag(const string& tag) { m_Tag = tag; }
 public:
 	virtual bool Init();
 	virtual void Input(float dt);
@@ -63,7 +63,7 @@ public:
 	virtual Object* Clone() = 0;
 public:
 	template<typename T>
-	static T* CreateObject(const std::string& strTag, class Layer* pLayer = nullptr)
+	static T* CreateObject(const string& strTag, class Layer* pLayer = nullptr)
 	{
 		T* pObj = new T;
 		pObj->SetTag(strTag);
@@ -84,7 +84,7 @@ public:
 		return pObj;
 	}
 	template<typename T>
-	static T* CreatePrototype(const std::string& strTag)
+	static T* CreatePrototype(const string& strTag)
 	{
 		T* pObj = new T;
 		pObj->SetTag(strTag);
@@ -95,12 +95,12 @@ public:
 			return nullptr;
 		}
 		
-		m_mapProtoType.insert(std::make_pair<std::string, T*>(strTag, pObj));
+		m_mapProtoType.insert(make_pair<string, T*>(strTag, pObj));
 
 		return pObj;
 	}
-	static Object* CreateCloneObject(const std::string& strPrototypeKey, const std::string& strTag, class Layer* pLayer = nullptr);
+	static Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer = nullptr);
 private:
-	static Object* FindPrototype(const std::string& strkey);
+	static Object* FindPrototype(const string& strkey);
 };
 

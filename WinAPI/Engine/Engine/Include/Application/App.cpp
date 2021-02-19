@@ -101,7 +101,7 @@ const char* App::AppException::GetType() const noexcept
 	return "App Exception";
 }
 
-std::string  App::AppException::GetErrorMessage() const noexcept
+string  App::AppException::GetErrorMessage() const noexcept
 {
 	return App::AppException::UserException::GetErrorMessage() + "\n" + message;
 }

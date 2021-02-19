@@ -48,6 +48,7 @@
 #include "Resource.h"
 #include "Macro.h"
 
+using namespace std;
 typedef Vec2F Size;
 typedef Vec2F Pos;
 typedef Vec2I RESOLUTION;

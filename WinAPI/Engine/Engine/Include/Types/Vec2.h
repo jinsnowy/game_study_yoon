@@ -43,7 +43,7 @@ public:
 	}
 	float GetLength() const
 	{
-		return std::sqrtf((float) GetLengthSq());
+		return sqrtf((float) GetLengthSq());
 	}
 	T GetLengthSq() const
 	{

@@ -20,8 +20,8 @@ bool InGameScene::Init()
 
     Layer* pLayer = FindLayer("Default");
 
-    Player* pPlayer = Object::CreateObject<Player>("Player", pLayer);
-    Minion* pMinion = Object::CreateObject<Minion>("Minion", pLayer);
+    Object* pPlayer = Object::CreateObject<Player>("Player", pLayer);
+    Object* pMinion = Object::CreateObject<Minion>("Minion", pLayer);
 
     return true;
 }

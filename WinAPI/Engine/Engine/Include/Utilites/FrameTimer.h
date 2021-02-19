@@ -12,6 +12,6 @@ public:
 	float Peek();
 	float Tick();
 private:
-	std::chrono::steady_clock::time_point m_Tic;
+	chrono::steady_clock::time_point m_Tic;
 	float m_TimeScale;
 };

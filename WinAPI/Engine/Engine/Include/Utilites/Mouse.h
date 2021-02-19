@@ -72,7 +72,7 @@ public:
 		{
 			return mType;
 		}
-		std::pair<int, int> GetPos() const
+		pair<int, int> GetPos() const
 		{
 			return{ mPosX,mPosY };
 		}
@@ -94,7 +94,7 @@ public:
 		}
 	};
 public:
-	std::pair<int, int> GetPos() const;
+	pair<int, int> GetPos() const;
 	int GetPosX() const;
 	int GetPosY() const;
 	bool IsInWindow() const;
@@ -127,5 +127,5 @@ private:
 	bool bLeftIsPressed = false;
 	bool bRightIsPressed = false;
 	bool bIsInWindow = false;
-	std::queue<Event> mBuffer;
+	queue<Event> mBuffer;
 };

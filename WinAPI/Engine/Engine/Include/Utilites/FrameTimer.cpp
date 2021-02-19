@@ -1,6 +1,6 @@
 #include "FrameTimer.h"
 
-using namespace std::chrono;
+using namespace chrono;
 
 DEFINITION_SINGLE(FrameTimer)
 

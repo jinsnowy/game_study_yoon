@@ -1,15 +1,15 @@
 #include "Object.h"
 #include "../Scene/Layer.h"
 
-std::list<std::shared_ptr<Object>> Object::m_ObjList;
-std::unordered_map<std::string, Object*> Object::m_mapProtoType;
+list<shared_ptr<Object>> Object::m_ObjList;
+unordered_map<string, Object*> Object::m_mapProtoType;
 
 void Object::AddObject(Object* pObj)
 {
     m_ObjList.emplace_back(pObj);
 }
 
-Object* Object::FindObject(const std::string& tag)
+Object* Object::FindObject(const string& tag)
 {
     auto iterEnd = m_ObjList.end();
     for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
@@ -36,7 +36,7 @@ void Object::EraseObject(Object* pObj)
     }
 }
 
-void Object::EraseObject(const std::string& tag)
+void Object::EraseObject(const string& tag)
 {
     auto iterEnd = m_ObjList.end();
     for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
@@ -50,7 +50,7 @@ void Object::EraseObject(const std::string& tag)
     }
 }
 
-void Object::ErasePrototype(const std::string& strPrototypeKey)
+void Object::ErasePrototype(const string& strPrototypeKey)
 {
     auto it = m_mapProtoType.find(strPrototypeKey);
     if (!it->second)
@@ -112,7 +112,7 @@ void Object::Draw(HDC hdc, float dt)
 {
 }
 
-Object* Object::CreateCloneObject(const std::string& strPrototypeKey, const std::string& strTag, class Layer* pLayer)
+Object* Object::CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer)
 {
     Object* pProto = FindPrototype(strPrototypeKey);
     if (!pProto)
@@ -131,7 +131,7 @@ Object* Object::CreateCloneObject(const std::string& strPrototypeKey, const std:
      return pObj;
 }
 
-Object* Object::FindPrototype(const std::string& strkey)
+Object* Object::FindPrototype(const string& strkey)
 {
     auto it = m_mapProtoType.find(strkey);
     if (it == m_mapProtoType.end())

@@ -69,9 +69,9 @@ private:
 	static constexpr unsigned int kKeys = 256u;
 	static constexpr unsigned int kBufferSize = 16u;
 	bool bRepeatedInputCapture = false;
-	std::bitset<kKeys> mKeyState;
-	std::queue<Event> mKeyBuffer;
-	std::queue<char> mCharBuffer;
+	bitset<kKeys> mKeyState;
+	queue<Event> mKeyBuffer;
+	queue<char> mCharBuffer;
 private:
 	friend class Window;
 	void ClearState();
@@ -79,7 +79,7 @@ private:
 	void OnKeyReleased(unsigned char key);
 	void OnChar(char charcter);
 	template<typename T>
-	static void TrimBuffer(std::queue<T>& buffer);
+	static void TrimBuffer(queue<T>& buffer);
 
 	// key event stuff
 	bool IsKeyPressed(unsigned char key);

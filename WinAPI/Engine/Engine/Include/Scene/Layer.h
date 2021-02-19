@@ -10,9 +10,9 @@ private:
 	bool		m_bEnable;
 	bool		m_bLife;
 	int			m_zOrder;
-	std::string	m_tag;
+	string	m_tag;
 	class Scene* m_pScene;
-	std::list<std::shared_ptr<class Object>> m_ObjList;
+	list<shared_ptr<class Object>> m_ObjList;
 public:
 	~Layer();
 
@@ -24,10 +24,10 @@ public:
 	void Die() { m_bLife = false; }
 	void SetEnable(bool bEnable) { m_bEnable = bEnable; }
 	int  GetZOrder() const { return m_zOrder; }
-	std::string GetTag() const { return m_tag; }
+	string GetTag() const { return m_tag; }
 	class Scene* GetScene() const { return m_pScene; }
 	void SetZOrder(int zOrder) { m_zOrder = zOrder; }
-	void SetTag(const std::string& tag) { m_tag = tag; }
+	void SetTag(const string& tag) { m_tag = tag; }
 	void SetScene(class Scene* pScene) { m_pScene = pScene; }
 
 public:

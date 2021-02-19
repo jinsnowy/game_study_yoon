@@ -12,7 +12,7 @@ Scene::~Scene()
 	Delete_SharedPtr_VecList(m_LayerList);
 }
 
-Layer* Scene::FindLayer(const std::string& tag)
+Layer* Scene::FindLayer(const string& tag)
 {
 	for (auto it = m_LayerList.begin(); it != m_LayerList.end(); it++)
 	{
@@ -22,7 +22,7 @@ Layer* Scene::FindLayer(const std::string& tag)
 	return nullptr;
 }
 
-Layer* Scene::CreateLayer(const std::string& tag, int zOrder)
+Layer* Scene::CreateLayer(const string& tag, int zOrder)
 {
 	Layer* pLayer = new Layer;
 
@@ -39,7 +39,7 @@ Layer* Scene::CreateLayer(const std::string& tag, int zOrder)
 	return pLayer;
 }
 
-bool Scene::LayerSort(const std::shared_ptr<Layer> pL1, const std::shared_ptr<Layer> pL2)
+bool Scene::LayerSort(const shared_ptr<Layer> pL1, const shared_ptr<Layer> pL2)
 {
 	return pL1->GetZOrder() < pL2->GetZOrder();
 }

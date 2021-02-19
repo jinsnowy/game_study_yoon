@@ -209,24 +209,24 @@ WindowsMessageMap::WindowsMessageMap() noexcept
 	} )
 {}
 
-std::string WindowsMessageMap::operator()( DWORD msg,LPARAM lp,WPARAM wp ) const noexcept
+string WindowsMessageMap::operator()( DWORD msg,LPARAM lp,WPARAM wp ) const noexcept
 {
 	constexpr int firstColWidth = 25;
 	const auto i = map.find( msg );
 
-	std::ostringstream oss;
+	ostringstream oss;
 	if( i != map.end() )
 	{
-		oss << std::left << std::setw( firstColWidth ) << i->second << std::right;
+		oss << left << setw( firstColWidth ) << i->second << right;
 	}
 	else
 	{
-		std::ostringstream padss;
-		padss << "Unknown message: 0x" << std::hex << msg;
-		oss << std::left << std::setw( firstColWidth ) << padss.str() << std::right;
+		ostringstream padss;
+		padss << "Unknown message: 0x" << hex << msg;
+		oss << left << setw( firstColWidth ) << padss.str() << right;
 	}
-	oss << "   LP: 0x" << std::hex << std::setfill( '0' ) << std::setw( 8 ) << lp;
-	oss << "   WP: 0x" << std::hex << std::setfill( '0' ) << std::setw( 8 ) << wp << std::endl;
+	oss << "   LP: 0x" << hex << setfill( '0' ) << setw( 8 ) << lp;
+	oss << "   WP: 0x" << hex << setfill( '0' ) << setw( 8 ) << wp << endl;
 
 	return oss.str();
 }

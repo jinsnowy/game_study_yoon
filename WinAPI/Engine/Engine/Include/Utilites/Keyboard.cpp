@@ -80,12 +80,12 @@ bool Keyboard::CharIsEmpty() const
 
 void Keyboard::FlushKey() 
 {
-	mKeyBuffer = std::queue<Event>();
+	mKeyBuffer = queue<Event>();
 }
 
 void Keyboard::FlushChar() 
 {
-	mCharBuffer = std::queue<char>();
+	mCharBuffer = queue<char>();
 }
 
 void Keyboard::Flush() 
@@ -105,7 +105,7 @@ bool Keyboard::EnabledRepeatedInputCapture() const
 }
 
 template<typename T>
-void Keyboard::TrimBuffer(std::queue<T>& buffer)
+void Keyboard::TrimBuffer(queue<T>& buffer)
 {
 	while (buffer.size() > kBufferSize)
 	{

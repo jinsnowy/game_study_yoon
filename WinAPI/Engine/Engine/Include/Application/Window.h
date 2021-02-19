@@ -15,10 +15,10 @@ private:
 	public:
 		WindowException(int codeLine, const char* fileName, HRESULT hr) noexcept;
 		virtual const char* GetType() const noexcept override;
-		virtual std::string GetErrorMessage() const noexcept override;
+		virtual string GetErrorMessage() const noexcept override;
 	private:
 		HRESULT hr;
-		static std::string TranslateErrorCode(HRESULT hr) noexcept;
+		static string TranslateErrorCode(HRESULT hr) noexcept;
 	};
 private:
 	static constexpr const char* wndClassName = "myEngine";
@@ -35,7 +35,7 @@ public:
 private:
 	friend class WindowBase;
 	void MyRegisterClass();
-	void SetTitle(const std::string& title);
+	void SetTitle(const string& title);
 
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;

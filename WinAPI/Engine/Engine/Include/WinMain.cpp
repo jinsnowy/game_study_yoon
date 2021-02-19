@@ -9,7 +9,7 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	{
 		MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
 	}
-	catch (const std::exception& e)
+	catch (const exception& e)
 	{
 		MessageBox(nullptr,  e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
 	}

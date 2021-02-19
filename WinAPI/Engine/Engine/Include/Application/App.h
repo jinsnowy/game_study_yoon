@@ -9,11 +9,11 @@ public:
 	class AppException : public UserException
 	{
 	private:
-		std::string message;
+		string message;
 	public:
 		AppException(int codeLine, const char* fileName, const char* message);
 		virtual const char* GetType() const noexcept;
-		virtual std::string GetErrorMessage() const noexcept;
+		virtual string GetErrorMessage() const noexcept;
 	};
 public:
 	App();

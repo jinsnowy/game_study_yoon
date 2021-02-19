@@ -93,7 +93,7 @@ void Window::MyRegisterClass()
 	}
 }
 
-void Window::SetTitle(const std::string& title)
+void Window::SetTitle(const string& title)
 {
 	if (SetWindowText(m_hWnd, title.c_str()) == 0)
 	{
@@ -258,16 +258,16 @@ const char* Window::WindowException::GetType() const noexcept
 	return "User Window WindowException";
 }
 
-std::string Window::WindowException::GetErrorMessage() const noexcept
+string Window::WindowException::GetErrorMessage() const noexcept
 {
-	std::ostringstream oss;
+	ostringstream oss;
 	oss << Window::WindowException::UserException::GetErrorMessage()
-		<< "[Error Code] " << hr << std::endl
-		<< "[Description] " << TranslateErrorCode(hr) << std::endl;
+		<< "[Error Code] " << hr << endl
+		<< "[Description] " << TranslateErrorCode(hr) << endl;
 	return oss.str();
 }
 
-std::string Window::WindowException::TranslateErrorCode(HRESULT hr) noexcept
+string Window::WindowException::TranslateErrorCode(HRESULT hr) noexcept
 {
 	char* pMsgBuf = nullptr;
 	DWORD nMsgLen = FormatMessage(
@@ -280,7 +280,7 @@ std::string Window::WindowException::TranslateErrorCode(HRESULT hr) noexcept
 	{
 		return "Unidentified error code";
 	}
-	std::string errorString = pMsgBuf;
+	string errorString = pMsgBuf;
 	LocalFree(pMsgBuf);
 	return errorString;
 }
