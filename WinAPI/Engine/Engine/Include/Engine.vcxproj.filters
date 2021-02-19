@@ -31,9 +31,6 @@
     <Filter Include="Types">
       <UniqueIdentifier>{42ba16ef-635e-4d21-8c35-0de2a91093bd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Interface">
-      <UniqueIdentifier>{c1b6f18a-7fed-4981-9f28-327578e8c838}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Object">
       <UniqueIdentifier>{5cacff0f-1ca1-4a67-94eb-a05e2ceb3f49}</UniqueIdentifier>
     </Filter>
@@ -45,6 +42,9 @@
     </Filter>
     <Filter Include="Object\03. Bullet">
       <UniqueIdentifier>{59278991-4b16-4422-9d78-aefb846e36a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{c1b6f18a-7fed-4981-9f28-327578e8c838}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +123,9 @@
     <ClInclude Include="Object\Bullet.h">
       <Filter>Object\03. Bullet</Filter>
     </ClInclude>
+    <ClInclude Include="Manager\PathManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -181,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="Object\Bullet.cpp">
       <Filter>Object\03. Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\PathManager.cpp">
+      <Filter>Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

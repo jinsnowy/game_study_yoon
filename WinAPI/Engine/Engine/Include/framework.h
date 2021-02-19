@@ -10,6 +10,12 @@
 #include <windows.h>
 
 // 매크로
+#define PI 3.141592f
+
+// Path Key
+#define ROOT_PATH		"RootPath"
+#define TEXTURE_PATH	"TexturePath"
+
 #define WM_RENDER_RESET (WM_USER + 1)
 
 #define WINDOW (Window::Instance())
@@ -19,6 +25,7 @@
 #define MOUSE (Mouse::Instance())
 #define TIMER (FrameTimer::Instance())
 #define SCENE_MANAGER (SceneManager::Instance())
+#define PATH_MANAGER (PathManager::Instance())
 
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>

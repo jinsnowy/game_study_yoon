@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "../Utilites/FrameTimer.h"
 #include "../Scene/SceneManager.h"
+#include "../Manager/PathManager.h"
 
 App::App()
 {
@@ -9,10 +10,17 @@ App::App()
 	{
 		throw APP_EXCEPT("Window init failed.\n");
 	}
+
 	if (!TIMER.Init())
 	{
 		throw APP_EXCEPT("Timer init failed.\n");
 	}
+
+	if (!PATH_MANAGER.Init())
+	{
+		throw APP_EXCEPT("Path Manager init failed.\n");
+	}
+
 	if (!SCENE_MANAGER.Init())
 	{
 		throw APP_EXCEPT("SceneManager init failed.\n");
