@@ -27,7 +27,7 @@ bool InGameScene::Init()
     Object* pMinion = Object::CreateObject<Minion>("Minion", pLayer);
     SAFE_RELEASE(pMinion);
 
-    Bullet* pBullet = Object::CreatePrototype<Bullet>("Bullet");
+    Bullet* pBullet = Scene::CreatePrototype<Bullet>("Bullet");
     pBullet->SetSize(50.f, 50.f);
 
     SAFE_RELEASE(pBullet);

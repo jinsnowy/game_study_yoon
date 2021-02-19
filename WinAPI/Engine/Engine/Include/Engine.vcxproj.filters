@@ -121,7 +121,7 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\Bullet.h">
-      <Filter>Object\01. MoveObj</Filter>
+      <Filter>Object\03. Bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -180,7 +180,7 @@
       <Filter>Object</Filter>
     </ClCompile>
     <ClCompile Include="Object\Bullet.cpp">
-      <Filter>Object\01. MoveObj</Filter>
+      <Filter>Object\03. Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

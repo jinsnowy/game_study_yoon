@@ -1,5 +1,8 @@
 #include "Scene.h"
 #include "Layer.h"
+#include "../Object/Object.h"
+
+unordered_map<string, Object*> Scene::m_mapProtoType;
 
 Scene::Scene()
 {
@@ -9,7 +12,23 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+	EraseAllPrototypes();
 	Safe_Delete_VecList(m_LayerList);
+}
+
+void Scene::ErasePrototype(const string& strPrototypeKey)
+{
+	auto it = m_mapProtoType.find(strPrototypeKey);
+	if (!it->second)
+		return;
+
+	SAFE_RELEASE(it->second);
+	m_mapProtoType.erase(it);
+}
+
+void Scene::EraseAllPrototypes()
+{
+	Safe_Release_Map(m_mapProtoType);
 }
 
 Layer* Scene::FindLayer(const string& tag)
@@ -167,4 +186,12 @@ void Scene::Draw(HDC hdc, float dt)
 		}
 		++it;
 	}
+}
+
+Object* Scene::FindPrototype(const string& strkey)
+{
+	auto it = m_mapProtoType.find(strkey);
+	if (it == m_mapProtoType.end())
+		return nullptr;
+	return it->second;
 }

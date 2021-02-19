@@ -5,7 +5,31 @@ class Layer;
 
 class Scene
 {
-friend class SceneManager;
+	friend class Object;
+	friend class SceneManager;
+private:
+	static unordered_map<string, class Object*> m_mapProtoType;
+	static Object* FindPrototype(const string& strkey);
+public:
+	static void ErasePrototype(const string& strPrototypeKey);
+	static void EraseAllPrototypes();
+	template<typename T>
+	static T* CreatePrototype(const string& strTag)
+	{
+		T* pObj = new T;
+		pObj->SetTag(strTag);
+
+		if (!pObj->Init())
+		{
+			SAFE_DELETE(pObj);
+			return nullptr;
+		}
+
+		pObj->AddRef();
+		m_mapProtoType.insert(make_pair(strTag, pObj));
+
+		return pObj;
+	}
 protected:
 	Scene();
 	virtual ~Scene() = 0;

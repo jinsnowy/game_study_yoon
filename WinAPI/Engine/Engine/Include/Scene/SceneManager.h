@@ -15,6 +15,8 @@ private:
 	Scene* m_pScene;
 	Scene* m_pNextScene;
 public:
+	class Scene* GetScene() const { return m_pScene; }
+public:
 	bool Init();
 	void Input(float dt);
 	void Update(float dt);

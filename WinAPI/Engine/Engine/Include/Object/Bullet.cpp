@@ -21,6 +21,8 @@ Bullet::~Bullet()
 
 bool Bullet::Init()
 {
+    SetSpeed(500.0f);
+
     return true;
 }
 
@@ -33,7 +35,7 @@ int Bullet::Update(float dt)
 {
     MovableObject::Update(dt);
 
-    MoveAngle();
+    MoveAngle(dt);
 
     m_Dist += GetSpeed() * dt;
 

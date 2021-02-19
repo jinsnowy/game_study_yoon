@@ -5,6 +5,7 @@ class Bullet :
 {
 private:
     friend class Object;
+    friend class Scene;
 private:
     Bullet();
     Bullet(const Bullet& bullet);

@@ -5,6 +5,7 @@
 class Player : public MovableObject
 {
 	friend class Object;
+	friend class Scene;
 private:
 	Player();
 	Player(const Player& obj);

@@ -5,7 +5,7 @@
 
 App::App()
 {
-	if (!WINDOW.Init(800, 600, "My First Game"))
+	if (!WINDOW.Init(1200, 900, "My First Game"))
 	{
 		throw APP_EXCEPT("Window init failed.\n");
 	}
@@ -18,7 +18,7 @@ App::App()
 		throw APP_EXCEPT("SceneManager init failed.\n");
 	}
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	// _CrtSetBreakAlloc(239);
+	// _CrtSetBreakAlloc(237);
 }
 
 App::~App()

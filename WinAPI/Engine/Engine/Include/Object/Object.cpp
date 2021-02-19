@@ -1,8 +1,9 @@
 #include "Object.h"
 #include "../Scene/Layer.h"
+#include "../Scene/SceneManager.h"
+#include "../Scene/Scene.h"
 
 list<Object*> Object::m_ObjList;
-unordered_map<string, Object*> Object::m_mapProtoType;
 
 void Object::AddObject(Object* pObj)
 {
@@ -51,25 +52,11 @@ void Object::EraseObject(const string& tag)
     }
 }
 
-void Object::ErasePrototype(const string& strPrototypeKey)
-{
-    auto it = m_mapProtoType.find(strPrototypeKey);
-    if (!it->second)
-        return;
-
-    SAFE_RELEASE(it->second);
-    m_mapProtoType.erase(it);
-}
-
 void Object::EraseAllObjects()
 {
     Safe_Release_VecList(m_ObjList);
 }
 
-void Object::EraseAllPrototypes()
-{
-    Safe_Delete_Map(m_mapProtoType);
-}
 
 Object::Object():
     m_pScene(nullptr),
@@ -113,29 +100,21 @@ void Object::Draw(HDC hdc, float dt)
 
 Object* Object::CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer)
 {
-    Object* pProto = FindPrototype(strPrototypeKey);
+    Object* pProto = Scene::FindPrototype(strPrototypeKey);
+
     if (!pProto)
         return nullptr;
 
-     Object* pObj = pProto->Clone();
-     pObj->SetTag(strTag);
+    // 복제한 인스턴스
+    Object* pObj = pProto->Clone();
+    pObj->SetTag(strTag);
 
-     if (pLayer)
-     {
-         SAFE_RELEASE(pObj);
-         pLayer->AddObject(pObj);
-     }
+    if (pLayer)
+    {
+        pLayer->AddObject(pObj);
+    }
 
-     AddObject(pObj);
+    AddObject(pObj);
 
-     pObj->AddRef();
-     return pObj;
-}
-
-Object* Object::FindPrototype(const string& strkey)
-{
-    auto it = m_mapProtoType.find(strkey);
-    if (it == m_mapProtoType.end())
-        return nullptr;
-    return it->second;
+    return pObj;
 }

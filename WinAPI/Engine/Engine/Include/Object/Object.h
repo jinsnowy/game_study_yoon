@@ -7,16 +7,14 @@ class Object : public Ref
 {
 private:
 	static list<Object*> m_ObjList;
-	static unordered_map<string, Object*> m_mapProtoType;
 
 public:
 	static void AddObject(Object* pObj);
 	static Object* FindObject(const string& tag);
 	static void EraseObject(Object* pObj);
 	static void EraseObject(const string& tag);
-	static void ErasePrototype(const string& strPrototypeKey);
 	static void EraseAllObjects();
-	static void EraseAllPrototypes();
+
 protected:
 	// ¾À°ú ·¹ÀÌ¾î
 	class Scene* m_pScene;
@@ -74,29 +72,8 @@ public:
 		}
 
 		AddObject(pObj);
-
-		pObj->AddRef();
 		return pObj;
 	}
-	template<typename T>
-	static T* CreatePrototype(const string& strTag)
-	{
-		T* pObj = new T;
-		pObj->SetTag(strTag);
-
-		if (!pObj->Init())
-		{
-			SAFE_DELETE(pObj);
-			return nullptr;
-		}
-		
-		m_mapProtoType.insert(make_pair<string, T*>(strTag, pObj));
-
-		pObj->AddRef();
-		return pObj;
-	}
-	static Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer = nullptr);
-private:
-	static Object* FindPrototype(const string& strkey);
+	Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer);
 };
 
