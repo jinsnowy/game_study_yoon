@@ -15,8 +15,11 @@ Player::~Player()
 bool Player::Init()
 {
 	SetPos(Pos(100.0f, 100.0f));
-	SetSize(Size(100.0f, 100.0f));
+	SetSize(Size(300.0f, 300.0f));
 	SetSpeed(400.0f);
+
+	SetTexture("Player", "hos.bmp");
+
 	return true;
 }
 
@@ -66,7 +69,7 @@ void Player::Collision(float dt)
 void Player::Draw(HDC hDC, float dt)
 {
 	MovableObject::Draw(hDC, dt);
-	Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
+	// Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
 }
 
 Player* Player::Clone()

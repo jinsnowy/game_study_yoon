@@ -1,8 +1,9 @@
 #include "App.h"
 #include "Window.h"
-#include "../Utilites/FrameTimer.h"
+#include "../Core/FrameTimer.h"
 #include "../Scene/SceneManager.h"
-#include "../Manager/PathManager.h"
+#include "../Core/PathManager.h"
+#include "../Resources/ResourceManager.h"
 
 App::App()
 {
@@ -25,6 +26,12 @@ App::App()
 	{
 		throw APP_EXCEPT("SceneManager init failed.\n");
 	}
+
+	if (!RESOURCE_MANAGER.Init(WINDOW.m_hInst, WINDOW.m_hDC))
+	{
+		throw APP_EXCEPT("ResourceManager init failed.\n");
+	}
+
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// _CrtSetBreakAlloc(237);
 }
@@ -95,7 +102,7 @@ void App::Collision(float dt)
 
 void App::Draw(float dt)
 {
-	SCENE_MANAGER.Draw(GETDC, dt);
+	SCENE_MANAGER.Draw(WINDOW.m_hDC, dt);
 }
 
 // Error handling

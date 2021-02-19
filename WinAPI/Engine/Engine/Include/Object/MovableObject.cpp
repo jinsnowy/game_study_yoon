@@ -16,26 +16,36 @@ MovableObject::~MovableObject()
 {
 }
 
+bool MovableObject::Init()
+{
+	return true;
+}
+
 void MovableObject::Input(float dt)
 {
+	Object::Input(dt);
 }
 
 int MovableObject::Update(float dt)
 {
+	Object::Update(dt);
     return 0;
 }
 
 int MovableObject::LateUpdate(float dt)
 {
+	Object::LateUpdate(dt);
     return 0;
 }
 
 void MovableObject::Collision(float dt)
 {
+	Object::Collision(dt);
 }
 
 void MovableObject::Draw(HDC hDC, float dt)
 {
+	Object::Draw(hDC, dt);
 }
 
 void MovableObject::Move(float x, float y)

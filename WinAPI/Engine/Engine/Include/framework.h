@@ -21,11 +21,15 @@
 #define WINDOW (Window::Instance())
 #define GETRESOLUTION (Window::Instance().GetResolution())
 #define GETDC (Window::Instance().GetWndDC())
+
+
 #define KEYBOARD (Keyboard::Instance())
 #define MOUSE (Mouse::Instance())
 #define TIMER (FrameTimer::Instance())
 #define SCENE_MANAGER (SceneManager::Instance())
 #define PATH_MANAGER (PathManager::Instance())
+#define RESOURCE_MANAGER (ResourceManager::Instance())
+
 
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>
@@ -54,6 +58,9 @@
 #include "Types/Types.h"
 #include "Resource.h"
 #include "Macro.h"
+
+// 동적 링크 라이브러리
+#pragma comment(lib, "msimg32")
 
 using namespace std;
 typedef Vec2F Size;

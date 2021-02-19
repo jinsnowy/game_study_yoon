@@ -16,9 +16,6 @@
     <Filter Include="Application">
       <UniqueIdentifier>{66b9701c-ad5d-4cb6-9d6d-d0fa29ad051b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utilites">
-      <UniqueIdentifier>{996e81c7-8208-4dc9-9226-85e8ee4bafe6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Other">
       <UniqueIdentifier>{ca6cf9ee-094f-4892-8a43-9de64b9b9315}</UniqueIdentifier>
     </Filter>
@@ -43,8 +40,11 @@
     <Filter Include="Object\03. Bullet">
       <UniqueIdentifier>{59278991-4b16-4422-9d78-aefb846e36a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager">
-      <UniqueIdentifier>{c1b6f18a-7fed-4981-9f28-327578e8c838}</UniqueIdentifier>
+    <Filter Include="Core">
+      <UniqueIdentifier>{5cd27b56-32dd-4c51-bf95-6010308a62e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{00fb8c50-8de3-47a1-a4da-10d76cee27a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -63,20 +63,11 @@
     <ClInclude Include="Application\App.h">
       <Filter>Application</Filter>
     </ClInclude>
-    <ClInclude Include="Utilites\FrameTimer.h">
-      <Filter>Utilites</Filter>
-    </ClInclude>
     <ClInclude Include="Other\UserException.h">
       <Filter>Other</Filter>
     </ClInclude>
     <ClInclude Include="Other\WindowsMessageMap.h">
       <Filter>Other</Filter>
-    </ClInclude>
-    <ClInclude Include="Utilites\Keyboard.h">
-      <Filter>Utilites</Filter>
-    </ClInclude>
-    <ClInclude Include="Utilites\Mouse.h">
-      <Filter>Utilites</Filter>
     </ClInclude>
     <ClInclude Include="Types\Vec2.h">
       <Filter>Types</Filter>
@@ -123,8 +114,23 @@
     <ClInclude Include="Object\Bullet.h">
       <Filter>Object\03. Bullet</Filter>
     </ClInclude>
-    <ClInclude Include="Manager\PathManager.h">
-      <Filter>Manager</Filter>
+    <ClInclude Include="Core\FrameTimer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Keyboard.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Mouse.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\PathManager.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ResourceManager.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Texture.h">
+      <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -137,20 +143,11 @@
     <ClCompile Include="Application\App.cpp">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="Utilites\FrameTimer.cpp">
-      <Filter>Utilites</Filter>
-    </ClCompile>
     <ClCompile Include="Other\WindowsMessageMap.cpp">
       <Filter>Other</Filter>
     </ClCompile>
     <ClCompile Include="Other\UserException.cpp">
       <Filter>Other</Filter>
-    </ClCompile>
-    <ClCompile Include="Utilites\Keyboard.cpp">
-      <Filter>Utilites</Filter>
-    </ClCompile>
-    <ClCompile Include="Utilites\Mouse.cpp">
-      <Filter>Utilites</Filter>
     </ClCompile>
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>Scene</Filter>
@@ -185,8 +182,23 @@
     <ClCompile Include="Object\Bullet.cpp">
       <Filter>Object\03. Bullet</Filter>
     </ClCompile>
-    <ClCompile Include="Manager\PathManager.cpp">
-      <Filter>Manager</Filter>
+    <ClCompile Include="Core\FrameTimer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Keyboard.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Mouse.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\PathManager.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ResourceManager.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\Texture.cpp">
+      <Filter>Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,8 @@ bool Bullet::Init()
 {
     SetSpeed(500.0f);
 
+    SetTexture("Bullet", "bullet.bmp");
+
     return true;
 }
 
@@ -59,7 +61,7 @@ void Bullet::Collision(float dt)
 void Bullet::Draw(HDC hDC, float dt)
 {
     MovableObject::Draw(hDC, dt);
-    Ellipse(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
+    // Ellipse(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
 }
 
 Bullet* Bullet::Clone()
