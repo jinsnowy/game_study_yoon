@@ -2,8 +2,35 @@
 #include "../Scene/Layer.h"
 #include "../Scene/SceneManager.h"
 #include "../Scene/Scene.h"
+#include "../Resources/ResourceManager.h"
+#include "../Resources/Texture.h"
 
 list<Object*> Object::m_ObjList;
+
+Object::Object() :
+    m_pTexture(nullptr),
+    m_pScene(nullptr),
+    m_pLayer(nullptr),
+    m_Pos(0, 0),
+    m_Pivot(0, 0),
+    m_Size(0, 0)
+{
+}
+
+Object::Object(const Object& obj)
+{
+    *this = obj;
+
+    if (m_pTexture)
+        m_pTexture->AddRef();
+}
+
+Object::~Object()
+{
+    SAFE_RELEASE(m_pTexture);
+}
+
+// ----------- Add and Delete Object from Object List
 
 void Object::AddObject(Object* pObj)
 {
@@ -56,20 +83,24 @@ void Object::EraseAllObjects()
 {
     Safe_Release_VecList(m_ObjList);
 }
+// --------------------------
 
-
-Object::Object():
-    m_pScene(nullptr),
-    m_pLayer(nullptr),
-    m_Pos(0,0),
-    m_Pivot(0,0),
-    m_Size(0,0)
+// ----------------------- Texture
+void Object::SetTexture(Texture* pTexture)
 {
+    SAFE_RELEASE(m_pTexture);
+    m_pTexture = pTexture;
+
+    if (pTexture)
+        pTexture->AddRef();
 }
 
-Object::~Object()
+void Object::SetTexture(const string& strKey, const char* pFileName, const string& strPathKey)
 {
+    SAFE_RELEASE(m_pTexture);
+    m_pTexture = RESOURCE_MANAGER.LoadTexture(strKey, pFileName, strPathKey);
 }
+// ------------------------
 
 bool Object::Init()
 {
@@ -96,6 +127,11 @@ void Object::Collision(float dt)
 
 void Object::Draw(HDC hdc, float dt)
 {
+    if (m_pTexture)
+    {
+        // (x,y) -> (cx,cy) = (x+w,y+h) / 어디서 부터 출력 (x1,y1) 
+        BitBlt(hdc, int(m_Pos.x), int(m_Pos.y), int(m_Size.x), int(m_Size.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
+    }
 }
 
 Object* Object::CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer)
