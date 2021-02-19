@@ -9,7 +9,7 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	Delete_SharedPtr_VecList(m_LayerList);
+	Safe_Delete_VecList(m_LayerList);
 }
 
 Layer* Scene::FindLayer(const string& tag)
@@ -17,7 +17,7 @@ Layer* Scene::FindLayer(const string& tag)
 	for (auto it = m_LayerList.begin(); it != m_LayerList.end(); it++)
 	{
 		if ((*it)->GetTag() == tag)
-			return it->get();
+			return *it;
 	}
 	return nullptr;
 }
@@ -39,7 +39,7 @@ Layer* Scene::CreateLayer(const string& tag, int zOrder)
 	return pLayer;
 }
 
-bool Scene::LayerSort(const shared_ptr<Layer> pL1, const shared_ptr<Layer> pL2)
+bool Scene::LayerSort(const Layer* pL1, const Layer* pL2)
 {
 	return pL1->GetZOrder() < pL2->GetZOrder();
 }
@@ -64,7 +64,7 @@ void Scene::Input(float dt)
 
 		if (!(*it)->GetLife())
 		{
-			it->reset();
+			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
 			continue;
@@ -88,7 +88,7 @@ void Scene::Update(float dt)
 
 		if (!(*it)->GetLife())
 		{
-			it->reset();
+			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
 			continue;
@@ -112,7 +112,7 @@ void Scene::LateUpdate(float dt)
 
 		if (!(*it)->GetLife())
 		{
-			it->reset();
+			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
 			continue;
@@ -136,7 +136,7 @@ void Scene::Collision(float dt)
 
 		if (!(*it)->GetLife())
 		{
-			it->reset();
+			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
 			continue;
@@ -160,7 +160,7 @@ void Scene::Draw(HDC hdc, float dt)
 
 		if (!(*it)->GetLife())
 		{
-			it->reset();
+			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
 			continue;

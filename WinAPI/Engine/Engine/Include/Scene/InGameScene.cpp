@@ -23,5 +23,8 @@ bool InGameScene::Init()
     Object* pPlayer = Object::CreateObject<Player>("Player", pLayer);
     Object* pMinion = Object::CreateObject<Minion>("Minion", pLayer);
 
+    SAFE_RELEASE(pPlayer);
+    SAFE_RELEASE(pMinion);
+
     return true;
 }

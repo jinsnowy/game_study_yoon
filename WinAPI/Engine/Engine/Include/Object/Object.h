@@ -1,11 +1,12 @@
 #pragma once
 #include "../framework.h"
 #include "../Scene/Layer.h"
+#include "Ref.h"
 
-class Object
+class Object : public Ref
 {
 private:
-	static list<shared_ptr<Object>> m_ObjList;
+	static list<Object*> m_ObjList;
 	static unordered_map<string, Object*> m_mapProtoType;
 
 public:
@@ -20,10 +21,6 @@ protected:
 	// ¾À°ú ·¹ÀÌ¾î
 	class Scene* m_pScene;
 	class Layer* m_pLayer;
-
-	// °´Ã¼ º¯¼ö
-	bool m_bEnable;
-	bool m_bLife;
 	
 	Pos m_Pos;
 	Pos m_Pivot;
@@ -40,14 +37,11 @@ public:
 	class Layer* GetLayer() const { return m_pLayer; }
 
 	// °´Ã¼ º¯¼ö Get/Set
-	bool GetEnable() const { return m_bEnable; }
-	bool GetLife() const { return m_bLife; }
+
 	Pos GetPos() const { return m_Pos; }
 	Size GetSize() const { return m_Size; }
 	string GetTag() const { return m_Tag; }
 
-	void Die() { m_bLife = false; }
-	void SetEnable(bool bEnable) { m_bEnable = bEnable; }
 	void SetPos(float x, float y) { m_Pos.x = x; m_Pos.y = y; }
 	void SetSize(float x, float y) { m_Size.x = x; m_Size.y = y; }
 	void SetPos(const Pos& pos) { m_Pos = pos; }

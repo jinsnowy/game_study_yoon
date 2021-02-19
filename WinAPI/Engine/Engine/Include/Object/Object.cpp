@@ -1,11 +1,12 @@
 #include "Object.h"
 #include "../Scene/Layer.h"
 
-list<shared_ptr<Object>> Object::m_ObjList;
+list<Object*> Object::m_ObjList;
 unordered_map<string, Object*> Object::m_mapProtoType;
 
 void Object::AddObject(Object* pObj)
 {
+    pObj->AddRef();
     m_ObjList.emplace_back(pObj);
 }
 
@@ -16,7 +17,7 @@ Object* Object::FindObject(const string& tag)
     {
         if ((*it)->GetTag() == tag)
         {
-            return it->get();
+            return *it;
         }
     }
     return nullptr;
@@ -27,9 +28,9 @@ void Object::EraseObject(Object* pObj)
     auto iterEnd = m_ObjList.end();
     for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
     {
-        if (it->get() == pObj)
+        if (*it == pObj)
         {
-            it->reset();
+            SAFE_RELEASE((*it));
             it = m_ObjList.erase(it);
             return;
         }
@@ -43,7 +44,7 @@ void Object::EraseObject(const string& tag)
     {
         if ((*it)->GetTag() == tag)
         {
-            it->reset();
+            SAFE_RELEASE((*it));
             it = m_ObjList.erase(it);
             return;
         }
@@ -56,13 +57,13 @@ void Object::ErasePrototype(const string& strPrototypeKey)
     if (!it->second)
         return;
 
-    SAFE_DELETE(it->second);
+    SAFE_RELEASE(it->second);
     m_mapProtoType.erase(it);
 }
 
 void Object::EraseAllObjects()
 {
-    Delete_SharedPtr_VecList(m_ObjList);
+    Safe_Release_VecList(m_ObjList);
 }
 
 void Object::EraseAllPrototypes()
@@ -71,8 +72,6 @@ void Object::EraseAllPrototypes()
 }
 
 Object::Object():
-    m_bEnable(true),
-    m_bLife(true),
     m_pScene(nullptr),
     m_pLayer(nullptr),
     m_Pos(0,0),
@@ -123,6 +122,7 @@ Object* Object::CreateCloneObject(const string& strPrototypeKey, const string& s
 
      if (pLayer)
      {
+         SAFE_RELEASE(pObj);
          pLayer->AddObject(pObj);
      }
 

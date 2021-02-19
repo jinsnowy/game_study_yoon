@@ -155,6 +155,7 @@
     <ClInclude Include="Object\MovableObject.h" />
     <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Object\Player.h" />
+    <ClInclude Include="Object\Ref.h" />
     <ClInclude Include="Object\StaticObject.h" />
     <ClInclude Include="Other\UserException.h" />
     <ClInclude Include="Other\WindowsMessageMap.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Object\MovableObject.cpp" />
     <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Object\Player.cpp" />
+    <ClCompile Include="Object\Ref.cpp" />
     <ClCompile Include="Object\StaticObject.cpp" />
     <ClCompile Include="Other\UserException.cpp" />
     <ClCompile Include="Other\WindowsMessageMap.cpp" />

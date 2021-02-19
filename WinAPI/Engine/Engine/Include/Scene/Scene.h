@@ -9,11 +9,11 @@ friend class SceneManager;
 protected:
 	Scene();
 	virtual ~Scene() = 0;
-	list<shared_ptr<Layer>> m_LayerList;
+	list<Layer*> m_LayerList;
 public:
 	Layer* FindLayer(const string& tag);
 	Layer* CreateLayer(const string& tag, int zOrder = 0);
-	static bool LayerSort(const shared_ptr<Layer> pL1, const shared_ptr<Layer> pL2);
+	static bool LayerSort(const Layer* pL1, const Layer* pL2);
 
 	virtual bool Init();
 	virtual void Input(float dt);

@@ -82,20 +82,6 @@ void Safe_Release_VecList(T& p)
 }
 
 template <typename T>
-void Delete_SharedPtr_VecList(T& p)
-{
-	typename T::iterator iter;
-	typename T::iterator iterEnd = p.end();
-
-	for (iter = p.begin(); iter != iterEnd; ++iter)
-	{
-		iter->reset();
-	}
-
-	p.clear();
-}
-
-template <typename T>
 void Safe_Delete_Map(T& p)
 {
 	typename T::iterator iter;

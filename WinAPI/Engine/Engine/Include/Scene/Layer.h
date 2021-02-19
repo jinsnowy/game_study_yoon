@@ -1,6 +1,8 @@
 #pragma once
 #include "../framework.h"
 
+class Scene;
+class Object;
 class Layer
 {
 private:
@@ -11,12 +13,12 @@ private:
 	bool		m_bLife;
 	int			m_zOrder;
 	string	m_tag;
-	class Scene* m_pScene;
-	list<shared_ptr<class Object>> m_ObjList;
+	Scene* m_pScene;
+	list<Object*> m_ObjList;
 public:
 	~Layer();
 
-	void AddObject(class Object* pObj);
+	void AddObject(Object* pObj);
 	// Get/Set method
 	bool GetEnable() const { return m_bEnable; }
 	bool GetLife() const { return m_bLife; }

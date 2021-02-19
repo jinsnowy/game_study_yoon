@@ -16,8 +16,8 @@ Layer::~Layer()
     auto iterEnd = m_ObjList.end();
     for (auto it = m_ObjList.begin(); it != iterEnd; it++)
     {
-        Object::EraseObject(it->get());
-        it->reset();
+        Object::EraseObject(*it);
+        SAFE_RELEASE((*it));
     }
     m_ObjList.clear();
 }
@@ -26,6 +26,7 @@ void Layer::AddObject(Object* pObj)
 {
     pObj->SetScene(m_pScene);
     pObj->SetLayer(this);
+    pObj->AddRef();
     
     m_ObjList.emplace_back(pObj);
 }
@@ -45,8 +46,8 @@ void Layer::Input(float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(it->get());
-            it->reset();
+            Object::EraseObject(*it);
+            SAFE_RELEASE((*it));
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
             continue;
@@ -70,8 +71,8 @@ void Layer::Update(float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(it->get());
-            it->reset();
+            Object::EraseObject(*it);
+            SAFE_RELEASE((*it));
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
             continue;
@@ -95,8 +96,8 @@ void Layer::LateUpdate(float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(it->get());
-            it->reset();
+            Object::EraseObject(*it);
+            SAFE_RELEASE((*it));
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
         }
@@ -119,8 +120,8 @@ void Layer::Collision(float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(it->get());
-            it->reset();
+            Object::EraseObject(*it);
+            SAFE_RELEASE((*it));
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
         }
@@ -143,8 +144,8 @@ void Layer::Draw(HDC hdc, float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(it->get());
-            it->reset();
+            Object::EraseObject(*it);
+            SAFE_RELEASE((*it));
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
         }
