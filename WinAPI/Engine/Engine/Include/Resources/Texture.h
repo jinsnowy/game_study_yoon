@@ -21,4 +21,3 @@ private:
     HBITMAP m_hOldBitmap;
     BITMAP  m_tInfo;
 };
-

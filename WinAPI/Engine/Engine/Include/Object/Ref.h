@@ -5,7 +5,6 @@ class Ref
 protected:
 	Ref();
 	virtual ~Ref() = 0;
-
 protected:
 	bool m_bEnable;
 	bool m_bLife;

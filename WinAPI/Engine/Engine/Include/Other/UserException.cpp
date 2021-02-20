@@ -1,8 +1,6 @@
 #include "UserException.h"
 #include <sstream>
 
-
-
 UserException::UserException(int codeLine, const char* fileName) noexcept
 	:
 	erCodeLine(codeLine),
@@ -16,13 +14,13 @@ const char* UserException::what() const noexcept
 	oss << "[Type] " << GetType() << endl
 		<< GetErrorMessage() << endl;
 
-	mWhatBuffer = oss.str();
-	return mWhatBuffer.c_str();
+	m_whatBuffer = oss.str();
+	return m_whatBuffer.c_str();
 }
 
 const char* UserException::GetType() const noexcept
 {
-	return "User Exception";
+	return "My Exception";
 }
 
 string UserException::GetErrorMessage() const noexcept

@@ -7,7 +7,7 @@ using namespace std;
 class UserException : public exception
 {
 protected:
-	mutable string mWhatBuffer;
+	mutable string m_whatBuffer;
 private:
 	int erCodeLine;
 	string erFileName;

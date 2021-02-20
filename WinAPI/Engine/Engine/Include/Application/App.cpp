@@ -4,10 +4,11 @@
 #include "../Scene/SceneManager.h"
 #include "../Core/PathManager.h"
 #include "../Resources/ResourceManager.h"
+#include "../Resources/Texture.h"
 
 App::App()
 {
-	if (!WINDOW.Init(1200, 900, "My First Game"))
+	if (!WINDOW.Init(1280, 720, "My First Game"))
 	{
 		throw APP_EXCEPT("Window init failed.\n");
 	}
@@ -102,7 +103,16 @@ void App::Collision(float dt)
 
 void App::Draw(float dt)
 {
-	SCENE_MANAGER.Draw(WINDOW.m_hDC, dt);
+	// 더블 버퍼링
+	Texture* pBackBuffer = RESOURCE_MANAGER.GetBackBuffer();
+
+	Rectangle(pBackBuffer->GetDC(), 0, 0, 1280, 720);
+
+	SCENE_MANAGER.Draw(pBackBuffer->GetDC(), dt);
+
+	BitBlt(WINDOW.m_hDC, 0, 0, GETRESOLUTION.x, GETRESOLUTION.y, pBackBuffer->GetDC(), 0, 0, SRCCOPY);
+
+	SAFE_RELEASE(pBackBuffer);
 }
 
 // Error handling

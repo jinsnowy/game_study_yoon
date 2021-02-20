@@ -10,4 +10,3 @@ public:
 	bool CreatePath(const string& strKey, const char* pPath, const string& strBaseKey = ROOT_PATH);
 	const char* FindPath(const string& strKey);
 };
-
