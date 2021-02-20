@@ -14,8 +14,9 @@ Player::~Player()
 
 bool Player::Init()
 {
-	SetPos(Pos(100.0f, 100.0f));
+	SetPos(0.0f, 0.0f);
 	SetSize(Size(300.0f, 300.0f));
+	SetPivot(0.5f, 0.5f);
 	SetSpeed(400.0f);
 
 	SetTexture("Player", "hos.bmp");
@@ -81,7 +82,12 @@ void Player::Fire()
 {
 	Object* pBullet = Object::CreateCloneObject("Bullet", "PlayerBullet", m_pLayer);
 
-	pBullet->SetPos(m_Pos.x + m_Size.x, (m_Pos.y + m_Pos.y + m_Size.y) / 2.f - pBullet->GetSize().y / 2.f);
+	// 오른쪽 가운데를 구한다.
+	Pos tPos;
+	tPos.x = m_Pos.x + (1.0f - m_Pivot.x) * m_Size.x;
+	tPos.y = m_Pos.y + (0.5f - m_Pivot.y) * m_Size.y;
+
+	pBullet->SetPos(tPos.x, tPos.y - pBullet->GetSize().y / 2.f);
 
 	SAFE_RELEASE(pBullet);
 }
