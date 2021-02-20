@@ -2,7 +2,9 @@
 #include "../Core/PathManager.h"
 Texture::Texture()
     :
-    m_hMemDC(nullptr)
+    m_hMemDC(nullptr),
+    m_bColorKeyEnable(false),
+    m_ColorKey(RGB(255, 0, 255))
 {
 }
 
