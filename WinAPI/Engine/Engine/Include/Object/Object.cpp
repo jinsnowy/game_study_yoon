@@ -129,8 +129,9 @@ void Object::Draw(HDC hdc, float dt)
 {
     if (m_pTexture)
     {
+        Pos tPos = m_Pos - m_Size * m_Pivot;
         // (x,y) -> (cx,cy) = (x+w,y+h) / 어디서 부터 출력 (x1,y1) 
-        BitBlt(hdc, int(m_Pos.x), int(m_Pos.y), int(m_Size.x), int(m_Size.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
+        BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_Size.x), int(m_Size.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
     }
 }
 

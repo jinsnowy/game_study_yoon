@@ -36,13 +36,16 @@ public:
 
 	// °´Ã¼ º¯¼ö Get/Set
 	Pos GetPos() const { return m_Pos; }
+	Pos GetPivot() const { return m_Pivot; }
 	Size GetSize() const { return m_Size; }
 	string GetTag() const { return m_Tag; }
 
 	void SetPos(float x, float y) { m_Pos.x = x; m_Pos.y = y; }
 	void SetSize(float x, float y) { m_Size.x = x; m_Size.y = y; }
+	void SetPivot(float x, float y) { m_Pivot.x = x; m_Pivot.y = y; }
 	void SetPos(const Pos& pos) { m_Pos = pos; }
 	void SetSize(const Size& size) { m_Size = size; }
+	void SetPivot(const Pos& pivot) { m_Pivot = pivot; }
 	void SetTag(const string& tag) { m_Tag = tag; }
 public:
 	void SetTexture(class Texture* pTexture);
