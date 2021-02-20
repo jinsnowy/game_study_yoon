@@ -7,7 +7,7 @@ class Object : public Ref
 {
 private:
 	static list<Object*> m_ObjList;
-	class Texture* m_pTexture;
+
 public:
 	static void AddObject(Object* pObj);
 	static Object* FindObject(const string& tag);
@@ -18,7 +18,8 @@ protected:
 	// ¾À°ú ·¹ÀÌ¾î
 	class Scene* m_pScene;
 	class Layer* m_pLayer;
-	
+	class Texture* m_pTexture;
+
 	Pos m_Pos;
 	Pos m_Pivot;
 	Size  m_Size;
@@ -35,6 +36,11 @@ public:
 	class Layer* GetLayer() const { return m_pLayer; }
 
 	// °´Ã¼ º¯¼ö Get/Set
+	float GetLeft() const { return m_Pos.x - m_Size.x * m_Pivot.x; }
+	float GetTop() const { return m_Pos.y - m_Size.y * m_Pivot.y; }
+	float GetRight() const { return GetLeft() + m_Size.x; }
+	float GetBottom() const { return GetTop() + m_Size.y; }
+	Pos GetCenter() { return Pos((GetLeft()+GetRight())/2.f, (GetTop()+GetBottom())/2.f); }
 	Pos GetPos() const { return m_Pos; }
 	Pos GetPivot() const { return m_Pivot; }
 	Size GetSize() const { return m_Size; }

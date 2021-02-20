@@ -4,6 +4,7 @@
 #include "../Scene/Scene.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
+#include "../Core/Camera.h"
 
 list<Object*> Object::m_ObjList;
 
@@ -130,8 +131,18 @@ void Object::Draw(HDC hdc, float dt)
     if (m_pTexture)
     {
         Pos tPos = m_Pos - m_Size * m_Pivot;
-        // (x,y) -> (cx,cy) = (x+w,y+h) / 어디서 부터 출력 (x1,y1) 
-        BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_Size.x), int(m_Size.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
+        tPos -= CAMERA.GetTopLeft();
+        if (m_pTexture->GetColorKeyEnable())
+        {
+            TransparentBlt(hdc, int(tPos.x), int(tPos.y), int(m_Size.x), int(m_Size.y),
+                m_pTexture->GetDC(), 0, 0,
+                m_Size.x, m_Size.y,
+                m_pTexture->GetColorKey());
+        }
+        else 
+        {
+            BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_Size.x), int(m_Size.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
+        }
     }
 }
 
