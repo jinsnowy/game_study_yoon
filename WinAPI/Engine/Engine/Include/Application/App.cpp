@@ -1,10 +1,12 @@
 #include "App.h"
 #include "Window.h"
 #include "../Core/FrameTimer.h"
-#include "../Scene/SceneManager.h"
 #include "../Core/PathManager.h"
+#include "../Core/Camera.h"
+#include "../Scene/SceneManager.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
+
 
 App::App()
 {
@@ -22,16 +24,25 @@ App::App()
 	{
 		throw APP_EXCEPT("Path Manager init failed.\n");
 	}
+	
+	if (!RESOURCE_MANAGER.Init(WINDOW.m_hInst, WINDOW.m_hDC))
+	{
+		throw APP_EXCEPT("ResourceManager init failed.\n");
+	}
+
+	// 씬 초기화 전에 카메라 초기화
+	if (!CAMERA.Init(Pos(0.f, 0.f), GETRESOLUTION, RESOLUTION(1920, 1080)))
+	{
+		throw APP_EXCEPT("Camera init failed.\n");
+	}
 
 	if (!SCENE_MANAGER.Init())
 	{
 		throw APP_EXCEPT("SceneManager init failed.\n");
 	}
 
-	if (!RESOURCE_MANAGER.Init(WINDOW.m_hInst, WINDOW.m_hDC))
-	{
-		throw APP_EXCEPT("ResourceManager init failed.\n");
-	}
+
+
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// _CrtSetBreakAlloc(237);
@@ -84,11 +95,13 @@ void App::Process()
 void App::Input(float dt)
 {
 	SCENE_MANAGER.Input(dt);
+	CAMERA.Input(dt);
 }
 
 void App::Update(float dt)
 {
 	SCENE_MANAGER.Update(dt);
+	CAMERA.Update(dt);
 }
 
 void App::LateUpdate(float dt)

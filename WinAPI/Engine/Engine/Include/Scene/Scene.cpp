@@ -6,8 +6,9 @@ unordered_map<string, Object*> Scene::m_mapProtoType;
 
 Scene::Scene()
 {
-	Layer* pLayer = CreateLayer("Default");
-	pLayer = CreateLayer("UI", INT_MAX);
+	Layer* pLayer = CreateLayer("UI", INT_MAX);
+	pLayer = CreateLayer("Default", 1);
+	pLayer = CreateLayer("Stage");
 }
 
 Scene::~Scene()
@@ -19,7 +20,7 @@ Scene::~Scene()
 void Scene::ErasePrototype(const string& strPrototypeKey)
 {
 	auto it = m_mapProtoType.find(strPrototypeKey);
-	if (!it->second)
+	if (it == m_mapProtoType.end())
 		return;
 
 	SAFE_RELEASE(it->second);
@@ -167,7 +168,7 @@ void Scene::Collision(float dt)
 void Scene::Draw(HDC hdc, float dt)
 {
 	auto iterEnd = m_LayerList.end();
-	for (auto it = m_LayerList.begin(); it != iterEnd; ++it)
+	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{
 		if (!(*it)->GetEnable())
 		{

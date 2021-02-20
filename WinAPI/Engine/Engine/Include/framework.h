@@ -29,6 +29,7 @@
 #define SCENE_MANAGER (SceneManager::Instance())
 #define PATH_MANAGER (PathManager::Instance())
 #define RESOURCE_MANAGER (ResourceManager::Instance())
+#define CAMERA (Camera::Instance())
 
 
 // C 런타임 헤더 파일입니다.

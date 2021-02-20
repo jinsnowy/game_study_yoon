@@ -11,35 +11,53 @@ public:
 		x(x_in),
 		y(y_in)
 	{}
+	Vec2_(const Vec2_& rhs) 
+	{
+		*this = rhs;
+	}
 	template<typename S>
 	explicit Vec2_(const Vec2_<S>& src)
 		:
 		x( (T)src.x ),
 		y( (T)src.y )
 	{}
-	Vec2_ operator+(const Vec2_& rhs) const
+	Vec2_& operator=(const Vec2_& rhs)
 	{
-		return Vec2_(x + rhs.x, y + rhs.y);
-	}
-	Vec2_& operator+=(const Vec2_& rhs)
-	{
-		return *this = *this + rhs;
+		x = rhs.x;
+		y = rhs.y;
+		return *this;
 	}
 	Vec2_ operator*(T rhs) const
 	{
 		return Vec2_(x * rhs, y * rhs);
 	}
-	Vec2_ operator*(const Vec2_& rhs) const
-	{
-		return Vec2_(x * rhs.x, y * rhs.y);
-	}
 	Vec2_& operator*=(T rhs)
 	{
 		return *this = *this * rhs;
 	}
-	Vec2_ operator-(const Vec2_& rhs) const
+	template<typename S>
+	Vec2_ operator*(const Vec2_<S>& rhs) const
 	{
-		return Vec2_(x - rhs.x, y - rhs.y);
+		return Vec2_(x * (T)rhs.x, y * (T)rhs.y);
+	}
+	template<typename S>
+	Vec2_ operator/(const Vec2_<S>& rhs) const
+	{
+		return Vec2_(x / (T)rhs.x, y / (T)rhs.y);
+	}
+	template<typename S>
+	Vec2_ operator+(const Vec2_<S>& rhs) const
+	{
+		return Vec2_(x + (T)rhs.x, y + (T)rhs.y);
+	}
+	template<typename S>
+	Vec2_ operator-(const Vec2_<S>& rhs) const
+	{
+		return Vec2_(x - (T)rhs.x, y - (T)rhs.y);
+	}
+	Vec2_& operator+=(const Vec2_& rhs)
+	{
+		return *this = *this + rhs;
 	}
 	Vec2_& operator-=(const Vec2_& rhs)
 	{

@@ -5,7 +5,7 @@
 Minion::Minion()
 	:
 	m_FireTime(0.f),
-	m_FireLimitTime(1.f),
+	m_FireLimitTime(0.8f),
 	m_Dir(MD_FRONT)
 {
 }
@@ -26,7 +26,10 @@ bool Minion::Init()
 {
 	SetPos(800.0f, 100.0f);
 	SetSize(100.0f, 100.0f);
+	SetPivot(0.5f, 0.5f);
 	SetSpeed(300.0f);
+
+	SetTexture("Minion", "minion.bmp");
 
 	return true;
 }
@@ -79,7 +82,6 @@ void Minion::Collision(float dt)
 void Minion::Draw(HDC hDC, float dt)
 {
 	MovableObject::Draw(hDC, dt);
-	Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
 }
 
 Minion* Minion::Clone()
@@ -93,7 +95,10 @@ void Minion::Fire()
 
 	((MovableObject*)pBullet)->SetAngle(PI);
 
-	pBullet->SetPos(m_Pos.x - pBullet->GetSize().x, (m_Pos.y + m_Pos.y + m_Size.y) / 2.f - pBullet->GetSize().y / 2.f);
+	float x = GetLeft() - (1.f - pBullet->GetPivot().x) * pBullet->GetSize().x;
+	float y = GetCenter().y;
+
+	pBullet->SetPos(x, y);
 
 	SAFE_RELEASE(pBullet);
 }

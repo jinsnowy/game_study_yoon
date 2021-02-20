@@ -1,5 +1,5 @@
 #include "Bullet.h"
-
+#include "../Resources/Texture.h"
 Bullet::Bullet()
     : m_Dist(0.f),
       m_LimitDist(500.f)
@@ -22,9 +22,10 @@ Bullet::~Bullet()
 bool Bullet::Init()
 {
     SetSpeed(500.0f);
-
+    SetSize(50.0f, 50.0f);
     SetTexture("Bullet", "bullet.bmp");
 
+    m_pTexture->SetColorKey(255, 0, 255);
     return true;
 }
 

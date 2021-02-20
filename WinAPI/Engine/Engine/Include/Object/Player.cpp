@@ -14,8 +14,8 @@ Player::~Player()
 
 bool Player::Init()
 {
-	SetPos(0.0f, 0.0f);
-	SetSize(Size(300.0f, 300.0f));
+	SetPos(50.0f, 50.0f);
+	SetSize(100.0f, 100.0f);
 	SetPivot(0.5f, 0.5f);
 	SetSpeed(400.0f);
 
@@ -69,7 +69,7 @@ void Player::Collision(float dt)
 
 void Player::Draw(HDC hDC, float dt)
 {
-	MovableObject::Draw(hDC, dt);
+  	MovableObject::Draw(hDC, dt);
 	// Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
 }
 
@@ -84,8 +84,8 @@ void Player::Fire()
 
 	// 오른쪽 가운데를 구한다.
 	Pos tPos;
-	tPos.x = m_Pos.x + (1.0f - m_Pivot.x) * m_Size.x;
-	tPos.y = m_Pos.y + (0.5f - m_Pivot.y) * m_Size.y;
+	tPos.x = GetRight() + pBullet->GetPivot().x * pBullet->GetSize().x;
+	tPos.y = GetCenter().y;
 
 	pBullet->SetPos(tPos.x, tPos.y - pBullet->GetSize().y / 2.f);
 

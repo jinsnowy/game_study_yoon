@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Application\App.h" />
     <ClInclude Include="Application\Window.h" />
+    <ClInclude Include="Core\Camera.h" />
     <ClInclude Include="Core\FrameTimer.h" />
     <ClInclude Include="Core\Keyboard.h" />
     <ClInclude Include="Core\Mouse.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Object\Player.h" />
     <ClInclude Include="Object\Ref.h" />
+    <ClInclude Include="Object\Stage.h" />
     <ClInclude Include="Object\StaticObject.h" />
     <ClInclude Include="Other\UserException.h" />
     <ClInclude Include="Other\WindowsMessageMap.h" />
@@ -183,6 +185,7 @@
   <ItemGroup>
     <ClCompile Include="Application\App.cpp" />
     <ClCompile Include="Application\Window.cpp" />
+    <ClCompile Include="Core\Camera.cpp" />
     <ClCompile Include="Core\FrameTimer.cpp" />
     <ClCompile Include="Core\Keyboard.cpp" />
     <ClCompile Include="Core\Mouse.cpp" />
@@ -193,6 +196,7 @@
     <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Object\Player.cpp" />
     <ClCompile Include="Object\Ref.cpp" />
+    <ClCompile Include="Object\Stage.cpp" />
     <ClCompile Include="Object\StaticObject.cpp" />
     <ClCompile Include="Other\UserException.cpp" />
     <ClCompile Include="Other\WindowsMessageMap.cpp" />
@@ -208,6 +212,13 @@
     <ResourceCompile Include="Engine.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\Bin\Texture\BackBuffer.bmp" />
+    <Image Include="..\Bin\Texture\bullet.bmp" />
+    <Image Include="..\Bin\Texture\hos.bmp" />
+    <Image Include="..\Bin\Texture\Stage1.bmp" />
+    <Image Include="..\Bin\Texture\Stage1.jpg" />
+    <Image Include="..\Bin\Texture\Stage2.bmp" />
+    <Image Include="..\Bin\Texture\Stage2.jpg" />
     <Image Include="Engine.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

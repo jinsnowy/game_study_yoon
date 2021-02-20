@@ -46,6 +46,21 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{00fb8c50-8de3-47a1-a4da-10d76cee27a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\02. StaticObj\01. Stage">
+      <UniqueIdentifier>{816b7ac5-6f28-4def-abf9-c64f10810444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{b3cb4ae2-1145-45e3-8a2b-c7a4c2168dc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\01. FrameTimer">
+      <UniqueIdentifier>{ae5db66a-679a-47d4-9619-e623c51773b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\02. Path">
+      <UniqueIdentifier>{35ba386b-d61e-4fa7-91bb-3fe804b915c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\03. Camera">
+      <UniqueIdentifier>{bc6471ab-7dc8-4c62-902f-7969080c43f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -114,16 +129,10 @@
     <ClInclude Include="Object\Bullet.h">
       <Filter>Object\03. Bullet</Filter>
     </ClInclude>
-    <ClInclude Include="Core\FrameTimer.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Keyboard.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Mouse.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\PathManager.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Resources\ResourceManager.h">
@@ -131,6 +140,18 @@
     </ClInclude>
     <ClInclude Include="Resources\Texture.h">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Stage.h">
+      <Filter>Object\02. StaticObj\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\FrameTimer.h">
+      <Filter>Core\01. FrameTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\PathManager.h">
+      <Filter>Core\02. Path</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Camera.h">
+      <Filter>Core\03. Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -182,16 +203,10 @@
     <ClCompile Include="Object\Bullet.cpp">
       <Filter>Object\03. Bullet</Filter>
     </ClCompile>
-    <ClCompile Include="Core\FrameTimer.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Keyboard.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Mouse.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\PathManager.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Resources\ResourceManager.cpp">
@@ -199,6 +214,18 @@
     </ClCompile>
     <ClCompile Include="Resources\Texture.cpp">
       <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Stage.cpp">
+      <Filter>Object\02. StaticObj\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\FrameTimer.cpp">
+      <Filter>Core\01. FrameTimer</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\PathManager.cpp">
+      <Filter>Core\02. Path</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Camera.cpp">
+      <Filter>Core\03. Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +239,27 @@
     </Image>
     <Image Include="Engine.ico">
       <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Bin\Texture\BackBuffer.bmp">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="..\Bin\Texture\bullet.bmp">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="..\Bin\Texture\hos.bmp">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="..\Bin\Texture\Stage1.bmp">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="..\Bin\Texture\Stage1.jpg">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="..\Bin\Texture\Stage2.bmp">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="..\Bin\Texture\Stage2.jpg">
+      <Filter>Textures</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

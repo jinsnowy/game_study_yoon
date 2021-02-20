@@ -2,6 +2,8 @@
 #include "../Object/Player.h"
 #include "../Object/Minion.h"
 #include "../Object/Bullet.h"
+#include "../Object/Stage.h"
+#include "../Core/Camera.h"
 #include "Layer.h"
 
 InGameScene::InGameScene()
@@ -22,6 +24,8 @@ bool InGameScene::Init()
     Layer* pLayer = FindLayer("Default");
 
     Object* pPlayer = Object::CreateObject<Player>("Player", pLayer);
+    CAMERA.SetTarget(pPlayer);
+    CAMERA.SetPivot(0.5f, 0.5f);
     SAFE_RELEASE(pPlayer);
 
     Object* pMinion = Object::CreateObject<Minion>("Minion", pLayer);
@@ -29,7 +33,12 @@ bool InGameScene::Init()
 
     Bullet* pBullet = Scene::CreatePrototype<Bullet>("Bullet");
     pBullet->SetSize(50.f, 50.f);
-
     SAFE_RELEASE(pBullet);
+
+    Layer* pStageLayer = FindLayer("Stage");
+
+    Stage* pStage = Object::CreateObject<Stage>("Stage", pStageLayer);
+    SAFE_RELEASE(pStage);
+    
     return true;
 }
