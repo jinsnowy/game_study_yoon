@@ -5,6 +5,11 @@
 #define SAFE_DELETE_ARRAY(p)	if(p)	{delete[] p; p = nullptr;}
 #define SAFE_RELEASE(p)			if(p)	{p->Release(); p = nullptr;}
 
+#define KEYDOWN(key)	(Input::Instance().KeyDown(key))
+#define KEYUP(key)		(Input::Instance().KeyUp(key))
+#define KEYPRESS(key)	(Input::Instance().KeyPress(key))
+// #define KEYON(key)		(KEYDOWN(key) || KEYPRESS(key))
+
 #define DEFINITION_SINGLE(Type) Type Type::INSTANCE;
 #define DECLARE_SINGLE(Type)	\
 		private:\

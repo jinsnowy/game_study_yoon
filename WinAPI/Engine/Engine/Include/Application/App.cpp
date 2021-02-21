@@ -3,6 +3,7 @@
 #include "../Core/FrameTimer.h"
 #include "../Core/PathManager.h"
 #include "../Core/Camera.h"
+#include "../Core/Input.h"
 #include "../Scene/SceneManager.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
@@ -30,6 +31,11 @@ App::App()
 		throw APP_EXCEPT("ResourceManager init failed.\n");
 	}
 
+	if (!INPUT.Init(WINDOW.m_hWnd))
+	{
+		throw APP_EXCEPT("Input init failed.\n");
+	}
+
 	// 씬 초기화 전에 카메라 초기화
 	if (!CAMERA.Init(Pos(0.f, 0.f), GETRESOLUTION, RESOLUTION(1920, 1080)))
 	{
@@ -40,9 +46,6 @@ App::App()
 	{
 		throw APP_EXCEPT("SceneManager init failed.\n");
 	}
-
-
-
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// _CrtSetBreakAlloc(237);
@@ -100,6 +103,7 @@ void App::Input(float dt)
 
 void App::Update(float dt)
 {
+	INPUT.Update(dt);
 	SCENE_MANAGER.Update(dt);
 	CAMERA.Update(dt);
 }

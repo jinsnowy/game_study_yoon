@@ -30,6 +30,7 @@
 #define PATH_MANAGER (PathManager::Instance())
 #define RESOURCE_MANAGER (ResourceManager::Instance())
 #define CAMERA (Camera::Instance())
+#define INPUT (Input::Instance())
 
 
 // C 런타임 헤더 파일입니다.
@@ -43,6 +44,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <typeinfo>
 
 // 자료구조
 #include <bitset>
@@ -97,6 +99,19 @@ void Safe_Release_VecList(T& p)
 }
 
 template <typename T>
+void Safe_Delete_Map(T& p)
+{
+	typename T::iterator iter;
+	typename T::iterator iterEnd = p.end();
+
+	for (iter = p.begin(); iter != iterEnd; ++iter)
+	{
+		SAFE_DELETE(iter->second)
+	}
+	p.clear();
+}
+
+template <typename T>
 void Safe_Release_Map(T& p)
 {
 	typename T::iterator iter;
@@ -106,6 +121,5 @@ void Safe_Release_Map(T& p)
 	{
 		SAFE_RELEASE(iter->second)
 	}
-
 	p.clear();
 }
