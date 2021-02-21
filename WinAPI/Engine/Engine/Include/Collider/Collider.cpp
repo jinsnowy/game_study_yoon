@@ -1,4 +1,5 @@
 #include "Collider.h"
+#include "../Object/Object.h"
 
 Collider::Collider()
 	:
@@ -25,7 +26,7 @@ int Collider::Update(float dt)
 }
 
 int Collider::LateUpdate(float dt)
-{
+{ 
 	return 0;
 }
 
