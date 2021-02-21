@@ -55,9 +55,16 @@ int ColliderRect::LateUpdate(float dt)
 	return 0;
 }
 
-void ColliderRect::Collision(float dt)
+bool ColliderRect::CheckCollision(Collider* pDst)
 {
-	Collider::Collision(dt);
+	switch (pDst->GetColliderType())
+	{
+	case CT_RECT:
+		return CollisionRectToRect(m_tWorldInfo, ((ColliderRect*)pDst)->GetWorldInfo());
+		
+	
+	}
+	return false;
 }
 
 void ColliderRect::Draw(HDC hDC, float dt)

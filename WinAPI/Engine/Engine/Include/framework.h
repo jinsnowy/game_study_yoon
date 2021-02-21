@@ -54,6 +54,8 @@
 
 // 알고리즘
 #include <algorithm>
+#include <functional>
+
 
 #include "Types/Vec2.h"
 #include "Types/Rect.h"

@@ -6,11 +6,6 @@ class SceneManager
 {
 	DECLARE_SINGLE(SceneManager)
 private:
-	enum class SCENE_CREATE
-	{
-		SC_CURRENT,
-		SC_NEXT
-	};
 private:
 	Scene* m_pScene;
 	Scene* m_pNextScene;
@@ -35,11 +30,11 @@ public:
 		}
 		switch (sc)
 		{
-		case SCENE_CREATE::SC_CURRENT:
+		case SC_CURRENT:
 				SAFE_DELETE(m_pScene);
 				m_pScene = pScene;
 				break;
-		case SCENE_CREATE::SC_NEXT:
+		case SC_NEXT:
 			SAFE_DELETE(m_pNextScene);
 			m_pNextScene = pScene;
 			break;

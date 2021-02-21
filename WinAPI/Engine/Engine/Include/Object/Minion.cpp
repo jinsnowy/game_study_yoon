@@ -38,6 +38,7 @@ bool Minion::Init()
 	ColliderRect* pRC = AddCollider<ColliderRect>("Minion");
 
 	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
+	pRC->AddCollisionFunction(CS_ENTER, this, &Minion::CollisionBullet);
 
 	SAFE_RELEASE(pRC);
 
@@ -97,6 +98,11 @@ void Minion::Draw(HDC hDC, float dt)
 Minion* Minion::Clone()
 {
 	return new Minion(*this);
+}
+
+void Minion::CollisionBullet(Collider* pSrc, Collider* pDst, float dt)
+{
+	MessageBox(NULL, "충돌", "충돌", MB_OK);
 }
 
 void Minion::Fire()

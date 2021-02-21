@@ -27,10 +27,15 @@ Object::Object(const Object& obj)
         m_pTexture->AddRef();
 
     m_ColliderList.clear();
-
-    for (auto iter = obj.m_ColliderList.begin(); iter != obj.m_ColliderList.end(); iter++)
+    // 충돌체 복사
+    list<Collider*>::const_iterator iter;
+    list<Collider*>::const_iterator iterEnd = obj.m_ColliderList.end();
+    for (iter = obj.m_ColliderList.begin(); iter != iterEnd; iter++)
     {
         Collider* pColl = (*iter)->Clone();
+
+        pColl->SetObj(this);
+
         m_ColliderList.push_back(pColl);
     }
 }
@@ -41,7 +46,6 @@ Object::~Object()
 }
 
 // ----------- Add and Delete Object from Object List
-
 void Object::AddObject(Object* pObj)
 {
     pObj->AddRef();

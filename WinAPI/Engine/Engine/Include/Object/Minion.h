@@ -19,6 +19,8 @@ public:
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
 	virtual Minion* Clone();
+public:
+	void CollisionBullet(class Collider* pSrc, class Collider* pDst, float dt);
 private:
 	void Fire();
 };

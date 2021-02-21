@@ -1,4 +1,11 @@
 #pragma once
+// Sene Type
+enum SCENE_CREATE
+{
+	SC_CURRENT,
+	SC_NEXT
+};
+
 
 // Move dir type
 enum MOVE_DIR
@@ -17,4 +24,13 @@ enum COLLIDER_TYPE
 	CT_POINT,
 	CT_PIXEL,
 	CT_END
+};
+
+// Collision State
+enum COLLISION_STATE
+{
+	CS_ENTER,
+	CS_STAY,
+	CS_LEAVE,
+	CS_END
 };

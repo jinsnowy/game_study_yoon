@@ -11,9 +11,69 @@ protected:
 	virtual ~Collider() = 0;
 
 protected:
-	COLLIDER_TYPE m_eCollType;
-	class Object* m_pObject;
+	COLLIDER_TYPE	m_eCollType;
+	class Object*	m_pObject;
+	// 충돌 판정된 충돌체 리스트
+	list<Collider*> m_CollisionList;
+	// 내 충돌체, 상대방 충돌체 그리고 delta 타임
+	list <function<void(Collider*, Collider*, float)>> m_FuncList[CS_END];
 public:
+	void AddCollisionFunction(COLLISION_STATE eState, void (*pFunc)(Collider*, Collider*, float))
+	{
+		function<void(Collider*, Collider*, float)> func;
+
+		func = bind(pFunc, placeholders::_1, placeholders::_2, placeholders::_3);
+		m_FuncList[eState].push_back(func);
+	}
+	template<typename T>
+	void AddCollisionFunction(COLLISION_STATE eState, T* pObj, void (T::*pFunc)(Collider*, Collider*, float))
+	{
+		function<void(Collider*, Collider*, float)> func;
+
+		func = bind(pFunc, pObj, placeholders::_1, placeholders::_2, placeholders::_3);
+		m_FuncList[eState].push_back(func);
+	}
+	void CallFunction(COLLISION_STATE eState, Collider* pDst, float dt)
+	{
+		list<function<void(Collider*, Collider*, float)>>::iterator iter;
+		list<function<void(Collider*, Collider*, float)>>::iterator iterEnd = m_FuncList[eState].end();
+
+		for (iter = m_FuncList[eState].begin(); iter != iterEnd; ++iter)
+		{
+			(*iter)(this, pDst, dt);
+		}
+	}
+public:
+	void AddCollider(Collider* pCollider)
+	{
+		m_CollisionList.push_back(pCollider);
+	}
+	bool CheckCollisionList(Collider* pCollider)
+	{
+		list<Collider*>::iterator iter;
+		list<Collider*>::iterator iterEnd = m_CollisionList.end();
+		for (iter = m_CollisionList.begin(); iter != iterEnd; ++iter)
+		{
+			if (*iter == pCollider)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	void EraseCollisionList(Collider* pCollider)
+	{
+		list<Collider*>::iterator iter;
+		list<Collider*>::iterator iterEnd = m_CollisionList.end();
+		for (iter = m_CollisionList.begin(); iter != iterEnd; ++iter)
+		{
+			if (*iter == pCollider)
+			{
+				m_CollisionList.erase(iter);
+				break;
+			}
+		}
+	}
 	COLLIDER_TYPE GetColliderType() const
 	{
 		return m_eCollType;
@@ -26,14 +86,15 @@ public:
 	{
 		m_pObject = pObject;
 	}
-
 public:
 	virtual bool Init() = 0;
 	virtual void Input(float dt);
 	virtual int Update(float dt);
 	virtual int LateUpdate(float dt);
-	virtual void Collision(float dt);
+	virtual bool CheckCollision(Collider* pDst);
 	virtual void Draw(HDC hdc, float dt);
 	virtual Collider* Clone() = 0;
+protected:
+	bool CollisionRectToRect(const Rect& src, const Rect& dst);
 };
 

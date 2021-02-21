@@ -20,6 +20,11 @@ protected:
 	class Texture* m_pTexture;
 	list<class Collider*> m_ColliderList;
 public:
+	const list<class Collider*>* GetColliderList() const 
+	{
+		return &m_ColliderList;
+	}
+public:
 	template<typename T>
 	T* AddCollider(const string& strTag)
 	{
