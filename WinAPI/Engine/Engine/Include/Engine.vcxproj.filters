@@ -61,6 +61,12 @@
     <Filter Include="Core\03. Camera">
       <UniqueIdentifier>{bc6471ab-7dc8-4c62-902f-7969080c43f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\04. Input">
+      <UniqueIdentifier>{74e5fb1c-c67e-41d5-913e-b10b28542967}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collider">
+      <UniqueIdentifier>{4d929710-3db0-41fd-9b5c-7107e84f9083}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -153,6 +159,18 @@
     <ClInclude Include="Core\Camera.h">
       <Filter>Core\03. Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Input.h">
+      <Filter>Core\04. Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\Collider.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\ColliderRect.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\CollisionManager.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -227,6 +245,18 @@
     <ClCompile Include="Core\Camera.cpp">
       <Filter>Core\03. Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Input.cpp">
+      <Filter>Core\04. Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider\Collider.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider\ColliderRect.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider\CollisionManager.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc">
@@ -259,6 +289,9 @@
       <Filter>Textures</Filter>
     </Image>
     <Image Include="..\Bin\Texture\Stage2.jpg">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="..\Bin\Texture\minion.bmp">
       <Filter>Textures</Filter>
     </Image>
   </ItemGroup>

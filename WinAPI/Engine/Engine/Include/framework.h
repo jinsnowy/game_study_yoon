@@ -23,8 +23,7 @@
 #define GETDC (Window::Instance().GetWndDC())
 
 
-#define KEYBOARD (Keyboard::Instance())
-#define MOUSE (Mouse::Instance())
+#define COLLISION_MANAGER (CollisionManager::Instance())
 #define TIMER (FrameTimer::Instance())
 #define SCENE_MANAGER (SceneManager::Instance())
 #define PATH_MANAGER (PathManager::Instance())
@@ -69,6 +68,7 @@ using namespace std;
 typedef Vec2F Size;
 typedef Vec2F Pos;
 typedef Vec2I RESOLUTION;
+typedef RectF Rect;
 
 template <typename T>
 void Safe_Delete_VecList(T& p)

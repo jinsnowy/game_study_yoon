@@ -1,6 +1,8 @@
 #include "Minion.h"
 #include "../framework.h"
 #include "../Application/Window.h"
+#include "../Resources/Texture.h"
+#include "../Collider/ColliderRect.h"
 
 Minion::Minion()
 	:
@@ -28,8 +30,16 @@ bool Minion::Init()
 	SetSize(100.0f, 100.0f);
 	SetPivot(0.5f, 0.5f);
 	SetSpeed(300.0f);
+	m_Dir = MD_FRONT;
 
 	SetTexture("Minion", "minion.bmp");
+	m_pTexture->SetColorKey(255, 0, 255);
+
+	ColliderRect* pRC = AddCollider<ColliderRect>("Minion");
+
+	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
+
+	SAFE_RELEASE(pRC);
 
 	return true;
 }

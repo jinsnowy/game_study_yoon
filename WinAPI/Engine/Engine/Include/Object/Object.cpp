@@ -123,11 +123,54 @@ void Object::Input(float dt)
 
 int Object::Update(float dt)
 {
+    list<Collider*>::iterator iter;
+    list<Collider*>::iterator iterEnd = m_ColliderList.end();
+
+    for (iter = m_ColliderList.begin(); iter != iterEnd;)
+    {
+        if (!(*iter)->GetEnable())
+        {
+            ++iter;
+            continue;
+        }
+
+        (*iter)->Update(dt);
+
+        if (!(*iter)->GetLife())
+        {
+            SAFE_RELEASE((*iter));
+            iter = m_ColliderList.erase(iter);
+            iterEnd = m_ColliderList.end();
+        }
+        else ++iter;
+    }
+  
     return 0;
 }
 
 int Object::LateUpdate(float dt)
 {
+    list<Collider*>::iterator iter;
+    list<Collider*>::iterator iterEnd = m_ColliderList.end();
+
+    for (iter = m_ColliderList.begin(); iter != iterEnd;)
+    {
+        if (!(*iter)->GetEnable())
+        {
+            ++iter;
+            continue;
+        }
+
+        (*iter)->LateUpdate(dt);
+
+        if (!(*iter)->GetLife())
+        {
+            SAFE_RELEASE((*iter));
+            iter = m_ColliderList.erase(iter);
+            iterEnd = m_ColliderList.end();
+        }
+        else ++iter;
+    }
     return 0;
 }
 
@@ -152,6 +195,28 @@ void Object::Draw(HDC hdc, float dt)
         {
             BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_Size.x), int(m_Size.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
         }
+    }
+
+    list<Collider*>::iterator iter;
+    list<Collider*>::iterator iterEnd = m_ColliderList.end();
+
+    for (iter = m_ColliderList.begin(); iter != iterEnd;)
+    {
+        if (!(*iter)->GetEnable())
+        {
+            ++iter;
+            continue;
+        }
+
+        (*iter)->Draw(hdc, dt);
+
+        if (!(*iter)->GetLife())
+        {
+            SAFE_RELEASE((*iter));
+            iter = m_ColliderList.erase(iter);
+            iterEnd = m_ColliderList.end();
+        }
+        else ++iter;
     }
 }
 

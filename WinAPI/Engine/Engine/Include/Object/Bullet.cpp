@@ -1,5 +1,6 @@
 #include "Bullet.h"
 #include "../Resources/Texture.h"
+#include "../Collider/ColliderRect.h"
 Bullet::Bullet()
     : m_Dist(0.f),
       m_LimitDist(500.f)
@@ -22,10 +23,14 @@ Bullet::~Bullet()
 bool Bullet::Init()
 {
     SetSpeed(500.0f);
+    SetPivot(0.5f, 0.5f);
     SetSize(50.0f, 50.0f);
     SetTexture("Bullet", "bullet.bmp");
 
     m_pTexture->SetColorKey(255, 0, 255);
+
+    ColliderRect* pRC = AddCollider<ColliderRect>("Bullet");
+    pRC->SetRect(-25.f, -25.f, 25.f, 25.f);
     return true;
 }
 

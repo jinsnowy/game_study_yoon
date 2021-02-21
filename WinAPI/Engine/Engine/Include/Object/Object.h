@@ -7,7 +7,6 @@ class Object : public Ref
 {
 private:
 	static list<Object*> m_ObjList;
-
 public:
 	static void AddObject(Object* pObj);
 	static Object* FindObject(const string& tag);
@@ -15,11 +14,37 @@ public:
 	static void EraseObject(const string& tag);
 	static void EraseAllObjects();
 protected:
-	// 씬과 레이어
+	// 씬, 레이어, 텍스쳐, 콜라이더
 	class Scene* m_pScene;
 	class Layer* m_pLayer;
 	class Texture* m_pTexture;
+	list<class Collider*> m_ColliderList;
+public:
+	template<typename T>
+	T* AddCollider(const string& strTag)
+	{
+		T* pCollider = new T;
 
+		pCollider->SetObj(this);
+
+		if (!pCollider->Init())
+		{
+			SAFE_RELEASE(pCollider);
+			return nullptr;
+		}
+
+		pCollider->AddRef();
+		m_ColliderList.push_back(pCollider);
+
+		return pCollider;
+	}
+
+	bool CheckCollider() const
+	{
+		return !m_ColliderList.empty();
+	}
+
+protected:
 	Pos m_Pos;
 	Pos m_Pivot;
 	Size  m_Size;

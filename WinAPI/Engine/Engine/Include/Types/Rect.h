@@ -25,28 +25,19 @@ public:
 		Rect_(topLeft, topLeft + Vec2_<T>(width, height))
 	{
 	}
-	bool IsOverlappingWith(const Rect_& other) const
+	bool IsCollideRect(const Rect_& other) const
 	{
 		return right > other.left && left < other.right
 			&& bottom > other.top && top < other.bottom;
 	}
-	bool IsContainedBy(const Rect_& other) const
+	bool IsInsideRect(const Rect_& other) const
 	{
 		return left >= other.left && right <= other.right &&
 			top >= other.top && bottom <= other.bottom;
 	}
-	bool Contains(const Vec2_<T>& point) const
+	bool ContainsPoint(const Vec2_<T>& point) const
 	{
 		return point.x >= left && point.x < right&& point.y >= top && point.y < bottom;
-	}
-	Rect_ FromCenter(const Vec2_<T>& center, T halfWidth, T halfHeight)
-	{
-		const Vec2_<T> half(halfWidth, halfHeight);
-		return Rect_(center - half, center + half);
-	}
-	Rect_ GetExpanded(T offset) const
-	{
-		return Rect_(left - offset, right + offset, top - offset, bottom + offset);
 	}
 	Vec2_<T> GetCenter() const
 	{
@@ -59,6 +50,13 @@ public:
 	T GetHeight() const
 	{
 		return bottom - top;
+	}
+	void SetRect(T l, T t, T r, T b)
+	{
+		left = l;
+		top = t;
+		right = r;
+		bottom = b;
 	}
 public:
 	T left;

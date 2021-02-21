@@ -1,5 +1,6 @@
 #include "Layer.h"
 #include "../Object/Object.h"
+#include "../Collider/CollisionManager.h"
 
 Layer::Layer()
     :
@@ -50,9 +51,8 @@ void Layer::Input(float dt)
             SAFE_RELEASE((*it));
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
-            continue;
         }
-        ++it;
+        else ++it;
     }
 }
 
@@ -75,9 +75,8 @@ void Layer::Update(float dt)
             SAFE_RELEASE((*it));
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
-            continue;
         }
-        ++it;
+        else ++it;
     }
 }
 
@@ -101,7 +100,7 @@ void Layer::LateUpdate(float dt)
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
         }
-        ++it;
+        else ++it;
     }
 }
 
@@ -116,8 +115,6 @@ void Layer::Collision(float dt)
             continue;
         }
 
-        (*it)->Collision(dt);
-
         if (!(*it)->GetLife())
         {
             Object::EraseObject(*it);
@@ -125,7 +122,11 @@ void Layer::Collision(float dt)
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
         }
-        ++it;
+        else 
+        {
+            COLLISION_MANAGER.AddObject(*it);
+            ++it; 
+        }
     }
 }
 
@@ -149,6 +150,6 @@ void Layer::Draw(HDC hdc, float dt)
             it = m_ObjList.erase(it);
             iterEnd = m_ObjList.end();
         }
-        ++it;
+        else ++it;
     }
 }

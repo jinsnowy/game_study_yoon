@@ -62,7 +62,7 @@ void Stage::Draw(HDC hDC, float dt)
         BitBlt(hDC, int(tPos.x), int(tPos.y),
             CAMERA.GetClientRS().x, CAMERA.GetClientRS().y,
             m_pTexture->GetDC(),
-            tCamTopLeft.x, tCamTopLeft.y,
+            int(tCamTopLeft.x), int(tCamTopLeft.y),
             SRCCOPY);
     }
 }

@@ -1,5 +1,6 @@
 #include "Player.h"
-
+#include "../Core/Input.h"
+#include "../Collider/ColliderRect.h"
 Player::Player()
 {
 }
@@ -27,26 +28,29 @@ bool Player::Init()
 void Player::Input(float dt)
 {
 	MovableObject::Input(dt);
-
-	if (GetAsyncKeyState('W') & 0x8000)
-	{
-		MoveYFromSpeed(dt, MD_BACK);
-	}
-	if (GetAsyncKeyState('S') & 0x8000)
+	if (KEYPRESS("MoveBack"))
 	{
 		MoveYFromSpeed(dt, MD_FRONT);
 	}
-	if (GetAsyncKeyState('A') & 0x8000)
+	if (KEYPRESS("MoveFront"))
+	{
+		MoveYFromSpeed(dt, MD_BACK);
+	}
+	if (KEYPRESS("MoveLeft"))
 	{
 		MoveXFromSpeed(dt, MD_BACK);
 	}
-	if (GetAsyncKeyState('D') & 0x8000)
+	if (KEYPRESS("MoveRight"))
 	{
 		MoveXFromSpeed(dt, MD_FRONT);
 	}
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	if (KEYDOWN("Fire"))
 	{
 		Fire();
+	}
+	if (KEYDOWN("Skill1"))
+	{
+		MessageBox(NULL, "Skill1", "Skill1", MB_OK);
 	}
 }
 
@@ -70,7 +74,7 @@ void Player::Collision(float dt)
 void Player::Draw(HDC hDC, float dt)
 {
   	MovableObject::Draw(hDC, dt);
-	// Rectangle(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
+	// Rect(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
 }
 
 Player* Player::Clone()

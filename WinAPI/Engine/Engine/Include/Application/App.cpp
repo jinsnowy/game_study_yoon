@@ -4,6 +4,7 @@
 #include "../Core/PathManager.h"
 #include "../Core/Camera.h"
 #include "../Core/Input.h"
+#include "../Collider/CollisionManager.h"
 #include "../Scene/SceneManager.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
@@ -34,6 +35,11 @@ App::App()
 	if (!INPUT.Init(WINDOW.m_hWnd))
 	{
 		throw APP_EXCEPT("Input init failed.\n");
+	}
+
+	if (!COLLISION_MANAGER.Init())
+	{
+		throw APP_EXCEPT("Collision Manager init failed.\n");
 	}
 
 	// 씬 초기화 전에 카메라 초기화
@@ -116,6 +122,7 @@ void App::LateUpdate(float dt)
 void App::Collision(float dt)
 {
 	SCENE_MANAGER.Collision(dt);
+	COLLISION_MANAGER.Collision(dt);
 }
 
 void App::Draw(float dt)

@@ -145,8 +145,7 @@ LRESULT Window::HandleMsg(HWND m_hWnd, UINT msg, WPARAM wParam, LPARAM lParam) n
 		return 0; // not to call DefWindowProc eventually calling DestroyWindow
 	// 게임 프레임이 업데이트 된 이후 상태 변경이 필요한 연산을 집어 넣는다.
 	case WM_RENDER_RESET:
-	{
-	}break;
+		break;
 
 	case WM_PAINT:
 	{
@@ -154,96 +153,8 @@ LRESULT Window::HandleMsg(HWND m_hWnd, UINT msg, WPARAM wParam, LPARAM lParam) n
 		HDC hdc = BeginPaint(m_hWnd, &ps);
 		// TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
 		EndPaint(m_hWnd, &ps);
-	}
-	break;
-	// clear keystate when window loses focus to prevent input getting "stuck"
-	case WM_KILLFOCUS:
-		KEYBOARD.ClearState();
-		break;
-		/*********** KEYBOARD MESSAGES ***********/
-	case WM_KEYDOWN:
-		// syskey commands need to be handled to track ALT key (VK_MENU) and F10
-	case WM_SYSKEYDOWN:
-	{
-		if (!(lParam & 0x40000000) || KEYBOARD.EnabledRepeatedInputCapture()) // filter autorepeat
-		{
-			KEYBOARD.OnKeyPressed(static_cast<unsigned char>(wParam));
-		}
 	}break;
-	case WM_KEYUP:
-	case WM_SYSKEYUP:
-		KEYBOARD.OnKeyReleased(static_cast<unsigned char>(wParam));
-		break;
-	case WM_CHAR:
-		KEYBOARD.OnChar(static_cast<unsigned char>(wParam));
-		break;
-		/*********** END KEYBOARD MESSAGES ***********/
-
-		/************* MOUSE MESSAGES ****************/
-	case WM_MOUSEMOVE:
-	{
-		// in client region -> log move, and log enter + capture MOUSE (if not previously in window)
-		if (pt.x >= 0 && pt.x < m_RS.x && pt.y >= 0 && pt.y < m_RS.y)
-		{
-			MOUSE.OnMouseMove(pt.x, pt.y);
-			if (!MOUSE.IsInWindow())
-			{
-				// to capture mousemove 
-				SetCapture(m_hWnd);
-				MOUSE.OnMouseEnter();
-			}
-		}
-		// not in client -> log move / maintain capture if button down
-		else
-		{
-			if (wParam & (MK_LBUTTON | MK_RBUTTON))
-			{
-				MOUSE.OnMouseMove(pt.x, pt.y);
-			}
-			// button up -> release capture / log event for leaving
-			else
-			{
-				ReleaseCapture();
-				MOUSE.OnMouseLeave();
-			}
-		}
-		break;
 	}
-	case WM_LBUTTONDOWN:
-	{
-		MOUSE.OnLeftPressed(pt.x, pt.y);
-		break;
-	}
-	case WM_RBUTTONDOWN:
-	{
-		MOUSE.OnRightPressed(pt.x, pt.y);
-		break;
-	}
-	case WM_LBUTTONUP:
-	{
-		MOUSE.OnLeftReleased(pt.x, pt.y);
-		break;
-	}
-	case WM_RBUTTONUP:
-	{
-		MOUSE.OnRightReleased(pt.x, pt.y);
-		break;
-	}
-	case WM_MOUSEWHEEL:
-	{
-		if (GET_WHEEL_DELTA_WPARAM(wParam) > 0)
-		{
-			MOUSE.OnWheelUp(pt.x, pt.y);
-		}
-		else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0)
-		{
-			MOUSE.OnWheelDown(pt.x, pt.y);
-		}
-		break;
-	}
-	/************** END MOUSE MESSAGES **************/
-	}
-
 	return DefWindowProc(m_hWnd, msg, wParam, lParam);
 }
 

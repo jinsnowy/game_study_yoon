@@ -87,9 +87,8 @@ void Scene::Input(float dt)
 			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
-			continue;
 		}
-		++it;
+		else ++it;
 	}
 }
 
@@ -111,9 +110,8 @@ void Scene::Update(float dt)
 			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
-			continue;
 		}
-		++it;
+		else ++it;
 	}
 }
 
@@ -135,9 +133,8 @@ void Scene::LateUpdate(float dt)
 			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
-			continue;
 		}
-		++it;
+		else ++it;
 	}
 }
 
@@ -159,9 +156,8 @@ void Scene::Collision(float dt)
 			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
-			continue;
 		}
-		++it;
+		else ++it;
 	}
 }
 
@@ -183,9 +179,8 @@ void Scene::Draw(HDC hdc, float dt)
 			SAFE_DELETE(*it);
 			it = m_LayerList.erase(it);
 			iterEnd = m_LayerList.end();
-			continue;
 		}
-		++it;
+		else ++it;
 	}
 }
 
