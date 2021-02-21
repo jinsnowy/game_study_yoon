@@ -5,6 +5,7 @@
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
 #include "../Core/Camera.h"
+#include "../Collider/Collider.h"
 
 list<Object*> Object::m_ObjList;
 
@@ -24,6 +25,14 @@ Object::Object(const Object& obj)
 
     if (m_pTexture)
         m_pTexture->AddRef();
+
+    m_ColliderList.clear();
+
+    for (auto iter = obj.m_ColliderList.begin(); iter != obj.m_ColliderList.end(); iter++)
+    {
+        Collider* pColl = (*iter)->Clone();
+        m_ColliderList.push_back(pColl);
+    }
 }
 
 Object::~Object()
@@ -136,7 +145,7 @@ void Object::Draw(HDC hdc, float dt)
         {
             TransparentBlt(hdc, int(tPos.x), int(tPos.y), int(m_Size.x), int(m_Size.y),
                 m_pTexture->GetDC(), 0, 0,
-                m_Size.x, m_Size.y,
+                int(m_Size.x), int(m_Size.y),
                 m_pTexture->GetColorKey());
         }
         else 
