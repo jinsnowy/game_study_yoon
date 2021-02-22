@@ -36,7 +36,7 @@ bool Minion::Init()
 	SetTexture("Minion", "minion.bmp");
 	m_pTexture->SetColorKey(255, 0, 255);
 
-	ColliderRect* pRC = AddCollider<ColliderRect>("Minion");
+	ColliderRect* pRC = AddCollider<ColliderRect>("MinionBody");
 
 	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
 	pRC->AddCollisionFunction(CS_ENTER, this, &Minion::CollisionBullet);

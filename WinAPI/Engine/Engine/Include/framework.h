@@ -10,7 +10,8 @@
 #include <windows.h>
 
 // 매크로
-#define PI 3.141592f
+#define PI		3.141592f
+#define GRAVITY 0.98f
 
 // Path Key
 #define ROOT_PATH		"RootPath"
@@ -37,6 +38,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <conio.h>
 
 // C++ 헤더 파일
 #include <iostream>

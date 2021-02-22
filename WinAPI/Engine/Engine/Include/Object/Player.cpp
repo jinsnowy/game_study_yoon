@@ -26,12 +26,15 @@ bool Player::Init()
 	SetTexture("Player", "hos.bmp");
 
 	m_iHP = 1000;
-	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
 
-	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
-	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
+	SetPhysics(true);
 
-	SAFE_RELEASE(pRC);
+	//ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
+
+	//pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
+	//pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
+
+	//SAFE_RELEASE(pRC);
 
 	return true;
 }
@@ -86,7 +89,7 @@ void Player::Draw(HDC hDC, float dt)
 {
   	MovableObject::Draw(hDC, dt);
 	char strHP[32] = {};
-	sprintf(strHP, "HP: %d", m_iHP);
+	sprintf_s(strHP, "HP: %d", m_iHP);
 	Pos tPos = m_Pos - m_Size * m_Pivot;
 	tPos -= CAMERA.GetTopLeft();
 	TextOut(hDC, tPos.x, tPos.y, strHP, lstrlen(strHP));

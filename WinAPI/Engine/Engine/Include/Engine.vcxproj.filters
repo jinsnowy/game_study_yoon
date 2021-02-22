@@ -183,6 +183,9 @@
     <ClInclude Include="Math.h">
       <Filter>Core\05. Math</Filter>
     </ClInclude>
+    <ClInclude Include="Collider\ColliderPixel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -274,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="Math.cpp">
       <Filter>Core\05. Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider\ColliderPixel.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
