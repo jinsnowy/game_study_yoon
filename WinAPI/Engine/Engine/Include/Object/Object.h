@@ -2,7 +2,6 @@
 #include "../framework.h"
 #include "../Scene/Layer.h"
 #include "../Collider/Collider.h"
-#include "Ref.h"
 
 class Object : public Ref
 {
@@ -60,7 +59,6 @@ public:
 
 		return pCollider;
 	}
-
 	bool CheckCollider() const
 	{
 		return !m_ColliderList.empty();

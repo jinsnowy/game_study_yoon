@@ -12,6 +12,47 @@
 
 App::App()
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	// _CrtSetBreakAlloc(320);
+#ifdef _DEBUG
+	// 콘솔창을 생성시켜준다
+	// AllocConsole();
+#endif
+}
+
+App::~App()
+{
+#ifdef _DEBUG
+	// FreeConsole();
+#endif
+}
+
+int App::Go()
+{
+	MSG msg;
+	while (true)
+	{
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+
+			if (msg.message == WM_QUIT)
+			{
+				return -1;
+			}
+		}
+		else {
+			// Game Frame goes
+			Process();
+		}
+	}
+
+	return (int)msg.wParam;
+}
+
+void App::Init()
+{
 	if (!WINDOW.Init(1280, 720, "My First Game"))
 	{
 		throw APP_EXCEPT("Window init failed.\n");
@@ -26,7 +67,7 @@ App::App()
 	{
 		throw APP_EXCEPT("Path Manager init failed.\n");
 	}
-	
+
 	if (!RESOURCE_MANAGER.Init(WINDOW.m_hInst, WINDOW.m_hDC))
 	{
 		throw APP_EXCEPT("ResourceManager init failed.\n");
@@ -52,49 +93,6 @@ App::App()
 	{
 		throw APP_EXCEPT("SceneManager init failed.\n");
 	}
-
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	// _CrtSetBreakAlloc(2335);
-#ifdef _DEBUG
-	// 콘솔창을 생성시켜준다
-	// AllocConsole();
-#endif
-}
-
-App::~App()
-{
-#ifdef _DEBUG
-	FreeConsole();
-#endif
-}
-
-int App::Go()
-{
-	MSG msg;
-	while (true)
-	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-
-			if (msg.message == WM_QUIT)
-			{
-				return -1;
-			}
-		}
-		else {
-			// Game Frame goes
-			Process();
-			// optional to deal with some functions after frame update
-			/*
-			  msg.message = WM_RENDER_RESET;
-			  DispatchMessage(&msg);
-			*/
-		}
-	}
-
-	return (int)msg.wParam;
 }
 
 void App::Process()

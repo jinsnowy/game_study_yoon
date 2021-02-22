@@ -1,4 +1,5 @@
 #include "Bullet.h"
+#include "../Object/Ref.h"
 #include "../Resources/Texture.h"
 #include "../Collider/ColliderRect.h"
 #include "../Collider/ColliderSphere.h"
@@ -80,8 +81,8 @@ Bullet* Bullet::Clone()
 
 void Bullet::Hit(Collider* pSrc, Collider* pDst, float dt)
 {
-    if(GetTag() == "PlayerBullet" && pDst->GetTag() == "MinionBody")
+    if(GetId() == Ref::FindId("PlayerBullet") && pDst->GetId() == Ref::FindId("MinionBody"))
         Die();
-    else if (GetTag() == "MinionBullet" && pDst->GetTag() == "PlayerBody")
+    else if (GetId() == Ref::FindId("MinionBullet") && pDst->GetId() == Ref::FindId("PlayerBody"))
         Die();
 }

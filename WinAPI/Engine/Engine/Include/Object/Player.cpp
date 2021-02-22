@@ -27,7 +27,7 @@ bool Player::Init()
 
 	m_iHP = 1000;
 
-	SetPhysics(true);
+	SetPhysics(false);
 
 	//ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
 
@@ -93,15 +93,6 @@ void Player::Draw(HDC hDC, float dt)
 	Pos tPos = m_Pos - m_Size * m_Pivot;
 	tPos -= CAMERA.GetTopLeft();
 	TextOut(hDC, tPos.x, tPos.y, strHP, lstrlen(strHP));
-
-	// const auto pColliderList = GetColliderList();
-	// if (pColliderList->size())
-	// {
-	//	 const auto collider = (ColliderRect*) pColliderList->front();
-	//	 const auto rect =  collider->GetWorldInfo();
-	//	 Pos tPos = CAMERA.GetTopLeft();
-	//	 Rectangle(hDC, rect.left-tPos.x, rect.top-tPos.y, rect.right-tPos.x, rect.bottom-tPos.y);
-	// }
 }
 
 Player* Player::Clone()

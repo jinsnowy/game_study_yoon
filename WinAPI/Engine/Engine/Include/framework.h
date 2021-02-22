@@ -6,6 +6,7 @@
 
 #include "targetver.h"
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
+#define NOMINMAX
 // Windows 헤더 파일
 #include <windows.h>
 
@@ -57,7 +58,8 @@
 // 알고리즘
 #include <algorithm>
 #include <functional>
-
+#include <random>
+#include <unordered_set>
 
 #include "Types/Vec2.h"
 #include "Types/Rect.h"

@@ -11,7 +11,7 @@ private:
 	Player(const Player& obj);
 	~Player();
 private:
-	int m_iHP;
+	int m_iHP = 0;
 public:
 	virtual bool Init();
 	virtual void Input(float dt);

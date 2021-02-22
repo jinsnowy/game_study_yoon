@@ -2,8 +2,10 @@
 
 INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	App app;
 	try {
-		return App{}.Go();
+		app.Init();
+		return app.Go();
 	}
 	catch (const UserException& e)
 	{

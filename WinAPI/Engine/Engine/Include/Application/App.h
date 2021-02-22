@@ -18,7 +18,7 @@ public:
 public:
 	App();
 	~App();
-	// master frame / message loop
+	void Init();
 	int Go();
 private:
 	void Process();

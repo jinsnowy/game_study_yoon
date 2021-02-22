@@ -31,6 +31,7 @@ Object::Object(const Object& obj)
         m_pTexture->AddRef();
 
     m_ColliderList.clear();
+
     // 충돌체 복사
     list<Collider*>::const_iterator iter;
     list<Collider*>::const_iterator iterEnd = obj.m_ColliderList.end();
@@ -47,6 +48,7 @@ Object::Object(const Object& obj)
 Object::~Object()
 {
     SAFE_RELEASE(m_pTexture);
+    Safe_Release_VecList(m_ColliderList);
 }
 
 // ----------- Add and Delete Object from Object List
