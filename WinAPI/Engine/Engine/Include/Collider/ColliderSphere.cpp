@@ -1,5 +1,6 @@
 #include "ColliderSphere.h"
 #include "ColliderRect.h"
+#include "ColliderPixel.h"
 #include "../Object/Object.h"
 
 ColliderSphere::ColliderSphere()
