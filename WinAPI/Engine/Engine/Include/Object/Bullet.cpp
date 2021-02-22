@@ -80,5 +80,8 @@ Bullet* Bullet::Clone()
 
 void Bullet::Hit(Collider* pSrc, Collider* pDst, float dt)
 {
-    Die();
+    if(GetTag() == "PlayerBullet" && pDst->GetTag() == "MinionBody")
+        Die();
+    else if (GetTag() == "MinionBullet" && pDst->GetTag() == "PlayerBody")
+        Die();
 }
