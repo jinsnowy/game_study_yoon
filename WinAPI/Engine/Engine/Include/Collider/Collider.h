@@ -9,7 +9,6 @@ protected:
 	Collider();
 	Collider(const Collider& coll);
 	virtual ~Collider() = 0;
-
 protected:
 	COLLIDER_TYPE	m_eCollType;
 	class Object*	m_pObject;
@@ -96,5 +95,7 @@ public:
 	virtual Collider* Clone() = 0;
 protected:
 	bool CollisionRectToRect(const Rect& src, const Rect& dst);
+	bool CollisionRectToSphere(const Rect& src, const Sphere& dst);
+	bool CollisionSphereToSphere(const Sphere& src, const Sphere& dst);
 };
 

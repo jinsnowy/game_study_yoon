@@ -1,4 +1,5 @@
 #include "ColliderRect.h"
+#include "ColliderSphere.h"
 #include "../Object/Object.h"
 
 ColliderRect::ColliderRect()
@@ -61,8 +62,8 @@ bool ColliderRect::CheckCollision(Collider* pDst)
 	{
 	case CT_RECT:
 		return CollisionRectToRect(m_tWorldInfo, ((ColliderRect*)pDst)->GetWorldInfo());
-		
-	
+	case CT_SPHERE:
+		return  CollisionRectToSphere(m_tWorldInfo, ((ColliderSphere*)pDst)->GetWorldInfo());
 	}
 	return false;
 }
