@@ -15,13 +15,17 @@ Object::Object() :
     m_pLayer(nullptr),
     m_Pos(0, 0),
     m_Pivot(0, 0),
-    m_Size(0, 0)
+    m_Size(0, 0),
+    m_blsPhysics(false),
+    m_fGravityTime(0.f)
 {
 }
 
 Object::Object(const Object& obj)
 {
     *this = obj;
+
+    m_fGravityTime = 0.f;
 
     if (m_pTexture)
         m_pTexture->AddRef();
@@ -127,6 +131,14 @@ void Object::Input(float dt)
 
 int Object::Update(float dt)
 {
+    if (m_blsPhysics)
+    {
+        m_fGravityTime += dt;
+        
+        m_Pos.y += (GRAVITY) * m_fGravityTime * m_fGravityTime;
+    }
+
+
     list<Collider*>::iterator iter;
     list<Collider*>::iterator iterEnd = m_ColliderList.end();
 

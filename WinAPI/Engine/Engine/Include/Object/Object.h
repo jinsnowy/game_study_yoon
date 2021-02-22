@@ -65,7 +65,18 @@ public:
 	{
 		return !m_ColliderList.empty();
 	}
-
+protected:
+	bool m_blsPhysics;
+	float m_fGravityTime;
+public:
+	void SetPhysics(bool bPhysics)
+	{
+		m_blsPhysics = bPhysics;
+	}
+	bool GetPhysics() const
+	{
+		return m_blsPhysics;
+	}
 protected:
 	Pos m_Pos;
 	Pos m_Pivot;
