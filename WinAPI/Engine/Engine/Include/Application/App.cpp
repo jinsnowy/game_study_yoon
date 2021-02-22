@@ -17,7 +17,7 @@ App::App()
 		throw APP_EXCEPT("Window init failed.\n");
 	}
 
-	if (!TIMER.Init())
+	if (!TIMER.Init(WINDOW.m_hWnd))
 	{
 		throw APP_EXCEPT("Timer init failed.\n");
 	}
@@ -55,10 +55,17 @@ App::App()
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// _CrtSetBreakAlloc(2335);
+#ifdef _DEBUG
+	// 콘솔창을 생성시켜준다
+	// AllocConsole();
+#endif
 }
 
 App::~App()
 {
+#ifdef _DEBUG
+	FreeConsole();
+#endif
 }
 
 int App::Go()
