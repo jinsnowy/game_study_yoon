@@ -59,6 +59,7 @@
 
 #include "Types/Vec2.h"
 #include "Types/Rect.h"
+#include "Types/Circle.h"
 #include "Types/Types.h"
 #include "Resource.h"
 #include "Macro.h"
@@ -71,6 +72,7 @@ typedef Vec2F Size;
 typedef Vec2F Pos;
 typedef Vec2I RESOLUTION;
 typedef RectF Rect;
+typedef CircleF Sphere;
 
 template <typename T>
 void Safe_Delete_VecList(T& p)

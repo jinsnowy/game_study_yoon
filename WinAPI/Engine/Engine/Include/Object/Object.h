@@ -1,6 +1,7 @@
 #pragma once
 #include "../framework.h"
 #include "../Scene/Layer.h"
+#include "../Collider/Collider.h"
 #include "Ref.h"
 
 class Object : public Ref
@@ -18,11 +19,26 @@ protected:
 	class Scene* m_pScene;
 	class Layer* m_pLayer;
 	class Texture* m_pTexture;
-	list<class Collider*> m_ColliderList;
+	list<Collider*> m_ColliderList;
 public:
-	const list<class Collider*>* GetColliderList() const 
+	const list<Collider*>* GetColliderList() const 
 	{
 		return &m_ColliderList;
+	}
+	template<typename T>
+	void AddCollisionFunction(const string& strTag, COLLISION_STATE eState, T* pObj, void (T::* pFunc)(Collider*, Collider*, float))
+	{
+		list<Collider*>::iterator iter;
+		list<Collider*>::iterator iterEnd = m_ColliderList.end();
+
+		for (iter = m_ColliderList.begin(); iter != iterEnd; ++iter)
+		{
+			if ((*iter)->GetTag() == strTag)
+			{
+				(*iter)->AddCollisionFunction(eState, pObj, pFunc);
+				break;
+			}
+		}
 	}
 public:
 	template<typename T>
@@ -31,6 +47,7 @@ public:
 		T* pCollider = new T;
 
 		pCollider->SetObj(this);
+		pCollider->SetTag(strTag);
 
 		if (!pCollider->Init())
 		{
@@ -53,7 +70,6 @@ protected:
 	Pos m_Pos;
 	Pos m_Pivot;
 	Size  m_Size;
-	string m_Tag;
 public:
 	Object();
 	Object(const Object& obj);
@@ -74,7 +90,6 @@ public:
 	Pos GetPos() const { return m_Pos; }
 	Pos GetPivot() const { return m_Pivot; }
 	Size GetSize() const { return m_Size; }
-	string GetTag() const { return m_Tag; }
 
 	void SetPos(float x, float y) { m_Pos.x = x; m_Pos.y = y; }
 	void SetSize(float x, float y) { m_Size.x = x; m_Size.y = y; }
@@ -82,7 +97,6 @@ public:
 	void SetPos(const Pos& pos) { m_Pos = pos; }
 	void SetSize(const Size& size) { m_Size = size; }
 	void SetPivot(const Pos& pivot) { m_Pivot = pivot; }
-	void SetTag(const string& tag) { m_Tag = tag; }
 public:
 	void SetTexture(class Texture* pTexture);
 	void SetTexture(const string& strKey, const char* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);

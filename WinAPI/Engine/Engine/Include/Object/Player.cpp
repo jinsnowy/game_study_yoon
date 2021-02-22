@@ -1,6 +1,9 @@
 #include "Player.h"
+#include "Bullet.h"
 #include "../Core/Input.h"
 #include "../Collider/ColliderRect.h"
+#include "../Core/Camera.h"
+
 Player::Player()
 {
 }
@@ -21,6 +24,14 @@ bool Player::Init()
 	SetSpeed(400.0f);
 
 	SetTexture("Player", "hos.bmp");
+
+	m_iHP = 1000;
+	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
+
+	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
+	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
+
+	SAFE_RELEASE(pRC);
 
 	return true;
 }
@@ -54,7 +65,7 @@ void Player::Input(float dt)
 	}
 }
 
-int  Player::Update(float dt)
+int Player::Update(float dt)
 {
 	MovableObject::Update(dt);
 	return 0;
@@ -74,7 +85,20 @@ void Player::Collision(float dt)
 void Player::Draw(HDC hDC, float dt)
 {
   	MovableObject::Draw(hDC, dt);
-	// Rect(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
+	char strHP[32] = {};
+	sprintf(strHP, "HP: %d", m_iHP);
+	Pos tPos = m_Pos - m_Size * m_Pivot;
+	tPos -= CAMERA.GetTopLeft();
+	TextOut(hDC, tPos.x, tPos.y, strHP, lstrlen(strHP));
+
+	// const auto pColliderList = GetColliderList();
+	// if (pColliderList->size())
+	// {
+	//	 const auto collider = (ColliderRect*) pColliderList->front();
+	//	 const auto rect =  collider->GetWorldInfo();
+	//	 Pos tPos = CAMERA.GetTopLeft();
+	//	 Rectangle(hDC, rect.left-tPos.x, rect.top-tPos.y, rect.right-tPos.x, rect.bottom-tPos.y);
+	// }
 }
 
 Player* Player::Clone()
@@ -82,10 +106,16 @@ Player* Player::Clone()
 	return new Player(*this);
 }
 
+void Player::Hit(Collider* pSrc, Collider* pDst, float dt)
+{
+	m_iHP -= 5;
+}
+
 void Player::Fire()
 {
 	Object* pBullet = Object::CreateCloneObject("Bullet", "PlayerBullet", m_pLayer);
 
+	pBullet->AddCollisionFunction("BulletBody", CS_ENTER,(Bullet*) pBullet, &Bullet::Hit);
 	// 오른쪽 가운데를 구한다.
 	Pos tPos;
 	tPos.x = GetRight() + pBullet->GetPivot().x * pBullet->GetSize().x;

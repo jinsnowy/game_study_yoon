@@ -10,6 +10,8 @@ private:
 	Player();
 	Player(const Player& obj);
 	~Player();
+private:
+	int m_iHP;
 public:
 	virtual bool Init();
 	virtual void Input(float dt);
@@ -18,7 +20,8 @@ public:
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
 	virtual Player* Clone();
-
+public:
+	void Hit(class Collider* pSrc, class Collider* pDst, float dt);
 private:
 	void Fire();
 

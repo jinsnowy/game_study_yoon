@@ -3,11 +3,12 @@
 #include "../Application/Window.h"
 #include "../Resources/Texture.h"
 #include "../Collider/ColliderRect.h"
+#include "Bullet.h"
 
 Minion::Minion()
 	:
 	m_FireTime(0.f),
-	m_FireLimitTime(0.8f),
+	m_FireLimitTime(0.3f),
 	m_Dir(MD_FRONT)
 {
 }
@@ -102,13 +103,17 @@ Minion* Minion::Clone()
 
 void Minion::CollisionBullet(Collider* pSrc, Collider* pDst, float dt)
 {
-	MessageBox(NULL, "面倒", "面倒", MB_OK);
+	// Die();
+	// MessageBox(NULL, "面倒", "面倒", MB_OK);
 }
 
 void Minion::Fire()
 {
 	Object* pBullet = Object::CreateCloneObject("Bullet", "MinionBullet", m_pLayer);
 
+	pBullet->AddCollisionFunction("BulletBody", CS_ENTER, (Bullet*)pBullet, &Bullet::Hit);
+
+	// ((MovableObject*)pBullet)->SetSpeed(100.0f);
 	((MovableObject*)pBullet)->SetAngle(PI);
 
 	float x = GetLeft() - (1.f - pBullet->GetPivot().x) * pBullet->GetSize().x;

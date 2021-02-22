@@ -26,5 +26,7 @@ public:
     virtual void Collision(float dt);
     virtual void Draw(HDC hDC, float dt);
     Bullet* Clone();
+public:
+    void Hit(class Collider* pSrc, class Collider* pDst, float dt);
 };
 

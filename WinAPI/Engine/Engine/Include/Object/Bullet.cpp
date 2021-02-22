@@ -1,6 +1,8 @@
 #include "Bullet.h"
 #include "../Resources/Texture.h"
 #include "../Collider/ColliderRect.h"
+#include "../Collider/ColliderSphere.h"
+#include "../Core/Camera.h"
 Bullet::Bullet()
     : m_Dist(0.f),
       m_LimitDist(500.f)
@@ -29,8 +31,9 @@ bool Bullet::Init()
 
     m_pTexture->SetColorKey(255, 0, 255);
 
-    ColliderRect* pRC = AddCollider<ColliderRect>("Bullet");
-    pRC->SetRect(-25.f, -25.f, 25.f, 25.f);
+    ColliderSphere* pSphere = AddCollider<ColliderSphere>("BulletBody");
+    pSphere->SetSphere(Pos(0.f, 0.f), 25.f);
+    SAFE_RELEASE(pSphere);
     return true;
 }
 
@@ -73,4 +76,9 @@ void Bullet::Draw(HDC hDC, float dt)
 Bullet* Bullet::Clone()
 {
     return new Bullet(*this);
+}
+
+void Bullet::Hit(Collider* pSrc, Collider* pDst, float dt)
+{
+    Die();
 }

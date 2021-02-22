@@ -67,6 +67,9 @@
     <Filter Include="Collider">
       <UniqueIdentifier>{4d929710-3db0-41fd-9b5c-7107e84f9083}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\05. Math">
+      <UniqueIdentifier>{1e845c4d-dc37-4fb9-baff-df7ad257280c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -171,6 +174,15 @@
     <ClInclude Include="Collider\CollisionManager.h">
       <Filter>Collider</Filter>
     </ClInclude>
+    <ClInclude Include="Collider\ColliderSphere.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Types\Circle.h">
+      <Filter>Types</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>Core\05. Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -256,6 +268,12 @@
     </ClCompile>
     <ClCompile Include="Collider\CollisionManager.cpp">
       <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider\ColliderSphere.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Math.cpp">
+      <Filter>Core\05. Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
