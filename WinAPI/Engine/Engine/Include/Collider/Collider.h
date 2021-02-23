@@ -23,7 +23,6 @@ public:
 	void AddCollisionFunction(COLLISION_STATE eState, T* pObj, void (T::*pFunc)(Collider*, Collider*, float))
 	{
 		function<void(Collider*, Collider*, float)> func;
-
 		func = bind(pFunc, pObj, placeholders::_1, placeholders::_2, placeholders::_3);
 		m_FuncList[eState].push_back(func);
 	}
@@ -76,10 +75,7 @@ public:
 	{
 		return m_pObject;
 	}
-	void SetObj(class Object* pObject)
-	{
-		m_pObject = pObject;
-	}
+	void SetObj(class Object* pObject);
 public:
 	virtual bool Init() = 0;
 	virtual void Input(float dt);

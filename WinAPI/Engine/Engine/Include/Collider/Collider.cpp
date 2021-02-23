@@ -26,6 +26,11 @@ Collider::~Collider()
 	}
 }
 
+void Collider::SetObj(Object* pObject)
+{
+	m_pObject = pObject;
+}
+
 void Collider::Input(float dt)
 {
 }
