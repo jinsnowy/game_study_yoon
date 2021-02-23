@@ -33,6 +33,7 @@ bool Bullet::Init()
     m_pTexture->SetColorKey(255, 0, 255);
 
     ColliderSphere* pSphere = AddCollider<ColliderSphere>("BulletBody");
+
     pSphere->SetSphere(Pos(0.f, 0.f), 25.f);
     SAFE_RELEASE(pSphere);
     return true;
@@ -81,8 +82,8 @@ Bullet* Bullet::Clone()
 
 void Bullet::Hit(Collider* pSrc, Collider* pDst, float dt)
 {
-    if(GetId() == Ref::FindId("PlayerBullet") && pDst->GetId() == Ref::FindId("MinionBody"))
+    if(pSrc->GetObj()->GetTag() == "PlayerBullet" && pDst->GetTag() == "MinionBody")
         Die();
-    else if (GetId() == Ref::FindId("MinionBullet") && pDst->GetId() == Ref::FindId("PlayerBody"))
+    else if (pSrc->GetObj()->GetTag() == "MinionBullet" && pDst->GetTag() == "PlayerBody")
         Die();
 }

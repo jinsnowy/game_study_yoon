@@ -6,7 +6,6 @@ unordered_map<size_t, size_t> Ref::m_IdCountMap;
 
 Ref::Ref() : m_Ref(1), m_id(0), m_bEnable(true), m_bLife(true)
 {
-
 }
 
 Ref::~Ref()
@@ -46,7 +45,7 @@ void Ref::SetTag(const string& tagName)
 	RemoveId(m_strTag);
 	m_strTag = tagName;
 
-	if (tagName.size() && m_IdHashMap.find(tagName) == m_IdHashMap.end())
+	if (tagName.size())
 	{
 		auto exist = m_IdHashMap.find(tagName);
 		if (exist == m_IdHashMap.end())

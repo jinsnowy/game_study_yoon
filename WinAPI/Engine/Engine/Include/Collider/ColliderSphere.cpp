@@ -62,6 +62,10 @@ bool ColliderSphere::CheckCollision(Collider* pDst)
 void ColliderSphere::Draw(HDC hdc, float dt)
 {
     Collider::Draw(hdc,dt);
+
+
+    //Ellipse(hdc, m_tWorldInfo.center.x - m_tWorldInfo.radius/2, m_tWorldInfo.center.y - m_tWorldInfo.radius / 2,
+    //    m_tWorldInfo.center.x + m_tWorldInfo.radius / 2, m_tWorldInfo.center.y + m_tWorldInfo.radius / 2);
 }
 
 ColliderSphere* ColliderSphere::Clone()

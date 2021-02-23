@@ -29,12 +29,12 @@ bool Player::Init()
 
 	SetPhysics(false);
 
-	//ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
+	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
 
-	//pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
-	//pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
+	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
+	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
 
-	//SAFE_RELEASE(pRC);
+	SAFE_RELEASE(pRC);
 
 	return true;
 }
@@ -109,8 +109,8 @@ void Player::Fire()
 {
 	Object* pBullet = Object::CreateCloneObject("Bullet", "PlayerBullet", m_pLayer);
 
-	pBullet->AddCollisionFunction("BulletBody", CS_ENTER,(Bullet*) pBullet, &Bullet::Hit);
-	// 오른쪽 가운데를 구한다.
+	pBullet->AddCollisionFunction("BulletBody", CS_ENTER, (Bullet*) pBullet, &Bullet::Hit);
+
 	Pos tPos;
 	tPos.x = GetRight() + pBullet->GetPivot().x * pBullet->GetSize().x;
 	tPos.y = GetCenter().y;

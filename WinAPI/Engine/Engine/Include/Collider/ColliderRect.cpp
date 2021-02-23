@@ -72,6 +72,7 @@ bool ColliderRect::CheckCollision(Collider* pDst)
 void ColliderRect::Draw(HDC hDC, float dt)
 {
 	Collider::Draw(hDC, dt);
+	// Rectangle(hDC, m_tWorldInfo.left, m_tWorldInfo.top, m_tWorldInfo.right, m_tWorldInfo.bottom);
 }
 
 ColliderRect* ColliderRect::Clone()

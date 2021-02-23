@@ -12,17 +12,12 @@ protected:
 protected:
 	COLLIDER_TYPE	m_eCollType;
 	class Object*	m_pObject;
-	// 충돌 판정된 충돌체 리스트
 	list<Collider*> m_CollisionList;
-	// 내 충돌체, 상대방 충돌체 그리고 delta 타임
 	list <function<void(Collider*, Collider*, float)>> m_FuncList[CS_END];
 public:
 	void AddCollisionFunction(COLLISION_STATE eState, void (*pFunc)(Collider*, Collider*, float))
 	{
-		function<void(Collider*, Collider*, float)> func;
-
-		func = bind(pFunc, placeholders::_1, placeholders::_2, placeholders::_3);
-		m_FuncList[eState].push_back(func);
+		m_FuncList[eState].push_back(pFunc);
 	}
 	template<typename T>
 	void AddCollisionFunction(COLLISION_STATE eState, T* pObj, void (T::*pFunc)(Collider*, Collider*, float))
