@@ -53,45 +53,45 @@ int App::Go()
 
 void App::Init()
 {
-	if (!WINDOW.Init(1280, 720, "My First Game"))
+	if (!WINDOW.Init(1280, 720, L"My First Game"))
 	{
-		throw APP_EXCEPT("Window init failed.\n");
+		throw APP_EXCEPT(L"Window init failed.\n");
 	}
 
 	if (!TIMER.Init(WINDOW.m_hWnd))
 	{
-		throw APP_EXCEPT("Timer init failed.\n");
+		throw APP_EXCEPT(L"Timer init failed.\n");
 	}
 
 	if (!PATH_MANAGER.Init())
 	{
-		throw APP_EXCEPT("Path Manager init failed.\n");
+		throw APP_EXCEPT(L"Path Manager init failed.\n");
 	}
 
 	if (!RESOURCE_MANAGER.Init(WINDOW.m_hInst, WINDOW.m_hDC))
 	{
-		throw APP_EXCEPT("ResourceManager init failed.\n");
+		throw APP_EXCEPT(L"ResourceManager init failed.\n");
 	}
 
 	if (!INPUT.Init(WINDOW.m_hWnd))
 	{
-		throw APP_EXCEPT("Input init failed.\n");
+		throw APP_EXCEPT(L"Input init failed.\n");
 	}
 
 	if (!COLLISION_MANAGER.Init())
 	{
-		throw APP_EXCEPT("Collision Manager init failed.\n");
+		throw APP_EXCEPT(L"Collision Manager init failed.\n");
 	}
 
 	// 씬 초기화 전에 카메라 초기화
 	if (!CAMERA.Init(Pos(0.f, 0.f), GETRESOLUTION, RESOLUTION(1920, 1080)))
 	{
-		throw APP_EXCEPT("Camera init failed.\n");
+		throw APP_EXCEPT(L"Camera init failed.\n");
 	}
 
 	if (!SCENE_MANAGER.Init())
 	{
-		throw APP_EXCEPT("SceneManager init failed.\n");
+		throw APP_EXCEPT(L"SceneManager init failed.\n");
 	}
 }
 
@@ -145,17 +145,17 @@ void App::Draw(float dt)
 }
 
 // Error handling
-App::AppException::AppException(int codeLine, const char* fileName, const char* message)
+App::AppException::AppException(int codeLine, const char* fileName, const wchar_t* message)
 	: UserException(codeLine, fileName), message(message)
 {
 }
 
-const char* App::AppException::GetType() const noexcept
+const wchar_t* App::AppException::GetType() const noexcept
 {
-	return "App Exception";
+	return L"App Exception";
 }
 
-string  App::AppException::GetErrorMessage() const noexcept
+wstring App::AppException::GetErrorMessage() const noexcept
 {
-	return App::AppException::UserException::GetErrorMessage() + "\n" + message;
+	return App::AppException::UserException::GetErrorMessage() + L"\n" + message;
 }

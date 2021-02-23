@@ -14,7 +14,7 @@ public:
 	bool Init(HINSTANCE hInst, HDC hDC);
 	// strkey = 텍스쳐 명칭, pFileName = 파일 이름, strPathKey = 텍스쳐 base 경로 
 	class Texture* LoadTexture(const string& strKey,
-								const char* pFileName,
+								const wchar_t* pFileName,
 								const string& strPathKey = TEXTURE_PATH);
 	class Texture* FindTexture(const string& strKey);
 };

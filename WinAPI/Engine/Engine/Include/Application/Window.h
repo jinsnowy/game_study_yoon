@@ -14,27 +14,27 @@ private:
 	{
 	public:
 		WindowException(int codeLine, const char* fileName, HRESULT hr) noexcept;
-		virtual const char* GetType() const noexcept override;
-		virtual string GetErrorMessage() const noexcept override;
+		virtual const wchar_t* GetType() const noexcept override;
+		virtual wstring GetErrorMessage() const noexcept override;
 	private:
 		HRESULT hr;
-		static string TranslateErrorCode(HRESULT hr) noexcept;
+		static wstring TranslateErrorCode(HRESULT hr) noexcept;
 	};
 private:
-	static constexpr const char* wndClassName = "myEngine";
+	static constexpr const wchar_t* wndClassName = L"myEngine";
 private:
 	HINSTANCE m_hInst;
 	HWND m_hWnd;
 	HDC m_hDC;
 	RESOLUTION m_RS;
 public:
-	BOOL Init(int width, int height, const char* name);
+	BOOL Init(int width, int height, const wchar_t* name);
 	RESOLUTION GetResolution() noexcept { return m_RS; }
-	static const char* GetName() { return wndClassName; }
+	static const wchar_t* GetName() { return wndClassName; }
 private:
 	friend class App;
 	void MyRegisterClass();
-	void SetTitle(const string& title);
+	void SetTitle(const wstring& title);
 
 	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;

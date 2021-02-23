@@ -23,7 +23,7 @@ bool Player::Init()
 	SetPivot(0.5f, 0.5f);
 	SetSpeed(400.0f);
 
-	SetTexture("Player", "hos.bmp");
+	SetTexture("Player", L"hos.bmp");
 
 	m_iHP = 1000;
 
@@ -64,7 +64,7 @@ void Player::Input(float dt)
 	}
 	if (KEYDOWN("Skill1"))
 	{
-		MessageBox(NULL, "Skill1", "Skill1", MB_OK);
+		MessageBox(NULL, L"Skill1", L"Skill1", MB_OK);
 	}
 }
 
@@ -88,8 +88,8 @@ void Player::Collision(float dt)
 void Player::Draw(HDC hDC, float dt)
 {
   	MovableObject::Draw(hDC, dt);
-	char strHP[32] = {};
-	sprintf_s(strHP, "HP: %d", m_iHP);
+	wchar_t strHP[32] = {};
+	swprintf_s(strHP, L"HP: %d", m_iHP);
 	Pos tPos = m_Pos - m_Size * m_Pivot;
 	tPos -= CAMERA.GetTopLeft();
 	TextOut(hDC, tPos.x, tPos.y, strHP, lstrlen(strHP));

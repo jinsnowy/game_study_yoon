@@ -21,15 +21,15 @@ Texture::~Texture()
 }
 
 bool Texture::LoadTexture(HINSTANCE hInst, HDC hDC,
-                          const string& strKey, const char* pFileName, const string& strPathKey)
+                          const string& strKey, const wchar_t* pFileName, const string& strPathKey)
 {
     // 메모리 DC를 만들어준다.
     m_hMemDC = CreateCompatibleDC(hDC);
 
     // 전체 경로를 만들어준다.
-    const char* pPath = PATH_MANAGER.FindPath(strPathKey);
+    const wchar_t* pPath = PATH_MANAGER.FindPath(strPathKey);
 
-    string strPath;
+    wstring strPath;
     if (pPath)
         strPath = pPath;
 

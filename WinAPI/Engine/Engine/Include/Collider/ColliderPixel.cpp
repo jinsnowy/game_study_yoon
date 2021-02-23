@@ -5,13 +5,17 @@
 
 ColliderPixel::ColliderPixel()
 {
-    m_eCollType = CT_RECT;
+    m_eCollType = CT_PIXEL;
+    m_iWidth = 0;
+    m_iHeight = 0;
 }
 
 ColliderPixel::ColliderPixel(const ColliderPixel& coll)
     :
     Collider(coll)
 {
+    m_iWidth = coll.m_iWidth;
+    m_iHeight = coll.m_iHeight;
 }
 
 ColliderPixel::~ColliderPixel()
@@ -20,6 +24,29 @@ ColliderPixel::~ColliderPixel()
 
 bool ColliderPixel::SetPixelInfo(char* pFileName, const string& strPathKey)
 {
+    const char* pPath = PATH_MANAGER.FindPathByMultiByte(strPathKey);
+    string strPath;
+
+    if (pPath)
+        strPath = pPath;
+
+    strPath += pFileName;
+
+    FILE* pFile = NULL;
+
+    fopen_s(&pFile, strPath.c_str(), "rb");
+
+    if (!pFile)
+        return false;
+
+    BITMAPFILEHEADER fh;
+    BITMAPINFOHEADER ih;
+
+    fread(&fh, sizeof(fh), 1, pFile);
+    fread(&ih, sizeof(ih), 1, pFile);
+
+    fclose(pFile);
+
     return true;
 }
 

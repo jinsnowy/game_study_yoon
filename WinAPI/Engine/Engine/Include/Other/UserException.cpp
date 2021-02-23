@@ -8,9 +8,9 @@ UserException::UserException(int codeLine, const char* fileName) noexcept
 {
 }
 
-const char* UserException::what() const noexcept
+const wchar_t* UserException::What() const noexcept
 {
-	ostringstream oss;
+	wstringstream oss;
 	oss << "[Type] " << GetType() << endl
 		<< GetErrorMessage() << endl;
 
@@ -18,15 +18,16 @@ const char* UserException::what() const noexcept
 	return m_whatBuffer.c_str();
 }
 
-const char* UserException::GetType() const noexcept
+const wchar_t* UserException::GetType() const noexcept
 {
-	return "My Exception";
+	return L"My Exception";
 }
 
-string UserException::GetErrorMessage() const noexcept
+wstring UserException::GetErrorMessage() const noexcept
 {
-	ostringstream oss;
-	oss << "[File] " << erFileName << endl
+	wstringstream oss;
+	wstring fileName(erFileName.begin(), erFileName.end());
+	oss << "[File] " << fileName << endl
 		<< "[Line] " << erCodeLine;
 	return oss.str();
 }

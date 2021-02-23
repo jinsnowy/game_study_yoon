@@ -12,7 +12,7 @@ PathManager::~PathManager()
 
 bool PathManager::Init()
 {
-	char strPath[MAX_PATH] = {};
+	wchar_t strPath[MAX_PATH] = {};
 
 	// 현재 디렉토리 기준 실행 파일이 있는 폴더를 구한다.
 	GetModuleFileName(NULL, strPath, MAX_PATH);
@@ -22,7 +22,7 @@ bool PathManager::Init()
 	{
 		if (strPath[i] == '/' || strPath[i] == '\\')
 		{
-			memset(strPath + (i + 1), 0, sizeof(char) * (MAX_PATH - (i + 1)));
+			memset(strPath + (i + 1), 0, sizeof(wchar_t) * (MAX_PATH - (i + 1)));
 			break;
 		}
 	}
@@ -30,17 +30,17 @@ bool PathManager::Init()
 	m_mapPath.insert(make_pair(ROOT_PATH, strPath));
 
 	// Texture 경로 설정
-	if (!CreatePath(TEXTURE_PATH, "Texture\\"))
+	if (!CreatePath(TEXTURE_PATH, L"Texture\\"))
 		return false;
 
 	return true;
 }
 
-bool PathManager::CreatePath(const string& strKey, const char* pPath, const string& strBaseKey)
+bool PathManager::CreatePath(const string& strKey, const wchar_t* pPath, const string& strBaseKey)
 {
-	const char* pBasePath = FindPath(strBaseKey);
+	const wchar_t* pBasePath = FindPath(strBaseKey);
 
-	string strPath;
+	wstring strPath;
 	if (pBasePath)
 		strPath = pBasePath;
 
@@ -51,11 +51,25 @@ bool PathManager::CreatePath(const string& strKey, const char* pPath, const stri
 	return true;
 }
 
-const char* PathManager::FindPath(const string& strKey)
+const wchar_t* PathManager::FindPath(const string& strKey)
 {
 	auto iter = m_mapPath.find(strKey);
 	if (iter == m_mapPath.end())
 		return nullptr;
 
 	return iter->second.c_str();
+}
+
+const char* PathManager::FindPathByMultiByte(const string& strKey)
+{
+	const wchar_t* pPath = FindPath(strKey);
+
+	if (!pPath)
+		return NULL;
+
+	memset(m_strPath, 0, sizeof(char) * MAX_PATH);
+
+	WideCharToMultiByte(CP_ACP, 0, pPath, - 1, m_strPath, lstrlen(pPath), 0, 0);
+
+	return m_strPath;
 }

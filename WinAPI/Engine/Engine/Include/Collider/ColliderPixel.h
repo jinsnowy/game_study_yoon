@@ -17,6 +17,8 @@ protected:
 	ColliderPixel(const ColliderPixel& coll);
 	virtual ~ColliderPixel();
 private:
+	int m_iWidth;
+	int m_iHeight;
 	vector<Pixel> m_vecPixel;
 public:
 	bool SetPixelInfo(char* pFileName, const string& strPathKey = TEXTURE_PATH);

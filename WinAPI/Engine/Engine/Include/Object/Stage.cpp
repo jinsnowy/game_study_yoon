@@ -24,7 +24,7 @@ bool Stage::Init()
     SetSize(1920.f, 1080.f);
     SetPivot(0.0f, 0.0f);
 
-    SetTexture("Stage2", "Stage2.bmp");
+    SetTexture("Stage2", L"Stage2.bmp");
 
     return true;
 }

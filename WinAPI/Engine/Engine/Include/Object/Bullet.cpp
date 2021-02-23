@@ -28,7 +28,7 @@ bool Bullet::Init()
     SetSpeed(500.0f);
     SetPivot(0.5f, 0.5f);
     SetSize(50.0f, 50.0f);
-    SetTexture("Bullet", "bullet.bmp");
+    SetTexture("Bullet", L"bullet.bmp");
 
     m_pTexture->SetColorKey(255, 0, 255);
 

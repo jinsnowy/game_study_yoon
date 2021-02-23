@@ -40,7 +40,7 @@ Window::Window()
 {
 }
 
-BOOL Window::Init(int width, int height, const char* name)
+BOOL Window::Init(int width, int height, const wchar_t* name)
 {
 	BOOL init = TRUE;
 	m_RS = { width, height };
@@ -88,13 +88,13 @@ void Window::MyRegisterClass()
 	wc.hIconSm = static_cast<HICON>(LoadImage(m_hInst, MAKEINTRESOURCE(IDI_SMALL), IMAGE_ICON, 16, 16, 0));
 	RegisterClassEx(&wc);
 
-	if (RegisterWindowMessage("WM_RENDER_RESET") == 0)
+	if (RegisterWindowMessage(L"WM_RENDER_RESET") == 0)
 	{
 		throw WND_LAST_EXCEPT();
 	}
 }
 
-void Window::SetTitle(const string& title)
+void Window::SetTitle(const wstring& title)
 {
 	if (SetWindowText(m_hWnd, title.c_str()) == 0)
 	{
@@ -165,34 +165,33 @@ Window::WindowException::WindowException(int codeLine, const char* fileName, HRE
 {
 }
 
-const char* Window::WindowException::GetType() const noexcept
+const wchar_t* Window::WindowException::GetType() const noexcept
 {
-	return "User Window WindowException";
+	return L"User Window WindowException";
 }
 
-string Window::WindowException::GetErrorMessage() const noexcept
+wstring Window::WindowException::GetErrorMessage() const noexcept
 {
-	ostringstream oss;
+	wstringstream oss;
 	oss << Window::WindowException::UserException::GetErrorMessage()
 		<< "[Error Code] " << hr << endl
 		<< "[Description] " << TranslateErrorCode(hr) << endl;
 	return oss.str();
 }
 
-string Window::WindowException::TranslateErrorCode(HRESULT hr) noexcept
+wstring Window::WindowException::TranslateErrorCode(HRESULT hr) noexcept
 {
-	char* pMsgBuf = nullptr;
+	wchar_t* pMsgBuf = nullptr;
 	DWORD nMsgLen = FormatMessage(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 		nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr
-	);
+		reinterpret_cast<LPWSTR>(&pMsgBuf), 0, nullptr);
+
 	if (nMsgLen == 0)
 	{
-		return "Unidentified error code";
+		return L"Unidentified error code";
 	}
-	string errorString = pMsgBuf;
-	LocalFree(pMsgBuf);
+	wstring errorString = pMsgBuf;
 	return errorString;
 }

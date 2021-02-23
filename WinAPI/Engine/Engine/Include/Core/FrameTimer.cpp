@@ -43,8 +43,8 @@ float FrameTimer::Tick()
         m_iFrame = 0;
 
 #ifdef _DEBUG
-        char strFPS[64] = {};
-        sprintf_s(strFPS, "FPS : %.f\n", m_fFPS);
+        wchar_t strFPS[64] = {};
+        swprintf_s(strFPS, L"FPS : %.f\n", m_fFPS);
         // _cprintf(strFPS);
         SetWindowText(m_hWnd, strFPS);
         OutputDebugString(strFPS);

@@ -33,7 +33,7 @@ bool Minion::Init()
 	SetSpeed(300.0f);
 	m_Dir = MD_FRONT;
 
-	SetTexture("Minion", "minion.bmp");
+	SetTexture("Minion", L"minion.bmp");
 	m_pTexture->SetColorKey(255, 0, 255);
 
 	ColliderRect* pRC = AddCollider<ColliderRect>("MinionBody");

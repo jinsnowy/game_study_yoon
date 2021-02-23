@@ -9,11 +9,11 @@ public:
 	class AppException : public UserException
 	{
 	private:
-		string message;
+		wstring message;
 	public:
-		AppException(int codeLine, const char* fileName, const char* message);
-		virtual const char* GetType() const noexcept;
-		virtual string GetErrorMessage() const noexcept;
+		AppException(int codeLine, const char* fileName, const wchar_t* message);
+		virtual const wchar_t* GetType() const noexcept;
+		virtual wstring GetErrorMessage() const noexcept;
 	};
 public:
 	App();

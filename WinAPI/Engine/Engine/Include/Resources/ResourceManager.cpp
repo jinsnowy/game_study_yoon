@@ -27,13 +27,13 @@ bool ResourceManager::Init(HINSTANCE hInst, HDC hDC)
 	m_hDC = hDC;
 
 	// 백버퍼를 불러온다.
-	m_pBackBuffer = LoadTexture("BackBuffer", "BackBuffer.bmp");
+	m_pBackBuffer = LoadTexture("BackBuffer", L"BackBuffer.bmp");
 
 	return true;
 }
 
 Texture* ResourceManager::LoadTexture(const string& strKey,
-									  const char* pFileName,
+									  const wchar_t* pFileName,
 									  const string& strPathKey)
 {
 	// 먼저 그전에 등록된 텍스쳐인지 확인한다.

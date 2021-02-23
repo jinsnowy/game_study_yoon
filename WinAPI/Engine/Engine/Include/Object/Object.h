@@ -108,7 +108,7 @@ public:
 	void SetPivot(const Pos& pivot) { m_Pivot = pivot; }
 public:
 	void SetTexture(class Texture* pTexture);
-	void SetTexture(const string& strKey, const char* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);
+	void SetTexture(const string& strKey, const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);
 public:
 	virtual bool Init();
 	virtual void Input(float dt);

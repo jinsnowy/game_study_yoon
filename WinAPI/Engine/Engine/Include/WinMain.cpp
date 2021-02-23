@@ -9,15 +9,15 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	}
 	catch (const UserException& e)
 	{
-		MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(nullptr, e.What(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
 	}
 	catch (const exception& e)
 	{
-		MessageBox(nullptr,  e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(nullptr, (wchar_t*) e.what(), L"Standard Exception", MB_OK | MB_ICONEXCLAMATION);
 	}
 	catch (...)
 	{
-		MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
+		MessageBox(nullptr, L"No details available", L"Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
 	}
 
 	return 0;

@@ -115,7 +115,7 @@ void Object::SetTexture(Texture* pTexture)
         pTexture->AddRef();
 }
 
-void Object::SetTexture(const string& strKey, const char* pFileName, const string& strPathKey)
+void Object::SetTexture(const string& strKey, const wchar_t* pFileName, const string& strPathKey)
 {
     SAFE_RELEASE(m_pTexture);
     m_pTexture = RESOURCE_MANAGER.LoadTexture(strKey, pFileName, strPathKey);
