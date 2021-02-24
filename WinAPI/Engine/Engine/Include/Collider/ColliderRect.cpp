@@ -62,9 +62,13 @@ bool ColliderRect::CheckCollision(Collider* pDst)
 	switch (pDst->GetColliderType())
 	{
 	case CT_RECT:
-		return CollisionRectToRect(m_tWorldInfo, ((ColliderRect*)pDst)->GetWorldInfo());
+		return CollisionRectToRect(m_tWorldInfo, static_cast<ColliderRect*>(pDst)->GetWorldInfo());
 	case CT_SPHERE:
-		return  CollisionRectToSphere(m_tWorldInfo, ((ColliderSphere*)pDst)->GetWorldInfo());
+		return CollisionRectToSphere(m_tWorldInfo, static_cast<ColliderSphere*>(pDst)->GetWorldInfo());
+	case CT_PIXEL:
+		return CollisionRectToPixel(m_tWorldInfo, static_cast<ColliderPixel*>(pDst)->GetPixel(),
+											      static_cast<ColliderPixel*>(pDst)->GetWidth(), 
+											      static_cast<ColliderPixel*>(pDst)->GetHeight());
 	}
 	return false;
 }

@@ -22,7 +22,7 @@ ColliderPixel::~ColliderPixel()
 {
 }
 
-bool ColliderPixel::SetPixelInfo(char* pFileName, const string& strPathKey)
+bool ColliderPixel::SetPixelInfo(const char* pFileName, const string& strPathKey)
 {
     const char* pPath = PATH_MANAGER.FindPathByMultiByte(strPathKey);
     string strPath;
@@ -45,7 +45,36 @@ bool ColliderPixel::SetPixelInfo(char* pFileName, const string& strPathKey)
     fread(&fh, sizeof(fh), 1, pFile);
     fread(&ih, sizeof(ih), 1, pFile);
 
+    m_iWidth = ih.biWidth;
+    m_iHeight = ih.biHeight;
+
+    m_vecPixel.clear();
+
+    m_vecPixel.resize(m_iWidth * m_iHeight);
+
+    fread(&m_vecPixel[0], sizeof(Pixel), m_vecPixel.size(), pFile);
+
+    // 위 아래를 반전시켜준다.
+    Pixel* pPixelArr = new Pixel[m_iWidth];
+    for (int i = 0; i < m_iHeight / 2; ++i)
+    {
+        // 현재 인덱스의 픽셀 한 줄을 저장해둔다.
+        memcpy(pPixelArr, &m_vecPixel[i * m_iWidth], sizeof(Pixel) * m_iWidth);
+        memcpy(&m_vecPixel[i * m_iWidth], &m_vecPixel[(m_iHeight - 1 - i) * m_iWidth], sizeof(Pixel) * m_iWidth);
+        memcpy(&m_vecPixel[(m_iHeight - 1 - i) * m_iWidth], pPixelArr, sizeof(Pixel) * m_iWidth);
+    }
+
+    delete[] pPixelArr;
+
     fclose(pFile);
+
+    /*fopen_s(&pFile, "Test.bmp", "wb");
+
+    fwrite(&fh, sizeof(fh), 1, pFile);
+    fwrite(&ih, sizeof(ih), 1, pFile);
+    fwrite(&m_vecPixel[0], sizeof(Pixel), m_vecPixel.size(), pFile);
+
+    fclose(pFile);*/
 
     return true;
 }
@@ -71,6 +100,11 @@ int ColliderPixel::LateUpdate(float dt)
 
 bool ColliderPixel::CheckCollision(Collider* pDst)
 {
+    switch (pDst->GetColliderType())
+    {
+    case CT_RECT:
+        return CollisionRectToPixel(static_cast<ColliderRect*>(pDst)->GetWorldInfo(), m_vecPixel, m_iWidth, m_iHeight);
+    }
     return true;
 }
 

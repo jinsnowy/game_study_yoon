@@ -109,3 +109,30 @@ bool Collider::CollisionSphereToSphere(const Sphere& src, const Sphere& dst)
 	const auto dist = Math::Distance(src.center, dst.center);
 	return dist <= src.radius + dst.radius;
 }
+
+bool Collider::CollisionRectToPixel(const Rect& src, const vector<Pixel>& vecPixel, int iWidth, int iHeight)
+{
+	int iStartX, iEndX;
+	int iStartY, iEndY;
+
+	iStartX = src.left < 0 ? 0 : src.left;
+	iEndX = src.right >= iWidth ? iWidth - 1 : src.right;
+
+	iStartY = src.top < 0 ? 0 : src.top;
+	iEndY = src.bottom >= iHeight ? iHeight - 1 : src.bottom;
+
+	for (int i = iStartY; i <= iEndY; ++i)
+	{
+		for (int j = iStartX; j <= iEndX; ++j)
+		{
+			int idx = i * iWidth + j;
+			const Pixel& pixel = vecPixel[idx];
+			if (pixel.r == 255 && pixel.g == 0 && pixel.b == 255)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}

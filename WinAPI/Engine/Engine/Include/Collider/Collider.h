@@ -88,5 +88,6 @@ protected:
 	bool CollisionRectToRect(const Rect& src, const Rect& dst);
 	bool CollisionRectToSphere(const Rect& src, const Sphere& dst);
 	bool CollisionSphereToSphere(const Sphere& src, const Sphere& dst);
+	bool CollisionRectToPixel(const Rect& src, const vector<Pixel>& vecPixel, int iWidth, int iHeight);
 };
 

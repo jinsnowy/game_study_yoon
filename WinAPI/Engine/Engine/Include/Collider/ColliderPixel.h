@@ -1,13 +1,6 @@
 #pragma once
 #include "Collider.h"
 
-typedef struct _tagPixel
-{
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
-}Pixel;
-
 class ColliderPixel :
     public Collider
 {
@@ -21,7 +14,20 @@ private:
 	int m_iHeight;
 	vector<Pixel> m_vecPixel;
 public:
-	bool SetPixelInfo(char* pFileName, const string& strPathKey = TEXTURE_PATH);
+	const vector<Pixel>& GetPixel() const
+	{
+		return m_vecPixel;
+	}
+	int GetWidth() const
+	{
+		return m_iWidth;
+	}
+	int GetHeight() const
+	{
+		return m_iHeight;
+	}
+public:
+	bool SetPixelInfo(const char* pFileName, const string& strPathKey = TEXTURE_PATH);
 public:
 	virtual bool Init();
 	virtual void Input(float dt);
