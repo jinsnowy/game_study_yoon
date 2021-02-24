@@ -2,7 +2,6 @@
 
 class ResourceManager {
 	DECLARE_SINGLE(ResourceManager)
-
 private:
 	unordered_map<string, class Texture*> m_mapTexture;
 	HINSTANCE m_hInst;

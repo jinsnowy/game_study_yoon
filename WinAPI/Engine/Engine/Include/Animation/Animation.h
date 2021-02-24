@@ -11,7 +11,16 @@ private:
 	~Animation();
 private:
 	unordered_map<string, AnimationClip*> m_mapClip;
+	AnimationClip* m_pCurClip;
+	string		   m_strCurClip;
+	string		   m_strDefaultClip;
+	class Object*  m_pObj;
 public:
+	AnimationClip* GetCurrentClip() const { return m_pCurClip; }
+	void SetObj(class Object* pObj)
+	{
+		m_pObj = pObj;
+	}
 	bool AddClip(const string& strName,
 				ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
 				float	fAnimationTime,
@@ -26,6 +35,13 @@ public:
 				const string& strTexKey,
 				const wchar_t* pFileName,
 				const string& strPathKey);
+
+	void SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b);
+	void SetCurrentClip(const string& strCurClip);
+	void SetDefaultClip(const string& strDefaultClip);
+	void ChangeClip(const string& strClip);
+private:
+	AnimationClip* FindClip(const string& strName);
 public:
 	bool Init();
 	void Update(float fTime);

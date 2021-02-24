@@ -24,7 +24,6 @@
 #define GETRESOLUTION (Window::Instance().GetResolution())
 #define GETDC (Window::Instance().GetWndDC())
 
-
 #define COLLISION_MANAGER (CollisionManager::Instance())
 #define TIMER (FrameTimer::Instance())
 #define SCENE_MANAGER (SceneManager::Instance())

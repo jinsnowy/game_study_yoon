@@ -112,14 +112,17 @@ bool Collider::CollisionSphereToSphere(const Sphere& src, const Sphere& dst)
 
 bool Collider::CollisionRectToPixel(const Rect& src, const vector<Pixel>& vecPixel, int iWidth, int iHeight)
 {
+	m_tHitPoint.x = -1;
+	m_tHitPoint.y = -1;
+
 	int iStartX, iEndX;
 	int iStartY, iEndY;
 
-	iStartX = src.left < 0 ? 0 : src.left;
-	iEndX = src.right >= iWidth ? iWidth - 1 : src.right;
+	iStartX = int(src.left) < 0 ? 0 : int(src.left);
+	iEndX = int(src.right) >= iWidth ? iWidth - 1 : int(src.right);
 
-	iStartY = src.top < 0 ? 0 : src.top;
-	iEndY = src.bottom >= iHeight ? iHeight - 1 : src.bottom;
+	iStartY =  int(src.top) < 0 ? 0 : int(src.top);
+	iEndY = int(src.bottom) >= iHeight ? iHeight - 1 : int(src.bottom);
 
 	for (int i = iStartY; i <= iEndY; ++i)
 	{
@@ -129,6 +132,8 @@ bool Collider::CollisionRectToPixel(const Rect& src, const vector<Pixel>& vecPix
 			const Pixel& pixel = vecPixel[idx];
 			if (pixel.r == 255 && pixel.g == 0 && pixel.b == 255)
 			{
+				m_tHitPoint.x = float(j);
+				m_tHitPoint.y = float(i);
 				return true;
 			}
 		}

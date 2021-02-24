@@ -14,7 +14,10 @@ protected:
 	class Object*	m_pObject;
 	list<Collider*> m_CollisionList;
 	list <function<void(Collider*, Collider*, float)>> m_FuncList[CS_END];
+	Pos				m_tHitPoint;
 public:
+	Pos GetHitPoint() const { return m_tHitPoint; }
+	void SetHitPoint(const Pos& tPos) { m_tHitPoint = tPos; }
 	void AddCollisionFunction(COLLISION_STATE eState, void (*pFunc)(Collider*, Collider*, float))
 	{
 		m_FuncList[eState].push_back(pFunc);

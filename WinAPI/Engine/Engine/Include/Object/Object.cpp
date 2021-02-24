@@ -116,15 +116,43 @@ Animation* Object::CreateAnimation(const string& strTag)
     m_pAnimation = new Animation;
 
     m_pAnimation->SetTag(strTag);
+    m_pAnimation->SetObj(this);
+
     if (!m_pAnimation->Init())
     {
         SAFE_RELEASE(m_pAnimation);
         return nullptr;
     }
 
+    m_pAnimation->AddRef();
 
+    return m_pAnimation;
+}
+bool Object::AddAnimationClip(const string& strName,
+                                ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
+                                float fAnimationTime, float fAnimationLimitTime,
+                                int iFrameMaxX, int iFrameMaxY,
+                                int iStartX, int iStartY,
+                                int iLengthX, int iLengthY,
+                                float fOptionLimitTime,
+                                const string& strTexKey,
+                                const wchar_t* pFileName,
+                                const string& strPathKey)
+{
+    if (!m_pAnimation)
+        return false;
 
-    return nullptr;
+    m_pAnimation->AddClip(strName,
+                        eType, eOption, fAnimationTime,
+                        fAnimationLimitTime,
+                        iFrameMaxX, iFrameMaxY,
+                        iStartX, iStartY,
+                        iLengthX, iLengthY,
+                        fOptionLimitTime,
+                        strTexKey,
+                        pFileName, strPathKey);
+
+    return false;
 }
 // --------------------------
 
@@ -143,6 +171,17 @@ void Object::SetTexture(const string& strKey, const wchar_t* pFileName, const st
     SAFE_RELEASE(m_pTexture);
     m_pTexture = RESOURCE_MANAGER.LoadTexture(strKey, pFileName, strPathKey);
 }
+void Object::SetColorKey(unsigned char r, unsigned char g, unsigned char b)
+{
+    m_pTexture->SetColorKey(r, g, b);
+}
+void Object::SetAnimationClipColorKey(const string& strClip, unsigned char r, unsigned char g, unsigned char b)
+{
+    if (m_pAnimation)
+    {
+        m_pAnimation->SetClipColorKey(strClip, r, g, b);
+    }
+}
 // ------------------------
 
 bool Object::Init()
@@ -156,7 +195,6 @@ void Object::Input(float dt)
 
 int Object::Update(float dt)
 {
-
     list<Collider*>::iterator iter;
     list<Collider*>::iterator iterEnd = m_ColliderList.end();
 
@@ -179,6 +217,11 @@ int Object::Update(float dt)
         else ++iter;
     }
   
+    if (m_pAnimation)
+    {
+        m_pAnimation->Update(dt);
+    }
+
     return 0;
 }
 
@@ -218,10 +261,21 @@ void Object::Draw(HDC hdc, float dt)
     {
         Pos tPos = m_Pos - m_Size * m_Pivot;
         tPos -= CAMERA.GetTopLeft();
+
+        Pos tImagePos = Pos(0,0);
+
+        if (m_pAnimation)
+        {
+            AnimationClip* pClip = m_pAnimation->GetCurrentClip();
+
+            tImagePos.x = pClip->iFrameX * m_Size.x;
+            tImagePos.y = pClip->iFrameY * m_Size.y;
+        }
+
         if (m_pTexture->GetColorKeyEnable())
         {
             TransparentBlt(hdc, int(tPos.x), int(tPos.y), int(m_Size.x), int(m_Size.y),
-                m_pTexture->GetDC(), 0, 0,
+                m_pTexture->GetDC(), tImagePos.x, tImagePos.y,
                 int(m_Size.x), int(m_Size.y),
                 m_pTexture->GetColorKey());
         }

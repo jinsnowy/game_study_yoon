@@ -22,6 +22,20 @@ protected:
 	class Animation* m_pAnimation;
 public:
 	class Animation* CreateAnimation(const string& strTag);
+	bool AddAnimationClip(const string& strName,
+							ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
+							float	fAnimationTime,
+							float   fAnimationLimitTime,
+							int		iFrameMaxX,
+							int		iFrameMaxY,
+							int		iStartX,
+							int		iStartY,
+							int		iLengthX,
+							int		iLengthY,
+							float	fOptionLimitTime,
+							const string& strTexKey,
+							const wchar_t* pFileName,
+							const string& strPathKey = TEXTURE_PATH);
 	const list<Collider*>* GetColliderList() const 
 	{
 		return &m_ColliderList;
@@ -115,6 +129,8 @@ public:
 public:
 	void SetTexture(class Texture* pTexture);
 	void SetTexture(const string& strKey, const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);
+	void SetColorKey(unsigned char r, unsigned char g, unsigned char b);
+	void SetAnimationClipColorKey(const string& strClip, unsigned char r, unsigned char g, unsigned char b);
 public:
 	virtual bool Init();
 	virtual void Input(float dt);

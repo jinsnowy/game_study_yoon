@@ -73,6 +73,9 @@ bool CollisionManager::CheckCollision(Object* pSrc, Object* pDst, float dt)
             {
                 bCollision = true;
 
+                // 히트 포인트 셋팅
+                ((*iterDst))->SetHitPoint((*iterSrc)->GetHitPoint());
+
                 // 충돌목록에서 이전에 충돌된 적이 없다면
                 // 처음 막 충돌되었다는 의미
                 if (!(*iterSrc)->CheckCollisionList(*iterDst))

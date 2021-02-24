@@ -67,6 +67,7 @@ typedef struct _tagAnimationClip
 	std::vector<class Texture*> vecTexture;
 	float	fAnimationTime;
 	float   fAnimationLimitTime;
+	float	fAnimationFrameTime;
 	int		iFrameX;
 	int		iFrameY;
 	int		iFrameMaxX;

@@ -5,6 +5,7 @@
 #include "../Collider/ColliderRect.h"
 #include "../Collider/ColliderPixel.h"
 #include "../Core/Camera.h"
+#include "../Animation/Animation.h"
 
 Player::Player()
 {
@@ -34,6 +35,19 @@ bool Player::Init()
 
 	// 점프할 힘을 설정한다.
 	SetForce(600.f);
+
+	Animation *pAnim = CreateAnimation("PlayerAnimation");
+
+	AddAnimationClip("Idle", 
+						AT_ATLAS, AO_LOOP,
+						0.3f, 3.0f,
+						3, 1,
+						0, 0,
+						3, 1,
+						0.f, "PlayerIdleRight",
+						L"Player/Idle/Right/Player_Stand.bmp");
+
+	SAFE_RELEASE(pAnim);
 
 	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
 	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
@@ -125,43 +139,15 @@ void Player::HitPixel(Collider* pSrc, Collider* pDst, float dt)
 	if (pDst->GetTag() == "StageColl")
 	{
 		const vector<Pixel>& pixels = static_cast<ColliderPixel*>(pDst)->GetPixel();
-		int iWidth = static_cast<ColliderPixel*>(pDst)->GetWidth();
-		int iHeight = static_cast<ColliderPixel*>(pDst)->GetHeight();
-
+		Pos tHitPoint = static_cast<ColliderPixel*>(pDst)->GetHitPoint();
 		Rect src = static_cast<ColliderRect*>(pSrc)->GetWorldInfo();
-		Pos tPos = static_cast<ColliderRect*>(pSrc)->GetObj()->GetPos();
 
-		int iStartX, iEndX;
-		int iStartY, iEndY;
-
-		iStartX = src.left < 0 ? 0 : src.left;
-		iEndX = src.right >= iWidth ? iWidth - 1 : src.right;
-
-		iStartY = src.top < 0 ? 0 : src.top;
-		iEndY = src.bottom >= iHeight ? iHeight - 1 : src.bottom;
-
-		int outer_most_y = INT_MAX;
-		for (int i = iStartY; i <= iEndY; ++i)
-		{
-			for (int j = iStartX; j <= iEndX; ++j)
-			{
-				int ind = i * iWidth + j;
-				const Pixel& pixel = pixels[ind];
-				if (pixel.r == 255 && pixel.g == 0 && pixel.b == 255)
-				{
-					if (i < outer_most_y)
-					{
-						outer_most_y = i;
-					}
-				}
-			}
-		}
 		int bottom = (src.top + src.bottom) / 2;
-		if (outer_most_y < bottom)
+		if (tHitPoint.y < bottom)
 		{
 			if (!IsMoveUp())
 			{
-				SetPos(GetPos().x, GetPos().y - (bottom - outer_most_y));
+				SetPos(GetPos().x, GetPos().y - (bottom - tHitPoint.y));
 				JumpEnd();
 			}
 		}

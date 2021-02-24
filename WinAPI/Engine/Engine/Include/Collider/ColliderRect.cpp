@@ -85,10 +85,10 @@ void ColliderRect::Draw(HDC hDC, float dt)
 	HBRUSH OldBrush = (HBRUSH)SelectObject(hDC, GetStockObject(NULL_BRUSH));
 	Pos tPos = CAMERA.GetTopLeft();
 
-	int left = m_tWorldInfo.left - tPos.x;
-	int top = m_tWorldInfo.top - tPos.y;
-	int right = m_tWorldInfo.right - tPos.x;
-	int bottom = m_tWorldInfo.bottom - tPos.y;
+	int left = int(m_tWorldInfo.left - tPos.x);
+	int top = int(m_tWorldInfo.top - tPos.y);
+	int right = int(m_tWorldInfo.right - tPos.x);
+	int bottom = int(m_tWorldInfo.bottom - tPos.y);
 
 	Rectangle(hDC, left, top, right, bottom);
 	
