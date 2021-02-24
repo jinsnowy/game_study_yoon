@@ -38,8 +38,15 @@ bool Player::Init()
 	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
 	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
 	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
-	pRC->AddCollisionFunction(CS_STAY, this, &Player::HitStay);
+	
 	SAFE_RELEASE(pRC);
+
+	ColliderRect* pRC_bot = AddCollider<ColliderRect>("PlayerBottom");
+	pRC_bot->SetRect(-5.f, 25.f, 5.f, 75.f);
+	pRC_bot->AddCollisionFunction(CS_ENTER, this, &Player::HitPixel);
+	pRC_bot->AddCollisionFunction(CS_STAY, this, &Player::HitPixel);
+
+	SAFE_RELEASE(pRC_bot);
 
 	return true;
 }
@@ -110,129 +117,55 @@ void Player::Hit(Collider* pSrc, Collider* pDst, float dt)
 {
 	if(pDst->GetObj()->GetTag() == "MinionBullet")
 		m_iHP -= 5;
-	else if (pDst->GetTag() == "StageColl")
-	{
-		//const vector<Pixel>& pixels = static_cast<ColliderPixel*>(pDst)->GetPixel();
-		//int iWidth = static_cast<ColliderPixel*>(pDst)->GetWidth();
-		//int iHeight = static_cast<ColliderPixel*>(pDst)->GetWidth();
-		//Rect src = static_cast<ColliderRect*>(pSrc)->GetWorldInfo();
-		//Pos tPos = static_cast<ColliderRect*>(pSrc)->GetObj()->GetPos();
-
-		//int iStartX, iEndX;
-		//int iStartY, iEndY;
-
-		//iStartX = src.left < 0 ? 0 : src.left;
-		//iEndX = src.right >= iWidth ? iWidth - 1 : src.right;
-
-		//iStartY = src.top < 0 ? 0 : src.top;
-		//iEndY = src.bottom >= iHeight ? iHeight - 1 : src.bottom;
-
-		//int outer_most_x, outer_most_y;
-		//float min_dist = FLT_MAX;
-		//for (int i = iStartY; i <= iEndY; ++i)
-		//{
-		//	for (int j = iStartX; j <= iEndX; ++j)
-		//	{
-		//		int ind = i * iWidth + j;
-		//		const Pixel& pixel = pixels[ind];
-		//		if (pixel.r == 255 && pixel.g == 0 && pixel.b == 255)
-		//		{
-		//			float dist = Math::Distance(tPos, Pos(i, j));
-		//			if (dist < min_dist)
-		//			{
-		//				min_dist = dist;
-		//				outer_most_y = i;
-		//				outer_most_x = j;
-		//			}
-		//		}
-		//	}
-		//}
-		//
-		//int x_incre, y_incre;
-		//if (Math::Abs(outer_most_y - src.top) < Math::Abs(outer_most_y - src.bottom))
-		//{
-		//	y_incre = outer_most_y - src.top; // À§ÂÊ¿¡ ºÎµúÈû
-		//}
-		//else 
-		//{
-		//	y_incre = outer_most_y - src.bottom; // ¾Æ·¡ÂÊ¿¡ ºÎµúÈû
-		//}
-		//if (Math::Abs(outer_most_x - src.left) < Math::Abs(outer_most_x - src.right))
-		//{
-		//	x_incre = outer_most_x - src.left; // ¿ÞÂÊ¿¡ ºÎµúÈû
-		//}
-		//else 
-		//{
-		//	x_incre = outer_most_x - src.right; // ¿À¸¥ÂÊ¿¡ ºÎµúÈû
-		//}
-
-		//static_cast<ColliderRect*>(pSrc)->GetObj()->SetPos(tPos.x + x_incre, tPos.y + y_incre);
-
-		ClearGravity();
-		JumpEnd();
-	}
 }
 
-void Player::HitStay(Collider* pSrc, Collider* pDst, float dt)
+
+void Player::HitPixel(Collider* pSrc, Collider* pDst, float dt)
 {
 	if (pDst->GetTag() == "StageColl")
 	{
-		//const vector<Pixel>& pixels = static_cast<ColliderPixel*>(pDst)->GetPixel();
-		//int iWidth = static_cast<ColliderPixel*>(pDst)->GetWidth();
-		//int iHeight = static_cast<ColliderPixel*>(pDst)->GetWidth();
-		//Rect src = static_cast<ColliderRect*>(pSrc)->GetWorldInfo();
-		//Pos tPos = static_cast<ColliderRect*>(pSrc)->GetObj()->GetPos();
+		const vector<Pixel>& pixels = static_cast<ColliderPixel*>(pDst)->GetPixel();
+		int iWidth = static_cast<ColliderPixel*>(pDst)->GetWidth();
+		int iHeight = static_cast<ColliderPixel*>(pDst)->GetHeight();
 
-		//int iStartX, iEndX;
-		//int iStartY, iEndY;
+		Rect src = static_cast<ColliderRect*>(pSrc)->GetWorldInfo();
+		Pos tPos = static_cast<ColliderRect*>(pSrc)->GetObj()->GetPos();
 
-		//iStartX = src.left < 0 ? 0 : src.left;
-		//iEndX = src.right >= iWidth ? iWidth - 1 : src.right;
+		int iStartX, iEndX;
+		int iStartY, iEndY;
 
-		//iStartY = src.top < 0 ? 0 : src.top;
-		//iEndY = src.bottom >= iHeight ? iHeight - 1 : src.bottom;
+		iStartX = src.left < 0 ? 0 : src.left;
+		iEndX = src.right >= iWidth ? iWidth - 1 : src.right;
 
-		//int outer_most_x, outer_most_y;
-		//float min_dist = FLT_MAX;
-		//for (int i = iStartY; i <= iEndY; ++i)
-		//{
-		//	for (int j = iStartX; j <= iEndX; ++j)
-		//	{
-		//		int ind = i * iWidth + j;
-		//		const Pixel& pixel = pixels[ind];
-		//		if (pixel.r == 255 && pixel.g == 0 && pixel.b == 255)
-		//		{
-		//			float dist = Math::Distance(tPos, Pos(i, j));
-		//			if (dist < min_dist)
-		//			{
-		//				min_dist = dist;
-		//				outer_most_y = i;
-		//				outer_most_x = j;
-		//			}
-		//		}
-		//	}
-		//}
+		iStartY = src.top < 0 ? 0 : src.top;
+		iEndY = src.bottom >= iHeight ? iHeight - 1 : src.bottom;
 
-		//int x_incre, y_incre;
-		//if (Math::Abs(outer_most_y - src.top) < Math::Abs(outer_most_y - src.bottom))
-		//{
-		//	y_incre = outer_most_y - src.top; // À§ÂÊ¿¡ ºÎµúÈû
-		//}
-		//else {
-		//	y_incre = outer_most_y - src.bottom; // ¾Æ·¡ÂÊ¿¡ ºÎµúÈû
-		//}
-		//if (Math::Abs(outer_most_x - src.left) < Math::Abs(outer_most_x - src.right))
-		//{
-		//	x_incre = outer_most_x - src.left; // ¿ÞÂÊ¿¡ ºÎµúÈû
-		//}
-		//else 
-		//{
-		//	x_incre = outer_most_x - src.right; // ¿À¸¥ÂÊ¿¡ ºÎµúÈû
-		//}
-
-		// static_cast<ColliderRect*>(pSrc)->GetObj()->SetPos(tPos.x + x_incre, tPos.y + y_incre);
-		ClearGravity();
-		JumpEnd();
+		int outer_most_y = INT_MAX;
+		for (int i = iStartY; i <= iEndY; ++i)
+		{
+			for (int j = iStartX; j <= iEndX; ++j)
+			{
+				int ind = i * iWidth + j;
+				const Pixel& pixel = pixels[ind];
+				if (pixel.r == 255 && pixel.g == 0 && pixel.b == 255)
+				{
+					if (i < outer_most_y)
+					{
+						outer_most_y = i;
+					}
+				}
+			}
+		}
+		int bottom = (src.top + src.bottom) / 2;
+		if (outer_most_y < bottom)
+		{
+			if (!IsMoveUp())
+			{
+				SetPos(GetPos().x, GetPos().y - (bottom - outer_most_y));
+				JumpEnd();
+			}
+		}
+		OnGround();
 	}
 }
 

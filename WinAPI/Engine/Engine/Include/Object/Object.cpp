@@ -6,11 +6,13 @@
 #include "../Resources/Texture.h"
 #include "../Core/Camera.h"
 #include "../Collider/Collider.h"
+#include "../Animation/Animation.h"
 
 list<Object*> Object::m_ObjList;
 
 Object::Object() :
     m_pTexture(nullptr),
+    m_pAnimation(nullptr),
     m_pScene(nullptr),
     m_pLayer(nullptr),
     m_Pos(0, 0),
@@ -24,6 +26,9 @@ Object::Object() :
 Object::Object(const Object& obj)
 {
     *this = obj;
+
+    if (obj.m_pAnimation)
+        m_pAnimation = obj.m_pAnimation->Clone();
 
     m_fGravityTime = 0.f;
 
@@ -47,6 +52,7 @@ Object::Object(const Object& obj)
 
 Object::~Object()
 {
+    SAFE_RELEASE(m_pAnimation);
     SAFE_RELEASE(m_pTexture);
     Safe_Release_VecList(m_ColliderList);
 }
@@ -102,6 +108,23 @@ void Object::EraseObject(const string& tag)
 void Object::EraseAllObjects()
 {
     Safe_Release_VecList(m_ObjList);
+}
+Animation* Object::CreateAnimation(const string& strTag)
+{
+    SAFE_RELEASE(m_pAnimation);
+
+    m_pAnimation = new Animation;
+
+    m_pAnimation->SetTag(strTag);
+    if (!m_pAnimation->Init())
+    {
+        SAFE_RELEASE(m_pAnimation);
+        return nullptr;
+    }
+
+
+
+    return nullptr;
 }
 // --------------------------
 

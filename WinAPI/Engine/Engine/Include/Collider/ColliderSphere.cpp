@@ -2,6 +2,7 @@
 #include "ColliderRect.h"
 #include "ColliderPixel.h"
 #include "../Object/Object.h"
+#include "../Core/Camera.h"
 
 ColliderSphere::ColliderSphere()
 {
@@ -63,9 +64,21 @@ void ColliderSphere::Draw(HDC hdc, float dt)
 {
     Collider::Draw(hdc,dt);
 
+    HPEN myPen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+    HPEN OldPen = (HPEN)SelectObject(hdc, myPen);
 
-    //Ellipse(hdc, m_tWorldInfo.center.x - m_tWorldInfo.radius/2, m_tWorldInfo.center.y - m_tWorldInfo.radius / 2,
-    //    m_tWorldInfo.center.x + m_tWorldInfo.radius / 2, m_tWorldInfo.center.y + m_tWorldInfo.radius / 2);
+    HBRUSH OldBrush = (HBRUSH)SelectObject(hdc, GetStockObject(NULL_BRUSH));
+    Pos tPos = CAMERA.GetTopLeft();
+
+    int left = m_tWorldInfo.center.x - m_tWorldInfo.radius - tPos.x;
+    int right = left + 2 * m_tWorldInfo.radius;
+    int top = m_tWorldInfo.center.y - m_tWorldInfo.radius - tPos.y;
+    int bottom = top + 2 * m_tWorldInfo.radius;
+
+    Ellipse(hdc, left, top, right, bottom);
+
+    DeleteObject(SelectObject(hdc, OldPen));
+    DeleteObject(SelectObject(hdc, OldBrush));
 }
 
 ColliderSphere* ColliderSphere::Clone()

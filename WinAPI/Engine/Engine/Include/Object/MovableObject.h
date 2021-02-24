@@ -11,10 +11,14 @@ protected:
     float m_Angle;
     float m_Speed;
     bool  m_bMove;
+    bool  m_bGround;
+    bool  m_bJump;
     bool  m_bFalling;
     float m_fForce;
     float m_fForceOrigin;
 public:
+    bool IsMoveUp() { return m_fForce > 0.f; }
+    void OnGround() { m_bGround = true; }
     void SetForce(float fForce) { m_fForceOrigin = fForce; }
     void SetAngle(float angle) { m_Angle = angle; }
     void SetSpeed(float speed) { m_Speed = speed; }

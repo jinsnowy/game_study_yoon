@@ -151,7 +151,7 @@ LRESULT Window::HandleMsg(HWND m_hWnd, UINT msg, WPARAM wParam, LPARAM lParam) n
 	{
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(m_hWnd, &ps);
-		// TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+
 		EndPaint(m_hWnd, &ps);
 	}break;
 	}

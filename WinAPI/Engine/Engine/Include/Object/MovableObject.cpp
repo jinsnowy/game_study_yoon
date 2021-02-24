@@ -1,7 +1,9 @@
 #include "MovableObject.h"
 
 MovableObject::MovableObject() 
-	: m_Angle(0.f), m_Speed(100.f), m_bMove(false), m_bFalling(false),
+	: m_Angle(0.f), m_Speed(100.f),
+	m_bMove(false), m_bGround(false)
+	, m_bJump(false), m_bFalling(true),
 	m_fForce(0.f), m_fForceOrigin(0.f)
 {
 }
@@ -14,9 +16,10 @@ MovableObject::MovableObject(const MovableObject& obj)
 
 	m_fForceOrigin = obj.m_fForceOrigin;
 	m_fForce = 0.f;
-
 	m_bMove = false;
-	m_bFalling = false;
+	m_bJump = false;
+	m_bFalling = true;
+	m_bGround = false;
 }
 
 MovableObject::~MovableObject()
@@ -25,8 +28,9 @@ MovableObject::~MovableObject()
 
 void MovableObject::Jump()
 {
-	if (!m_bFalling)
+	if (m_bGround)
 	{
+		m_bJump = true;
 		m_bFalling = true;
 		m_fForce = m_fForceOrigin;
 	}
@@ -34,8 +38,8 @@ void MovableObject::Jump()
 
 void MovableObject::JumpEnd()
 {
-	m_bFalling = false;
 	m_fForce = 0.f;
+	m_bFalling = false;
 }
 bool MovableObject::Init()
 {
@@ -45,24 +49,31 @@ bool MovableObject::Init()
 void MovableObject::Input(float dt)
 {
 	Object::Input(dt);
+	m_bMove = false;
 }
 
 int MovableObject::Update(float dt)
 {
-	if (m_blsPhysics)
+	if (m_bFalling == false && m_bGround == false)
 	{
-		//m_fGravityTime += dt;
+		m_bFalling = true;
+	}
+	m_bGround = false;
+	if (m_blsPhysics && m_bFalling)
+	{
+		if (m_bJump) 
+			m_bJump = false;
 
-		//// 점프 상태일 경우 힘을 감소시킨다.
+		//m_fGravityTime += dt;
+		//점프 상태일 경우 힘을 감소시킨다.
 		//m_fForce -= (GRAVITY * m_fGravityTime * m_fGravityTime);
 		//m_Pos.y  -= m_fForce * dt;
 
 		m_fForce -= GRAVITY * dt;
-		m_Pos.y  -= m_fForce * dt - 0.5f * GRAVITY * dt * dt;
+		m_Pos.y  -= (m_fForce * dt - 0.5f * GRAVITY * dt * dt);
 	}
 
 	Object::Update(dt);
-
     return 0;
 }
 
@@ -80,7 +91,6 @@ void MovableObject::Collision(float dt)
 void MovableObject::Draw(HDC hDC, float dt)
 {
 	Object::Draw(hDC, dt);
-	m_bMove = false;
 }
 
 void MovableObject::Move(float x, float y)

@@ -70,6 +70,9 @@
     <Filter Include="Core\05. Math">
       <UniqueIdentifier>{1e845c4d-dc37-4fb9-baff-df7ad257280c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{934b3c59-f4a6-4626-8e55-2c928c741513}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -186,6 +189,9 @@
     <ClInclude Include="Collider\ColliderPixel.h">
       <Filter>Collider</Filter>
     </ClInclude>
+    <ClInclude Include="Animation\Animation.h">
+      <Filter>Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -280,6 +286,9 @@
     </ClCompile>
     <ClCompile Include="Collider\ColliderPixel.cpp">
       <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\Animation.cpp">
+      <Filter>Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

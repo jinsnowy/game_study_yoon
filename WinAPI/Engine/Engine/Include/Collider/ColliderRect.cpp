@@ -2,6 +2,8 @@
 #include "ColliderSphere.h"
 #include "ColliderPixel.h"
 #include "../Object/Object.h"
+#include "../Core/Camera.h"
+#include <Windows.h>
 
 ColliderRect::ColliderRect()
 	:
@@ -76,7 +78,22 @@ bool ColliderRect::CheckCollision(Collider* pDst)
 void ColliderRect::Draw(HDC hDC, float dt)
 {
 	Collider::Draw(hDC, dt);
-	// Rectangle(hDC, m_tWorldInfo.left, m_tWorldInfo.top, m_tWorldInfo.right, m_tWorldInfo.bottom);
+
+	HPEN myPen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+	HPEN OldPen = (HPEN)SelectObject(hDC, myPen);
+
+	HBRUSH OldBrush = (HBRUSH)SelectObject(hDC, GetStockObject(NULL_BRUSH));
+	Pos tPos = CAMERA.GetTopLeft();
+
+	int left = m_tWorldInfo.left - tPos.x;
+	int top = m_tWorldInfo.top - tPos.y;
+	int right = m_tWorldInfo.right - tPos.x;
+	int bottom = m_tWorldInfo.bottom - tPos.y;
+
+	Rectangle(hDC, left, top, right, bottom);
+	
+	DeleteObject(SelectObject(hDC, OldPen));
+	DeleteObject(SelectObject(hDC, OldBrush));
 }
 
 ColliderRect* ColliderRect::Clone()

@@ -19,7 +19,9 @@ protected:
 	class Layer* m_pLayer;
 	class Texture* m_pTexture;
 	list<Collider*> m_ColliderList;
+	class Animation* m_pAnimation;
 public:
+	class Animation* CreateAnimation(const string& strTag);
 	const list<Collider*>* GetColliderList() const 
 	{
 		return &m_ColliderList;
