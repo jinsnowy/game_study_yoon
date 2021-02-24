@@ -22,6 +22,7 @@ public:
 	virtual Player* Clone();
 public:
 	void Hit(class Collider* pSrc, class Collider* pDst, float dt);
+	void HitStay(class Collider* pSrc, class Collider* pDst, float dt);
 private:
 	void Fire();
 

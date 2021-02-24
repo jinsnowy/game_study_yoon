@@ -7,3 +7,8 @@ float Math::Distance(const Pos& tPos1, const Pos& tPos2)
 
 	return sqrtf(x*x+y*y);
 }
+
+float Math::Abs(float val)
+{
+	return val < 0 ? -val : val;
+}

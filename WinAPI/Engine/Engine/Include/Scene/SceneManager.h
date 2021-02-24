@@ -31,9 +31,9 @@ public:
 		switch (sc)
 		{
 		case SC_CURRENT:
-				SAFE_DELETE(m_pScene);
-				m_pScene = pScene;
-				break;
+			SAFE_DELETE(m_pScene);
+			m_pScene = pScene;
+			break;
 		case SC_NEXT:
 			SAFE_DELETE(m_pNextScene);
 			m_pNextScene = pScene;

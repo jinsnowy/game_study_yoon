@@ -318,6 +318,9 @@
     <Image Include="..\Bin\Texture\minion.bmp">
       <Filter>Textures</Filter>
     </Image>
+    <Image Include="..\Bin\Texture\MaskStage2.bmp">
+      <Filter>Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

@@ -1,7 +1,9 @@
 #include "Player.h"
 #include "Bullet.h"
+#include "../Math.h"
 #include "../Core/Input.h"
 #include "../Collider/ColliderRect.h"
+#include "../Collider/ColliderPixel.h"
 #include "../Core/Camera.h"
 
 Player::Player()
@@ -27,13 +29,16 @@ bool Player::Init()
 
 	m_iHP = 1000;
 
-	SetPhysics(false);
+	// Áß·ÂÀ» Àû¿ëÇÑ´Ù.
+	SetPhysics(true);
+
+	// Á¡ÇÁÇÒ ÈûÀ» ¼³Á¤ÇÑ´Ù.
+	SetForce(600.f);
 
 	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
-
 	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
 	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
-
+	pRC->AddCollisionFunction(CS_STAY, this, &Player::HitStay);
 	SAFE_RELEASE(pRC);
 
 	return true;
@@ -42,13 +47,14 @@ bool Player::Init()
 void Player::Input(float dt)
 {
 	MovableObject::Input(dt);
-	if (KEYPRESS("MoveBack"))
+	if (KEYDOWN("MoveBack"))
 	{
-		MoveYFromSpeed(dt, MD_FRONT);
+		// MoveYFromSpeed(dt, MD_FRONT);
 	}
-	if (KEYPRESS("MoveFront"))
+	if (KEYDOWN("MoveFront"))
 	{
-		MoveYFromSpeed(dt, MD_BACK);
+		Jump();
+		// MoveYFromSpeed(dt, MD_BACK);
 	}
 	if (KEYPRESS("MoveLeft"))
 	{
@@ -102,7 +108,132 @@ Player* Player::Clone()
 
 void Player::Hit(Collider* pSrc, Collider* pDst, float dt)
 {
-	m_iHP -= 5;
+	if(pDst->GetObj()->GetTag() == "MinionBullet")
+		m_iHP -= 5;
+	else if (pDst->GetTag() == "StageColl")
+	{
+		//const vector<Pixel>& pixels = static_cast<ColliderPixel*>(pDst)->GetPixel();
+		//int iWidth = static_cast<ColliderPixel*>(pDst)->GetWidth();
+		//int iHeight = static_cast<ColliderPixel*>(pDst)->GetWidth();
+		//Rect src = static_cast<ColliderRect*>(pSrc)->GetWorldInfo();
+		//Pos tPos = static_cast<ColliderRect*>(pSrc)->GetObj()->GetPos();
+
+		//int iStartX, iEndX;
+		//int iStartY, iEndY;
+
+		//iStartX = src.left < 0 ? 0 : src.left;
+		//iEndX = src.right >= iWidth ? iWidth - 1 : src.right;
+
+		//iStartY = src.top < 0 ? 0 : src.top;
+		//iEndY = src.bottom >= iHeight ? iHeight - 1 : src.bottom;
+
+		//int outer_most_x, outer_most_y;
+		//float min_dist = FLT_MAX;
+		//for (int i = iStartY; i <= iEndY; ++i)
+		//{
+		//	for (int j = iStartX; j <= iEndX; ++j)
+		//	{
+		//		int ind = i * iWidth + j;
+		//		const Pixel& pixel = pixels[ind];
+		//		if (pixel.r == 255 && pixel.g == 0 && pixel.b == 255)
+		//		{
+		//			float dist = Math::Distance(tPos, Pos(i, j));
+		//			if (dist < min_dist)
+		//			{
+		//				min_dist = dist;
+		//				outer_most_y = i;
+		//				outer_most_x = j;
+		//			}
+		//		}
+		//	}
+		//}
+		//
+		//int x_incre, y_incre;
+		//if (Math::Abs(outer_most_y - src.top) < Math::Abs(outer_most_y - src.bottom))
+		//{
+		//	y_incre = outer_most_y - src.top; // À§ÂÊ¿¡ ºÎµúÈû
+		//}
+		//else 
+		//{
+		//	y_incre = outer_most_y - src.bottom; // ¾Æ·¡ÂÊ¿¡ ºÎµúÈû
+		//}
+		//if (Math::Abs(outer_most_x - src.left) < Math::Abs(outer_most_x - src.right))
+		//{
+		//	x_incre = outer_most_x - src.left; // ¿ÞÂÊ¿¡ ºÎµúÈû
+		//}
+		//else 
+		//{
+		//	x_incre = outer_most_x - src.right; // ¿À¸¥ÂÊ¿¡ ºÎµúÈû
+		//}
+
+		//static_cast<ColliderRect*>(pSrc)->GetObj()->SetPos(tPos.x + x_incre, tPos.y + y_incre);
+
+		ClearGravity();
+		JumpEnd();
+	}
+}
+
+void Player::HitStay(Collider* pSrc, Collider* pDst, float dt)
+{
+	if (pDst->GetTag() == "StageColl")
+	{
+		//const vector<Pixel>& pixels = static_cast<ColliderPixel*>(pDst)->GetPixel();
+		//int iWidth = static_cast<ColliderPixel*>(pDst)->GetWidth();
+		//int iHeight = static_cast<ColliderPixel*>(pDst)->GetWidth();
+		//Rect src = static_cast<ColliderRect*>(pSrc)->GetWorldInfo();
+		//Pos tPos = static_cast<ColliderRect*>(pSrc)->GetObj()->GetPos();
+
+		//int iStartX, iEndX;
+		//int iStartY, iEndY;
+
+		//iStartX = src.left < 0 ? 0 : src.left;
+		//iEndX = src.right >= iWidth ? iWidth - 1 : src.right;
+
+		//iStartY = src.top < 0 ? 0 : src.top;
+		//iEndY = src.bottom >= iHeight ? iHeight - 1 : src.bottom;
+
+		//int outer_most_x, outer_most_y;
+		//float min_dist = FLT_MAX;
+		//for (int i = iStartY; i <= iEndY; ++i)
+		//{
+		//	for (int j = iStartX; j <= iEndX; ++j)
+		//	{
+		//		int ind = i * iWidth + j;
+		//		const Pixel& pixel = pixels[ind];
+		//		if (pixel.r == 255 && pixel.g == 0 && pixel.b == 255)
+		//		{
+		//			float dist = Math::Distance(tPos, Pos(i, j));
+		//			if (dist < min_dist)
+		//			{
+		//				min_dist = dist;
+		//				outer_most_y = i;
+		//				outer_most_x = j;
+		//			}
+		//		}
+		//	}
+		//}
+
+		//int x_incre, y_incre;
+		//if (Math::Abs(outer_most_y - src.top) < Math::Abs(outer_most_y - src.bottom))
+		//{
+		//	y_incre = outer_most_y - src.top; // À§ÂÊ¿¡ ºÎµúÈû
+		//}
+		//else {
+		//	y_incre = outer_most_y - src.bottom; // ¾Æ·¡ÂÊ¿¡ ºÎµúÈû
+		//}
+		//if (Math::Abs(outer_most_x - src.left) < Math::Abs(outer_most_x - src.right))
+		//{
+		//	x_incre = outer_most_x - src.left; // ¿ÞÂÊ¿¡ ºÎµúÈû
+		//}
+		//else 
+		//{
+		//	x_incre = outer_most_x - src.right; // ¿À¸¥ÂÊ¿¡ ºÎµúÈû
+		//}
+
+		// static_cast<ColliderRect*>(pSrc)->GetObj()->SetPos(tPos.x + x_incre, tPos.y + y_incre);
+		ClearGravity();
+		JumpEnd();
+	}
 }
 
 void Player::Fire()

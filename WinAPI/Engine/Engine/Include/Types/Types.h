@@ -1,4 +1,12 @@
 #pragma once
+
+typedef struct _tagPixel
+{
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+}Pixel;
+
 // Sene Type
 enum SCENE_CREATE
 {

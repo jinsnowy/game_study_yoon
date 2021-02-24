@@ -230,6 +230,7 @@
     <Image Include="..\Bin\Texture\BackBuffer.bmp" />
     <Image Include="..\Bin\Texture\bullet.bmp" />
     <Image Include="..\Bin\Texture\hos.bmp" />
+    <Image Include="..\Bin\Texture\MaskStage2.bmp" />
     <Image Include="..\Bin\Texture\minion.bmp" />
     <Image Include="..\Bin\Texture\Stage1.bmp" />
     <Image Include="..\Bin\Texture\Stage1.jpg" />

@@ -133,13 +133,6 @@ void Object::Input(float dt)
 
 int Object::Update(float dt)
 {
-    if (m_blsPhysics)
-    {
-        m_fGravityTime += dt;
-        
-        m_Pos.y += (GRAVITY) * m_fGravityTime * m_fGravityTime;
-    }
-
 
     list<Collider*>::iterator iter;
     list<Collider*>::iterator iterEnd = m_ColliderList.end();

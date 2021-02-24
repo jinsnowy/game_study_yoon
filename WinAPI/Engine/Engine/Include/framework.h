@@ -12,7 +12,7 @@
 
 // 매크로
 #define PI		3.141592f
-#define GRAVITY 0.98f
+#define GRAVITY 600.f
 
 // Path Key
 #define ROOT_PATH		"RootPath"
