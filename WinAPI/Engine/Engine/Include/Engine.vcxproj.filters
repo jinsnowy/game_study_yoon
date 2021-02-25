@@ -73,6 +73,9 @@
     <Filter Include="Animation">
       <UniqueIdentifier>{934b3c59-f4a6-4626-8e55-2c928c741513}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\04. UI">
+      <UniqueIdentifier>{10da58ba-9575-40ec-85d4-504c55e6693b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -192,6 +195,15 @@
     <ClInclude Include="Animation\Animation.h">
       <Filter>Animation</Filter>
     </ClInclude>
+    <ClInclude Include="Object\UI.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\UIPanel.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\StartScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinMain.cpp">
@@ -289,6 +301,15 @@
     </ClCompile>
     <ClCompile Include="Animation\Animation.cpp">
       <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\UI.cpp">
+      <Filter>Object\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\UIPanel.cpp">
+      <Filter>Object\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\StartScene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

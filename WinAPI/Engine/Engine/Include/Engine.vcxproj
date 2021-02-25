@@ -176,6 +176,8 @@
     <ClInclude Include="Object\Ref.h" />
     <ClInclude Include="Object\Stage.h" />
     <ClInclude Include="Object\StaticObject.h" />
+    <ClInclude Include="Object\UI.h" />
+    <ClInclude Include="Object\UIPanel.h" />
     <ClInclude Include="Other\UserException.h" />
     <ClInclude Include="Other\WindowsMessageMap.h" />
     <ClInclude Include="Resource.h" />
@@ -185,6 +187,7 @@
     <ClInclude Include="Scene\Layer.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="Scene\StartScene.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Types\Circle.h" />
     <ClInclude Include="Types\Rect.h" />
@@ -215,6 +218,8 @@
     <ClCompile Include="Object\Ref.cpp" />
     <ClCompile Include="Object\Stage.cpp" />
     <ClCompile Include="Object\StaticObject.cpp" />
+    <ClCompile Include="Object\UI.cpp" />
+    <ClCompile Include="Object\UIPanel.cpp" />
     <ClCompile Include="Other\UserException.cpp" />
     <ClCompile Include="Other\WindowsMessageMap.cpp" />
     <ClCompile Include="Resources\ResourceManager.cpp" />
@@ -223,6 +228,7 @@
     <ClCompile Include="Scene\Layer.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Scene\StartScene.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>

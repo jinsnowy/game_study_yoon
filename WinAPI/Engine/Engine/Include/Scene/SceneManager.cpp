@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "InGameScene.h"
+#include "StartScene.h"
 
 DEFINITION_SINGLE(SceneManager)
 
@@ -17,7 +18,7 @@ SceneManager::~SceneManager()
 
 bool SceneManager::Init()
 {
-	m_pScene = CreateScene<InGameScene>(SCENE_CREATE::SC_CURRENT);
+	m_pScene = CreateScene<StartScene>(SCENE_CREATE::SC_CURRENT);
 	return true;
 }
 
