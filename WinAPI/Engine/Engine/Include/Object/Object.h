@@ -15,12 +15,15 @@ public:
 	static void EraseAllObjects();
 protected:
 	// 씬, 레이어, 텍스쳐, 콜라이더
+	bool m_bEnableAnimation;
 	class Scene* m_pScene;
 	class Layer* m_pLayer;
 	class Texture* m_pTexture;
 	list<Collider*> m_ColliderList;
 	class Animation* m_pAnimation;
 public:
+	void SetEnableAnimation(bool enabled) { m_bEnableAnimation = enabled; }
+	void SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b);
 	class Animation* CreateAnimation(const string& strTag);
 	bool AddAnimationClip(const string& strName,
 							ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
@@ -36,6 +39,20 @@ public:
 							const string& strTexKey,
 							const wchar_t* pFileName,
 							const string& strPathKey = TEXTURE_PATH);
+	bool AddAnimationClip(const string& strName,
+					ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
+					float	fAnimationTime,
+					float   fAnimationLimitTime,
+					int		iFrameMaxX,
+					int		iFrameMaxY,
+					int		iStartX,
+					int		iStartY,
+					int		iLengthX,
+					int		iLengthY,
+					float	fOptionLimitTime,
+					const string& strTexKey,
+					const vector<wstring>& vecFileName,
+					const string& strPathKey = TEXTURE_PATH);
 	const list<Collider*>* GetColliderList() const 
 	{
 		return &m_ColliderList;
@@ -96,9 +113,10 @@ public:
 		return m_blsPhysics;
 	}
 protected:
-	Pos m_Pos;
-	Pos m_Pivot;
-	Size  m_Size;
+	Pos   m_tPos;
+	Pos   m_tPivot;
+	Size  m_tImageOffset;
+	Size  m_tSize;
 public:
 	Object();
 	Object(const Object& obj);
@@ -111,21 +129,23 @@ public:
 	class Layer* GetLayer() const { return m_pLayer; }
 
 	// 객체 변수 Get/Set
-	float GetLeft() const { return m_Pos.x - m_Size.x * m_Pivot.x; }
-	float GetTop() const { return m_Pos.y - m_Size.y * m_Pivot.y; }
-	float GetRight() const { return GetLeft() + m_Size.x; }
-	float GetBottom() const { return GetTop() + m_Size.y; }
+	float GetLeft() const { return m_tPos.x - m_tSize.x * m_tPivot.x; }
+	float GetTop() const { return m_tPos.y - m_tSize.y * m_tPivot.y; }
+	float GetRight() const { return GetLeft() + m_tSize.x; }
+	float GetBottom() const { return GetTop() + m_tSize.y; }
 	Pos GetCenter() { return Pos((GetLeft()+GetRight())/2.f, (GetTop()+GetBottom())/2.f); }
-	Pos GetPos() const { return m_Pos; }
-	Pos GetPivot() const { return m_Pivot; }
-	Size GetSize() const { return m_Size; }
+	Pos GetPos() const { return m_tPos; }
+	Pos GetPivot() const { return m_tPivot; }
+	Size GetSize() const { return m_tSize; }
 
-	void SetPos(float x, float y) { m_Pos.x = x; m_Pos.y = y; }
-	void SetSize(float x, float y) { m_Size.x = x; m_Size.y = y; }
-	void SetPivot(float x, float y) { m_Pivot.x = x; m_Pivot.y = y; }
-	void SetPos(const Pos& pos) { m_Pos = pos; }
-	void SetSize(const Size& size) { m_Size = size; }
-	void SetPivot(const Pos& pivot) { m_Pivot = pivot; }
+	void SetPos(float x, float y) { m_tPos.x = x; m_tPos.y = y; }
+	void SetSize(float x, float y) { m_tSize.x = x; m_tSize.y = y; }
+	void SetPivot(float x, float y) { m_tPivot.x = x; m_tPivot.y = y; }
+	void SetPos(const Pos& pos) { m_tPos = pos; }
+	void SetSize(const Size& size) { m_tSize = size; }
+	void SetPivot(const Pos& pivot) { m_tPivot = pivot; }
+	void SetImageOffset(const Size& tOffset) { m_tImageOffset = tOffset; }
+	void SetImageOffset(float x, float y) { m_tImageOffset = Size(x, y); }
 public:
 	void SetTexture(class Texture* pTexture);
 	void SetTexture(const string& strKey, const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);

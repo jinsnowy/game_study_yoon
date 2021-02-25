@@ -56,7 +56,7 @@ void Stage::Draw(HDC hDC, float dt)
     // StaticObject::Draw(hDC, dt);
     if (m_pTexture)
     {
-        Pos tPos = m_Pos - m_Pivot * m_Size;
+        Pos tPos = m_tPos - m_tPivot * m_tSize;
         Pos tCamTopLeft = CAMERA.GetTopLeft();
         Pos tPivot = CAMERA.GetPivot();
         BitBlt(hDC, int(tPos.x), int(tPos.y),

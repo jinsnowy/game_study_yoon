@@ -72,7 +72,7 @@ void Bullet::Collision(float dt)
 void Bullet::Draw(HDC hDC, float dt)
 {
     MovableObject::Draw(hDC, dt);
-    // Ellipse(hDC, (int)m_Pos.x, (int)m_Pos.y, int(m_Pos.x + m_Size.x), int(m_Pos.y + m_Size.y));
+    // Ellipse(hDC, (int)m_tPos.x, (int)m_tPos.y, int(m_tPos.x + m_tSize.x), int(m_tPos.y + m_tSize.y));
 }
 
 Bullet* Bullet::Clone()

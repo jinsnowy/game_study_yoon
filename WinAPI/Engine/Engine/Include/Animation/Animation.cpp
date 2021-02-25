@@ -32,7 +32,6 @@ Animation::Animation(const Animation& anim)
 	}
 
 	m_pCurClip = nullptr;
-
 	m_strCurClip = "";
 	SetCurrentClip(anim.m_strCurClip);
 }
@@ -68,7 +67,7 @@ bool Animation::AddClip(const string& strName,
 						float fOptionLimitTime,
 						const string& strTexKey,
 						const wchar_t* pFileName,
-						const string& strPathKey = TEXTURE_PATH)
+						const string& strPathKey)
 {
 	AnimationClip* pClip = new AnimationClip;
 	pClip->eType = eType;
@@ -90,6 +89,9 @@ bool Animation::AddClip(const string& strName,
 	pClip->iFrameY = iStartY;
 	pClip->fOptionTime = 0.f;
 
+	pClip->tFrameSize.x = pTex->GetWidth();
+	pClip->tFrameSize.y = pTex->GetHeight();
+
 	m_mapClip.insert(make_pair(strName, pClip));
 
 	if(m_strDefaultClip.empty())
@@ -98,6 +100,61 @@ bool Animation::AddClip(const string& strName,
 	if(m_strCurClip.empty())
 		SetCurrentClip(strName);
 	
+	return true;
+}
+
+bool Animation::AddClip(const string& strName,
+						ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
+						float fAnimationTime, float fAnimationLimitTime,
+						int iFrameMaxX, int iFrameMaxY,
+						int iStartX, int iStartY,
+						int iLengthX, int iLengthY,
+						float fOptionLimitTime,
+						const string& strTexKey,
+						const vector<wstring>& vecFileName,
+						const string& strPathKey)
+{
+
+	AnimationClip* pClip = new AnimationClip;
+	pClip->eType = eType;
+	pClip->eOption = eOption;
+	pClip->fAnimationLimitTime = fAnimationLimitTime;
+	pClip->iFrameMaxX = iFrameMaxX;
+	pClip->iFrameMaxY = iFrameMaxY;
+	pClip->iStartX = iStartX;
+	pClip->iStartY = iStartY;
+	pClip->iLengthX = iLengthX;
+	pClip->iLengthY = iLengthY;
+	pClip->fOptionLimitTime = fOptionLimitTime;
+	pClip->fAnimationFrameTime = fAnimationLimitTime / (iLengthX * iLengthY);
+
+	for (size_t i = 0 ; i < vecFileName.size(); ++i)
+	{
+		string filePath(vecFileName[i].begin(), vecFileName[i].end());
+		size_t last = filePath.size() - 1;
+		while (last >= 0 && filePath[last] != '/')
+		{
+			--last;
+		}
+		size_t len = filePath.size() - 1 - last - 4;
+		string texKey = filePath.substr(last + 1, len);
+		Texture* pTex = RESOURCE_MANAGER.LoadTexture(texKey.c_str(), vecFileName[i].c_str(), strPathKey);
+		pClip->vecTexture.push_back(pTex);
+	}
+	
+	pClip->fAnimationTime = 0.f;
+	pClip->iFrameX = iStartX;
+	pClip->iFrameY = iStartY;
+	pClip->fOptionTime = 0.f;
+
+	m_mapClip.insert(make_pair(strName, pClip));
+
+	if (m_strDefaultClip.empty())
+		SetDefaultClip(strName);
+
+	if (m_strCurClip.empty())
+		SetCurrentClip(strName);
+
 	return true;
 }
 
@@ -162,7 +219,7 @@ AnimationClip* Animation::FindClip(const string& strName)
 
 bool Animation::Init()
 {
-	return false;
+	return true;
 }
 
 void Animation::Update(float fTime)
@@ -171,7 +228,7 @@ void Animation::Update(float fTime)
 
 	while (m_pCurClip->fAnimationTime >= m_pCurClip->fAnimationFrameTime)
 	{
-		m_pCurClip->fAnimationFrameTime -= m_pCurClip->fAnimationFrameTime;
+		m_pCurClip->fAnimationTime -= m_pCurClip->fAnimationFrameTime;
 
 		++m_pCurClip->iFrameX;
 

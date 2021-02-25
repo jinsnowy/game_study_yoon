@@ -39,6 +39,7 @@
 #include <memory.h>
 #include <tchar.h>
 #include <conio.h>
+#include <iomanip>
 
 // C++ 헤더 파일
 #include <iostream>

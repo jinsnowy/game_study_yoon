@@ -34,7 +34,22 @@ public:
 				float	fOptionLimitTime,
 				const string& strTexKey,
 				const wchar_t* pFileName,
-				const string& strPathKey);
+				const string& strPathKey = TEXTURE_PATH);
+
+	bool AddClip(const string& strName,
+				ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
+				float	fAnimationTime,
+				float   fAnimationLimitTime,
+				int		iFrameMaxX,
+				int		iFrameMaxY,
+				int		iStartX,
+				int		iStartY,
+				int		iLengthX,
+				int		iLengthY,
+				float	fOptionLimitTime,
+				const string& strTexKey,
+				const vector<wstring>& vecFileName,
+				const string& strPathKey = TEXTURE_PATH);
 
 	void SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b);
 	void SetCurrentClip(const string& strCurClip);

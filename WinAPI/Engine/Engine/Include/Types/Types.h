@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include "Vec2.h"
+
 typedef struct _tagPixel
 {
 	unsigned char r;
@@ -78,4 +80,5 @@ typedef struct _tagAnimationClip
 	int		iLengthY;
 	float	fOptionTime;
 	float	fOptionLimitTime;
+	Vec2F	tFrameSize;
 }AnimationClip;

@@ -67,10 +67,10 @@ int MovableObject::Update(float dt)
 		//m_fGravityTime += dt;
 		//점프 상태일 경우 힘을 감소시킨다.
 		//m_fForce -= (GRAVITY * m_fGravityTime * m_fGravityTime);
-		//m_Pos.y  -= m_fForce * dt;
+		//m_tPos.y  -= m_fForce * dt;
 
 		m_fForce -= GRAVITY * dt;
-		m_Pos.y  -= (m_fForce * dt - 0.5f * GRAVITY * dt * dt);
+		m_tPos.y  -= (m_fForce * dt - 0.5f * GRAVITY * dt * dt);
 	}
 
 	Object::Update(dt);
@@ -95,81 +95,81 @@ void MovableObject::Draw(HDC hDC, float dt)
 
 void MovableObject::Move(float x, float y)
 {
-	m_Pos.x += x;
-	m_Pos.y += y;
+	m_tPos.x += x;
+	m_tPos.y += y;
 
 	m_bMove = true;
 }
 
 void MovableObject::Move(float x, float y, float dt)
 {
-	m_Pos.x += x * dt;
-	m_Pos.y += y * dt;
+	m_tPos.x += x * dt;
+	m_tPos.y += y * dt;
 
 	m_bMove = true;
 }
 
 void MovableObject::Move(const Pos& tMove, float dt)
 {
-	m_Pos += tMove * dt;
+	m_tPos += tMove * dt;
 
 	m_bMove = true;
 }
 
 void MovableObject::MoveXFromSpeed(float dt, MOVE_DIR dir)
 {
-	m_Pos.x += m_Speed * dt *  float(dir);
+	m_tPos.x += m_Speed * dt *  float(dir);
 
 	m_bMove = true;
 }
 
 void MovableObject::MoveYFromSpeed(float dt, MOVE_DIR dir)
 {
-	m_Pos.y += m_Speed * dt * float(dir);
+	m_tPos.y += m_Speed * dt * float(dir);
 
 	m_bMove = true;
 }
 
 void MovableObject::MoveX(float x)
 {
-	m_Pos.x += x;
+	m_tPos.x += x;
 
 	m_bMove = true;
 }
 
 void MovableObject::MoveX(float x, float dt)
 {
-	m_Pos.x += x * dt;
+	m_tPos.x += x * dt;
 
 	m_bMove = true;
 }
 
 void MovableObject::MoveY(float y)
 {
-	m_Pos.y += y;
+	m_tPos.y += y;
 
 	m_bMove = true;
 }
 
 void MovableObject::MoveY(float y, float dt)
 {
-	m_Pos.y += y * dt;
+	m_tPos.y += y * dt;
 
 	m_bMove = true;
 }
 
 void MovableObject::MoveAngle()
 {
-	m_Pos.x += cosf(m_Angle) * m_Speed;
-	m_Pos.y += sinf(m_Angle) * m_Speed;
+	m_tPos.x += cosf(m_Angle) * m_Speed;
+	m_tPos.y += sinf(m_Angle) * m_Speed;
 
 	m_bMove = true;
 }
 
 void MovableObject::MoveAngle(float fTime)
 {
-	m_Pos.x += cosf(m_Angle) * m_Speed * fTime;
-	m_Pos.y += sinf(m_Angle) * m_Speed * fTime;
+	m_tPos.x += cosf(m_Angle) * m_Speed * fTime;
+	m_tPos.y += sinf(m_Angle) * m_Speed * fTime;
 
 	m_bMove = true;
 }

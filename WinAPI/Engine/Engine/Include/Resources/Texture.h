@@ -41,4 +41,12 @@ public:
     {
         return m_bColorKeyEnable;
     }
+    long GetWidth() const
+    {
+        return m_tInfo.bmWidth;
+    }
+    long GetHeight() const
+    {
+        return m_tInfo.bmHeight;
+    }
 };

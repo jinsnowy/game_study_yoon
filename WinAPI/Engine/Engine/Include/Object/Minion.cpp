@@ -52,15 +52,15 @@ void Minion::Input(float dt)
 
 	MoveYFromSpeed(dt, m_Dir);
 
-	if (m_Pos.y + m_Size.y >= GETRESOLUTION.y)
+	if (m_tPos.y + m_tSize.y >= GETRESOLUTION.y)
 	{
-		m_Pos.y = GETRESOLUTION.y - m_Size.y;
+		m_tPos.y = GETRESOLUTION.y - m_tSize.y;
 		m_Dir = MD_BACK;
 	}
 
-	else if (m_Pos.y <= 0.f)
+	else if (m_tPos.y <= 0.f)
 	{
-		m_Pos.y = 0.f;
+		m_tPos.y = 0.f;
 		m_Dir = MD_FRONT;
 	}
 

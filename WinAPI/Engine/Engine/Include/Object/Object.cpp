@@ -1,3 +1,4 @@
+#include <cassert>
 #include "Object.h"
 #include "../Scene/Layer.h"
 #include "../Scene/SceneManager.h"
@@ -15,10 +16,12 @@ Object::Object() :
     m_pAnimation(nullptr),
     m_pScene(nullptr),
     m_pLayer(nullptr),
-    m_Pos(0, 0),
-    m_Pivot(0, 0),
-    m_Size(0, 0),
+    m_tPos(0, 0),
+    m_tPivot(0, 0),
+    m_tSize(0, 0),
+    m_tImageOffset(0, 0),
     m_blsPhysics(false),
+    m_bEnableAnimation(false),
     m_fGravityTime(0.f)
 {
 }
@@ -109,6 +112,13 @@ void Object::EraseAllObjects()
 {
     Safe_Release_VecList(m_ObjList);
 }
+
+void Object::SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b)
+{
+    assert(m_pAnimation != nullptr);
+    m_pAnimation->SetClipColorKey(strName, r, g, b);
+}
+
 Animation* Object::CreateAnimation(const string& strTag)
 {
     SAFE_RELEASE(m_pAnimation);
@@ -152,7 +162,32 @@ bool Object::AddAnimationClip(const string& strName,
                         strTexKey,
                         pFileName, strPathKey);
 
-    return false;
+    return true;
+}
+bool Object::AddAnimationClip(const string& strName,
+                    ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
+                    float fAnimationTime, float fAnimationLimitTime,
+                    int iFrameMaxX, int iFrameMaxY,
+                    int iStartX, int iStartY,
+                    int iLengthX, int iLengthY,
+                    float fOptionLimitTime,
+                    const string& strTexKey,
+                    const vector<wstring>& vecFileName, const string& strPathKey)
+{
+    if (!m_pAnimation)
+        return false;
+
+    m_pAnimation->AddClip(strName,
+                        eType, eOption, fAnimationTime,
+                        fAnimationLimitTime,
+                        iFrameMaxX, iFrameMaxY,
+                        iStartX, iStartY,
+                        iLengthX, iLengthY,
+                        fOptionLimitTime,
+                        strTexKey,
+                        vecFileName, strPathKey);
+
+    return true;
 }
 // --------------------------
 
@@ -171,10 +206,12 @@ void Object::SetTexture(const string& strKey, const wchar_t* pFileName, const st
     SAFE_RELEASE(m_pTexture);
     m_pTexture = RESOURCE_MANAGER.LoadTexture(strKey, pFileName, strPathKey);
 }
+
 void Object::SetColorKey(unsigned char r, unsigned char g, unsigned char b)
 {
     m_pTexture->SetColorKey(r, g, b);
 }
+
 void Object::SetAnimationClipColorKey(const string& strClip, unsigned char r, unsigned char g, unsigned char b)
 {
     if (m_pAnimation)
@@ -217,7 +254,7 @@ int Object::Update(float dt)
         else ++iter;
     }
   
-    if (m_pAnimation)
+    if (m_pAnimation && m_bEnableAnimation)
     {
         m_pAnimation->Update(dt);
     }
@@ -259,29 +296,36 @@ void Object::Draw(HDC hdc, float dt)
 {
     if (m_pTexture)
     {
-        Pos tPos = m_Pos - m_Size * m_Pivot;
+        Pos tPos = m_tPos - m_tSize * m_tPivot;
         tPos -= CAMERA.GetTopLeft();
 
-        Pos tImagePos = Pos(0,0);
-
-        if (m_pAnimation)
+        Pos tImagePos = Pos(0, 0);
+        if (m_pAnimation && m_bEnableAnimation)
         {
             AnimationClip* pClip = m_pAnimation->GetCurrentClip();
 
-            tImagePos.x = pClip->iFrameX * m_Size.x;
-            tImagePos.y = pClip->iFrameY * m_Size.y;
+            switch(pClip->eType)
+            {
+            case AT_FRAME:
+                SetTexture(pClip->vecTexture[pClip->iFrameX]);
+                break;
+            case AT_ATLAS:
+                tImagePos.x = pClip->iFrameX * m_tSize.x + m_tImageOffset.x;
+                tImagePos.y = pClip->iFrameY * m_tSize.y + m_tImageOffset.y;
+                break;
+            }
         }
 
         if (m_pTexture->GetColorKeyEnable())
         {
-            TransparentBlt(hdc, int(tPos.x), int(tPos.y), int(m_Size.x), int(m_Size.y),
+            TransparentBlt(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
                 m_pTexture->GetDC(), tImagePos.x, tImagePos.y,
-                int(m_Size.x), int(m_Size.y),
+                int(m_tSize.x), int(m_tSize.y),
                 m_pTexture->GetColorKey());
         }
         else 
         {
-            BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_Size.x), int(m_Size.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
+            BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
         }
     }
 

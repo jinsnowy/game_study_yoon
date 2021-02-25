@@ -1,3 +1,4 @@
+#include <cassert>
 #include "Player.h"
 #include "Bullet.h"
 #include "../Math.h"
@@ -19,44 +20,123 @@ Player::~Player()
 {
 }
 
+void Player::InitRightAnimation()
+{
+	assert(m_pAnimation != nullptr);
+	wstring basePath = L"Player/AmongUs/WalkRight/";
+	vector<wstring> vecFileName;
+	for (int i = 1; i <= 6; ++i)
+	{
+		wstringstream ss;
+		ss << basePath << L"WalkRight_" << setfill(L'0') << setw(4) << i << "_80x100.bmp";
+		vecFileName.push_back(ss.str());
+	}
+	for (int i = 12; i >= 7; --i)
+	{
+		wstringstream ss;
+		ss << basePath << L"WalkRight_" << setfill(L'0') << setw(4) << i << "_80x100.bmp";
+		vecFileName.push_back(ss.str());
+	}
+	for (int i = 7; i <= 12; ++i)
+	{
+		wstringstream ss;
+		ss << basePath << L"WalkRight_" << setfill(L'0') << setw(4) << i << "_80x100.bmp";
+		vecFileName.push_back(ss.str());
+	}
+	for (int i = 6; i >= 1; --i)
+	{
+		wstringstream ss;
+		ss << basePath << L"WalkRight_" << setfill(L'0') << setw(4) << i << "_80x100.bmp";
+		vecFileName.push_back(ss.str());
+	}
+	AddAnimationClip("WalkRight",
+		AT_FRAME, AO_LOOP,
+		0.0f, 0.8f,
+		24, 1,
+		0, 0,
+		24, 1,
+		0.f, "WalkRight_Anim", vecFileName);
+	SetClipColorKey("WalkRight", 255, 255, 255);
+}
+
+void Player::SetState(PlayerState state)
+{
+	m_eState = state;
+	if (!m_pAnimation) return;
+	switch (state)
+	{
+	case PlayerState::IDLE_LEFT:
+		m_pAnimation->ChangeClip("IdleLeft");
+		break;
+	case PlayerState::IDLE_RIGHT:
+		m_pAnimation->ChangeClip("IdleRight");
+		break;
+	case PlayerState::WALK_LEFT:
+		m_pAnimation->ChangeClip("WalkLeft");
+		break;
+	case PlayerState::WALK_RIGHT:
+		m_pAnimation->ChangeClip("WalkRight");
+		break;
+	}
+}
+
 bool Player::Init()
 {
-	SetPos(50.0f, 50.0f);
-	SetSize(100.0f, 100.0f);
+	SetPos(40.0f, 50.0f);
+	SetSize(80.0f, 100.0f);
 	SetPivot(0.5f, 0.5f);
 	SetSpeed(400.0f);
 
-	SetTexture("Player", L"hos.bmp");
-
+	SetTexture("PlayerIdle", L"Player/AmongUs/idle.bmp");
+	SetColorKey(255, 255, 255);
 	m_iHP = 1000;
 
 	// 중력을 적용한다.
 	SetPhysics(true);
 
 	// 점프할 힘을 설정한다.
-	SetForce(600.f);
+	SetForce(500.f);
 
+	SetEnableAnimation(true);
 	Animation *pAnim = CreateAnimation("PlayerAnimation");
-
-	AddAnimationClip("Idle", 
+	AddAnimationClip("WalkLeft", 
 						AT_ATLAS, AO_LOOP,
-						0.3f, 3.0f,
-						3, 1,
+						0.0f, 0.8f,
+						6, 4,
 						0, 0,
-						3, 1,
-						0.f, "PlayerIdleRight",
-						L"Player/Idle/Right/Player_Stand.bmp");
-
+						6, 4,
+						0.f, "WalkLeft_Anim",
+						L"Player/AmongUs/WalkLeft/WalkLeft_Anim.bmp");
+	SetClipColorKey("WalkLeft", 255, 255, 255);
+	InitRightAnimation();
+	AddAnimationClip("IdleLeft",
+					AT_FRAME, AO_LOOP,
+					0.0f, 100.0f,
+					1, 0,
+					0, 0,
+					1, 0,
+					0.f, "IdleLeft_Anim",
+					L"Player/AmongUs/IdleLeft.bmp");
+	SetClipColorKey("IdleLeft", 255, 255, 255);
+	AddAnimationClip("IdleRight",
+					AT_FRAME, AO_LOOP,
+					0.0f, 100.0f,
+					1, 0,
+					0, 0,
+					1, 0,
+					0.f, "IdleRight_Anim",
+					L"Player/AmongUs/IdleRight.bmp");
+	SetClipColorKey("IdleRight", 255, 255, 255);
 	SAFE_RELEASE(pAnim);
 
 	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
-	pRC->SetRect(-50.f, -50.f, 50.f, 50.f);
+	pRC->SetRect(-40.f, -50.f, 40.f, 50.f);
 	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
 	
 	SAFE_RELEASE(pRC);
 
 	ColliderRect* pRC_bot = AddCollider<ColliderRect>("PlayerBottom");
-	pRC_bot->SetRect(-5.f, 25.f, 5.f, 75.f);
+	pRC_bot->SetRect(-5.f, 49.f, 5.f, 51.f);
 	pRC_bot->AddCollisionFunction(CS_ENTER, this, &Player::HitPixel);
 	pRC_bot->AddCollisionFunction(CS_STAY, this, &Player::HitPixel);
 
@@ -80,10 +160,12 @@ void Player::Input(float dt)
 	if (KEYPRESS("MoveLeft"))
 	{
 		MoveXFromSpeed(dt, MD_BACK);
+		SetState(PlayerState::WALK_LEFT);
 	}
 	if (KEYPRESS("MoveRight"))
 	{
 		MoveXFromSpeed(dt, MD_FRONT);
+		SetState(PlayerState::WALK_RIGHT);
 	}
 	if (KEYDOWN("Fire"))
 	{
@@ -92,6 +174,12 @@ void Player::Input(float dt)
 	if (KEYDOWN("Skill1"))
 	{
 		MessageBox(NULL, L"Skill1", L"Skill1", MB_OK);
+	}
+	if (!KEYPRESS("MoveRight") && !KEYPRESS("MoveLeft"))
+	{
+		auto curState = GetState();
+		if(curState == PlayerState::WALK_LEFT) SetState(PlayerState::IDLE_LEFT);
+		else if(curState == PlayerState::WALK_RIGHT) SetState(PlayerState::IDLE_RIGHT);
 	}
 }
 
@@ -117,7 +205,7 @@ void Player::Draw(HDC hDC, float dt)
   	MovableObject::Draw(hDC, dt);
 	wchar_t strHP[32] = {};
 	swprintf_s(strHP, L"HP: %d", m_iHP);
-	Pos tPos = m_Pos - m_Size * m_Pivot;
+	Pos tPos = m_tPos - m_tSize * m_tPivot;
 	tPos -= CAMERA.GetTopLeft();
 	TextOut(hDC, tPos.x, tPos.y, strHP, lstrlen(strHP));
 }

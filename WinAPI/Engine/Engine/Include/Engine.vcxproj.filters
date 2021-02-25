@@ -330,8 +330,16 @@
     <Image Include="..\Bin\Texture\MaskStage2.bmp">
       <Filter>Textures</Filter>
     </Image>
+    <Image Include="..\Bin\Texture\Player\Spritesheet.png">
+      <Filter>Textures</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Bin\Texture\Player\readme.txt">
+      <Filter>Textures</Filter>
+    </Text>
   </ItemGroup>
 </Project>
