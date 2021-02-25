@@ -57,10 +57,10 @@ void Stage::Draw(HDC hDC, float dt)
     if (m_pTexture)
     {
         Pos tPos = m_tPos - m_tPivot * m_tSize;
-        Pos tCamTopLeft = CAMERA.GetTopLeft();
-        Pos tPivot = CAMERA.GetPivot();
+        Pos tCamTopLeft = CAMERA->GetTopLeft();
+        Pos tPivot = CAMERA->GetPivot();
         BitBlt(hDC, int(tPos.x), int(tPos.y),
-            CAMERA.GetClientRS().x, CAMERA.GetClientRS().y,
+            CAMERA->GetClientRS().x, CAMERA->GetClientRS().y,
             m_pTexture->GetDC(),
             int(tCamTopLeft.x), int(tCamTopLeft.y),
             SRCCOPY);

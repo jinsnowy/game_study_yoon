@@ -83,7 +83,7 @@ void ColliderRect::Draw(HDC hDC, float dt)
 	HPEN OldPen = (HPEN)SelectObject(hDC, myPen);
 
 	HBRUSH OldBrush = (HBRUSH)SelectObject(hDC, GetStockObject(NULL_BRUSH));
-	Pos tPos = CAMERA.GetTopLeft();
+	Pos tPos = CAMERA->GetTopLeft();
 
 	int left = int(m_tWorldInfo.left - tPos.x);
 	int top = int(m_tWorldInfo.top - tPos.y);

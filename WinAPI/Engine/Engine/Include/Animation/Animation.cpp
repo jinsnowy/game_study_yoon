@@ -82,7 +82,7 @@ bool Animation::AddClip(const string& strName,
 	pClip->fOptionLimitTime = fOptionLimitTime;
 	pClip->fAnimationFrameTime = fAnimationLimitTime / (iLengthX * iLengthY);
 
-	Texture* pTex = RESOURCE_MANAGER.LoadTexture(strTexKey, pFileName, strPathKey);
+	Texture* pTex = RESOURCE_MANAGER->LoadTexture(strTexKey, pFileName, strPathKey);
 	pClip->vecTexture.push_back(pTex);
 	pClip->fAnimationTime = 0.f;
 	pClip->iFrameX = iStartX;
@@ -138,7 +138,7 @@ bool Animation::AddClip(const string& strName,
 		}
 		size_t len = filePath.size() - 1 - last - 4;
 		string texKey = filePath.substr(last + 1, len);
-		Texture* pTex = RESOURCE_MANAGER.LoadTexture(texKey.c_str(), vecFileName[i].c_str(), strPathKey);
+		Texture* pTex = RESOURCE_MANAGER->LoadTexture(texKey.c_str(), vecFileName[i].c_str(), strPathKey);
 		pClip->vecTexture.push_back(pTex);
 	}
 	

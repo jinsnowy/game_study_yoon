@@ -20,18 +20,18 @@
 
 #define WM_RENDER_RESET (WM_USER + 1)
 
-#define WINDOW (Window::Instance())
-#define WINDOWHANDLE (Window::Instance().GetWindowHandle())
-#define GETRESOLUTION (Window::Instance().GetResolution())
-#define GETDC (Window::Instance().GetWndDC())
+#define WINDOW Window::Instance()
+#define WINDOWHANDLE Window::Instance()->GetWindowHandle()
+#define GETRESOLUTION Window::Instance()->GetResolution()
+#define GETDC Window::Instance()->GetWndDC()
 
-#define COLLISION_MANAGER (CollisionManager::Instance())
-#define TIMER (FrameTimer::Instance())
-#define SCENE_MANAGER (SceneManager::Instance())
-#define PATH_MANAGER (PathManager::Instance())
-#define RESOURCE_MANAGER (ResourceManager::Instance())
-#define CAMERA (Camera::Instance())
-#define INPUT (Input::Instance())
+#define COLLISION_MANAGER CollisionManager::Instance()
+#define TIMER FrameTimer::Instance()
+#define SCENE_MANAGER SceneManager::Instance()
+#define PATH_MANAGER PathManager::Instance()
+#define RESOURCE_MANAGER ResourceManager::Instance()
+#define CAMERA Camera::Instance()
+#define INPUT Input::Instance()
 
 
 // C 런타임 헤더 파일입니다.

@@ -68,7 +68,7 @@ void ColliderSphere::Draw(HDC hdc, float dt)
     HPEN OldPen = (HPEN)SelectObject(hdc, myPen);
 
     HBRUSH OldBrush = (HBRUSH)SelectObject(hdc, GetStockObject(NULL_BRUSH));
-    Pos tPos = CAMERA.GetTopLeft();
+    Pos tPos = CAMERA->GetTopLeft();
 
     int left = m_tWorldInfo.center.x - m_tWorldInfo.radius - tPos.x;
     int right = left + 2 * m_tWorldInfo.radius;

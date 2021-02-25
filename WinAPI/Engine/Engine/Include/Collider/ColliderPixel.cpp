@@ -24,7 +24,7 @@ ColliderPixel::~ColliderPixel()
 
 bool ColliderPixel::SetPixelInfo(const char* pFileName, const string& strPathKey)
 {
-    const char* pPath = PATH_MANAGER.FindPathByMultiByte(strPathKey);
+    const char* pPath = PATH_MANAGER->FindPathByMultiByte(strPathKey);
     string strPath;
 
     if (pPath)

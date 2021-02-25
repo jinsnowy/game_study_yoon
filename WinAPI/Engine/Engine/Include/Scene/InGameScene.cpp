@@ -25,8 +25,8 @@ bool InGameScene::Init()
     Layer* pLayer = FindLayer("Default");
 
     Object* pPlayer = Object::CreateObject<Player>("Player", pLayer);
-    CAMERA.SetTarget(pPlayer);
-    CAMERA.SetPivot(0.5f, 0.5f);
+    CAMERA->SetTarget(pPlayer);
+    CAMERA->SetPivot(0.5f, 0.5f);
 
     SAFE_RELEASE(pPlayer);
 

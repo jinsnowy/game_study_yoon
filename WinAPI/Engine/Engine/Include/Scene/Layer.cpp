@@ -126,7 +126,7 @@ void Layer::Collision(float dt)
         }
         else 
         {
-            COLLISION_MANAGER.AddObject(*it);
+            COLLISION_MANAGER->AddObject(*it);
             ++it; 
         }
     }

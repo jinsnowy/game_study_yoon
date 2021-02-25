@@ -27,7 +27,7 @@ bool Texture::LoadTexture(HINSTANCE hInst, HDC hDC,
     m_hMemDC = CreateCompatibleDC(hDC);
 
     // 전체 경로를 만들어준다.
-    const wchar_t* pPath = PATH_MANAGER.FindPath(strPathKey);
+    const wchar_t* pPath = PATH_MANAGER->FindPath(strPathKey);
 
     wstring strPath;
     if (pPath)

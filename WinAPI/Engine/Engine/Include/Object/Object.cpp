@@ -222,7 +222,7 @@ void Object::SetTexture(Texture* pTexture)
 void Object::SetTexture(const string& strKey, const wchar_t* pFileName, const string& strPathKey)
 {
     SAFE_RELEASE(m_pTexture);
-    m_pTexture = RESOURCE_MANAGER.LoadTexture(strKey, pFileName, strPathKey);
+    m_pTexture = RESOURCE_MANAGER->LoadTexture(strKey, pFileName, strPathKey);
 }
 
 void Object::SetColorKey(unsigned char r, unsigned char g, unsigned char b)
@@ -315,7 +315,7 @@ void Object::Draw(HDC hdc, float dt)
     if (m_pTexture)
     {
         Pos tPos = m_tPos - m_tSize * m_tPivot;
-        tPos -= CAMERA.GetTopLeft();
+        tPos -= CAMERA->GetTopLeft();
 
         Pos tImagePos = Pos(0, 0);
         if (m_pAnimation && m_bEnableAnimation)

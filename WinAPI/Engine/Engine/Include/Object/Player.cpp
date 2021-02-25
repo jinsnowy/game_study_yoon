@@ -206,7 +206,7 @@ void Player::Draw(HDC hDC, float dt)
 	wchar_t strHP[32] = {};
 	swprintf_s(strHP, L"HP: %d", m_iHP);
 	Pos tPos = m_tPos - m_tSize * m_tPivot;
-	tPos -= CAMERA.GetTopLeft();
+	tPos -= CAMERA->GetTopLeft();
 	TextOut(hDC, tPos.x, tPos.y, strHP, lstrlen(strHP));
 }
 

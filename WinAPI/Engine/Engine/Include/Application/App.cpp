@@ -26,6 +26,15 @@ App::~App()
 #ifdef _DEBUG
 	// FreeConsole();
 #endif
+
+	SCENE_MANAGER->Release();
+	CAMERA->Release();
+	COLLISION_MANAGER->Release();
+	INPUT->Release();
+	RESOURCE_MANAGER->Release();
+	PATH_MANAGER->Release();
+	TIMER->Release();
+	WINDOW->Release();
 }
 
 int App::Go()
@@ -54,43 +63,43 @@ int App::Go()
 
 void App::Init()
 {
-	if (!WINDOW.Init(1280, 720, L"My First Game"))
+	if (!WINDOW->Init(1280, 720, L"My First Game"))
 	{
 		throw APP_EXCEPT(L"Window init failed.\n");
 	}
 
-	if (!TIMER.Init(WINDOW.m_hWnd))
+	if (!TIMER->Init(WINDOW->m_hWnd))
 	{
 		throw APP_EXCEPT(L"Timer init failed.\n");
 	}
 
-	if (!PATH_MANAGER.Init())
+	if (!PATH_MANAGER->Init())
 	{
 		throw APP_EXCEPT(L"Path Manager init failed.\n");
 	}
 
-	if (!RESOURCE_MANAGER.Init(WINDOW.m_hInst, WINDOW.m_hDC))
+	if (!RESOURCE_MANAGER->Init(WINDOW->m_hInst, WINDOW->m_hDC))
 	{
 		throw APP_EXCEPT(L"ResourceManager init failed.\n");
 	}
 
-	if (!INPUT.Init(WINDOWHANDLE))
+	if (!INPUT->Init(WINDOWHANDLE))
 	{
 		throw APP_EXCEPT(L"Input init failed.\n");
 	}
 
-	if (!COLLISION_MANAGER.Init())
+	if (!COLLISION_MANAGER->Init())
 	{
 		throw APP_EXCEPT(L"Collision Manager init failed.\n");
 	}
 
 	// 씬 초기화 전에 카메라 초기화
-	if (!CAMERA.Init(Pos(0.f, 0.f), GETRESOLUTION, RESOLUTION(1920, 1080)))
+	if (!CAMERA->Init(Pos(0.f, 0.f), GETRESOLUTION, RESOLUTION(1920, 1080)))
 	{
 		throw APP_EXCEPT(L"Camera init failed.\n");
 	}
 
-	if (!SCENE_MANAGER.Init())
+	if (!SCENE_MANAGER->Init())
 	{
 		throw APP_EXCEPT(L"SceneManager init failed.\n");
 	}
@@ -98,7 +107,7 @@ void App::Init()
 
 void App::Process()
 {
-	const float dt = TIMER.Tick();
+	const float dt = TIMER->Tick();
 
 	Input(dt);
 	Update(dt);
@@ -109,42 +118,42 @@ void App::Process()
 
 void App::Input(float dt)
 {
-	SCENE_MANAGER.Input(dt);
-	CAMERA.Input(dt);
+	SCENE_MANAGER->Input(dt);
+	CAMERA->Input(dt);
 }
 
 void App::Update(float dt)
 {
-	INPUT.Update(dt);
-	SCENE_MANAGER.Update(dt);
-	CAMERA.Update(dt);
+	INPUT->Update(dt);
+	SCENE_MANAGER->Update(dt);
+	CAMERA->Update(dt);
 }
 
 void App::LateUpdate(float dt)
 {
-	SCENE_MANAGER.LateUpdate(dt);
+	SCENE_MANAGER->LateUpdate(dt);
 }
 
 void App::Collision(float dt)
 {
-	SCENE_MANAGER.Collision(dt);
-	COLLISION_MANAGER.Collision(dt);
+	SCENE_MANAGER->Collision(dt);
+	COLLISION_MANAGER->Collision(dt);
 }
 
 void App::Draw(float dt)
 {
 	// 더블 버퍼링
-	Texture* pBackBuffer = RESOURCE_MANAGER.GetBackBuffer();
+	Texture* pBackBuffer = RESOURCE_MANAGER->GetBackBuffer();
 
-	SCENE_MANAGER.Draw(pBackBuffer->GetDC(), dt);
+	SCENE_MANAGER->Draw(pBackBuffer->GetDC(), dt);
 
-	BitBlt(WINDOW.m_hDC, 0, 0, GETRESOLUTION.x, GETRESOLUTION.y, pBackBuffer->GetDC(), 0, 0, SRCCOPY);
+	BitBlt(WINDOW->m_hDC, 0, 0, GETRESOLUTION.x, GETRESOLUTION.y, pBackBuffer->GetDC(), 0, 0, SRCCOPY);
 
 	SAFE_RELEASE(pBackBuffer);
 
-	Mouse* pMouse = INPUT.GetMouse();
+	Mouse* pMouse = INPUT->GetMouse();
 
-	pMouse->Draw(WINDOW.m_hDC, dt);
+	pMouse->Draw(WINDOW->m_hDC, dt);
 
 }
 
