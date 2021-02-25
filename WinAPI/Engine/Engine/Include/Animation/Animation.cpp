@@ -89,8 +89,8 @@ bool Animation::AddClip(const string& strName,
 	pClip->iFrameY = iStartY;
 	pClip->fOptionTime = 0.f;
 
-	pClip->tFrameSize.x = pTex->GetWidth();
-	pClip->tFrameSize.y = pTex->GetHeight();
+	pClip->tFrameSize.x = (float) pTex->GetWidth();
+	pClip->tFrameSize.y = (float) pTex->GetHeight();
 
 	m_mapClip.insert(make_pair(strName, pClip));
 

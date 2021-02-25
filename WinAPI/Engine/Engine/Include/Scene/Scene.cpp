@@ -51,7 +51,7 @@ Layer* Scene::CreateLayer(const string& tag, int zOrder)
 	pLayer->SetZOrder(zOrder);
 	pLayer->SetScene(this);
 
-	m_LayerList.emplace_back(pLayer);
+	m_LayerList.push_back(pLayer);
 	
 	if (m_LayerList.size() >= 2)
 	{

@@ -13,6 +13,8 @@ UI::UI()
 }
 
 UI::UI(const UI& ui)
+    :
+    Object(ui)
 {
 }
 

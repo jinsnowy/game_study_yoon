@@ -14,7 +14,7 @@ private:
 	int			m_zOrder;
 	string	m_tag;
 	Scene* m_pScene;
-	list<Object*> m_ObjList;
+	list<Object*> m_LayerObjList;
 public:
 	~Layer();
 

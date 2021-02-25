@@ -29,6 +29,7 @@ private:
 	RESOLUTION m_RS;
 public:
 	BOOL Init(int width, int height, const wchar_t* name);
+	HWND GetWindowHandle() { return m_hWnd; }
 	RESOLUTION GetResolution() noexcept { return m_RS; }
 	static const wchar_t* GetName() { return wndClassName; }
 private:

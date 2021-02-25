@@ -1,21 +1,23 @@
 #pragma once
-#include "Object.h"
-class UI : public Object
+#include "UI.h"
+class Mouse : public UI
 {
 private:
 	friend class Object;
 	friend class Scene;
 protected:
-	UI();
-	UI(const UI& ui);
-	virtual ~UI() = 0;
+	Mouse();
+	Mouse(const Mouse& ui);
+	virtual ~Mouse();
+private:
+	Pos m_tMove;
 public:
-	virtual bool Init() = 0;
+	virtual bool Init();
 	virtual void Input(float dt);
 	virtual int Update(float dt);
 	virtual int LateUpdate(float dt);
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hdc, float dt);
-	virtual UI* Clone() = 0;
+	virtual Mouse* Clone();
 };
 

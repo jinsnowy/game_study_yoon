@@ -22,17 +22,19 @@ private:
 		}
 	};
 private:
-	HWND m_hWnd;
+	HWND							m_hWnd;
 	unordered_map<string, KeyInfo*> m_mapKey;
-	KeyInfo* m_pCreateKey;
+	KeyInfo*						m_pCreateKey;
+	POINT							m_tMousePos;
+	POINT							m_tMouseMove;
+	class Mouse* m_pMouse;
 public:
 	bool Init(HWND hWnd);
 	void Update(float dt);
-
 	bool KeyDown(const string& strKey) const;
 	bool KeyPress(const string& strKey) const;
 	bool KeyUp(const string& strKey) const;
-
+	class Mouse* GetMouse() const { return m_pMouse; } 
 public:
 	template<typename T>
 	bool AddKey(const T& data)

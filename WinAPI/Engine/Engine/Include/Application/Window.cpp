@@ -20,8 +20,6 @@
 
 #include "Window.h"
 #include "../Resource.h"
-#include "../Core/Mouse.h"
-#include "../Core/Keyboard.h"
 
 DEFINITION_SINGLE(Window)
 

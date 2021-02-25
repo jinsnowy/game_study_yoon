@@ -53,10 +53,13 @@ public:
 					const string& strTexKey,
 					const vector<wstring>& vecFileName,
 					const string& strPathKey = TEXTURE_PATH);
-	const list<Collider*>* GetColliderList() const 
+public:
+	const list<Collider*>* GetColliderList() const
 	{
 		return &m_ColliderList;
 	}
+	Collider* GetCollider(const string& strTag);
+
 	template<typename T>
 	void AddCollisionFunction(const string& strTag, COLLISION_STATE eState, T* pObj, void (T::* pFunc)(Collider*, Collider*, float))
 	{
@@ -72,7 +75,6 @@ public:
 			}
 		}
 	}
-public:
 	template<typename T>
 	T* AddCollider(const string& strTag)
 	{

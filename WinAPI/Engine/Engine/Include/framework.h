@@ -21,6 +21,7 @@
 #define WM_RENDER_RESET (WM_USER + 1)
 
 #define WINDOW (Window::Instance())
+#define WINDOWHANDLE (Window::Instance().GetWindowHandle())
 #define GETRESOLUTION (Window::Instance().GetResolution())
 #define GETDC (Window::Instance().GetWndDC())
 

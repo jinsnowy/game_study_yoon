@@ -64,7 +64,7 @@ Object::~Object()
 void Object::AddObject(Object* pObj)
 {
     pObj->AddRef();
-    m_ObjList.emplace_back(pObj);
+    m_ObjList.push_back(pObj);
 }
 
 Object* Object::FindObject(const string& tag)
@@ -82,13 +82,16 @@ Object* Object::FindObject(const string& tag)
 
 void Object::EraseObject(Object* pObj)
 {
-    auto iterEnd = m_ObjList.end();
-    for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
+    list<Object*>::iterator it;
+    list<Object*>::iterator iterEnd = m_ObjList.end();
+
+    const auto ptr = &m_ObjList;
+    for (it = m_ObjList.begin(); it != iterEnd; ++it)
     {
         if (*it == pObj)
         {
             SAFE_RELEASE((*it));
-            it = m_ObjList.erase(it);
+            m_ObjList.erase(it);
             return;
         }
     }
@@ -188,6 +191,21 @@ bool Object::AddAnimationClip(const string& strName,
                         vecFileName, strPathKey);
 
     return true;
+}
+Collider* Object::GetCollider(const string& strTag)
+{
+    list<Collider*>::iterator iter;
+    list<Collider*>::iterator iterEnd = m_ColliderList.end();
+
+    for (iter = m_ColliderList.begin(); iter != iterEnd; ++iter)
+    {
+        if ((*iter)->GetTag() == strTag)
+        {
+            (*iter)->AddRef();
+            return *iter;
+        }
+    }
+    return nullptr;
 }
 // --------------------------
 

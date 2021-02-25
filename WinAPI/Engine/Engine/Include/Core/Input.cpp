@@ -1,14 +1,19 @@
 #include "Input.h"
-DEFINITION_SINGLE(Input)
+#include "../Object/Mouse.h"
+#include "../Animation/Animation.h"
 
+DEFINITION_SINGLE(Input)
 Input::Input()
 	: m_hWnd(nullptr),
-	  m_pCreateKey(nullptr)
+	  m_pCreateKey(nullptr),
+		m_pMouse(nullptr)
 {
 }
 
 Input::~Input()
 {
+	Object::EraseObject(m_pMouse);
+	SAFE_RELEASE(m_pMouse);
 	Safe_Delete_Map(m_mapKey);
 }
 
@@ -22,6 +27,17 @@ bool Input::Init(HWND hWnd)
 	AddKey("MoveRight", 'D');
 	AddKey("Fire", VK_SPACE);
 	AddKey(VK_CONTROL, "Skill1", '1');
+	AddKey(VK_LBUTTON, "MouseLButton");
+
+	// 마우스 위치를 얻어오는 함수이다.
+	GetCursorPos(&m_tMousePos);
+
+	// 마우스 생성
+	m_pMouse = Object::CreateObject<Mouse>("Mouse");
+
+	m_pMouse->SetTexture("MouseTexture", L"mouse.bmp");
+	m_pMouse->SetSize(32, 19);
+	m_pMouse->SetColorKey(255, 255, 255);
 
 	return true;
 }
@@ -70,6 +86,9 @@ void Input::Update(float dt)
 			}
 		}
 	}
+
+	m_pMouse->Update(dt);
+	m_pMouse->LateUpdate(dt);
 }
 
 bool Input::KeyDown(const string& strKey) const

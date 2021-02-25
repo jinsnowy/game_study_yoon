@@ -8,6 +8,7 @@
 #include "../Scene/SceneManager.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
+#include "../Object/Mouse.h"
 
 
 App::App()
@@ -73,7 +74,7 @@ void App::Init()
 		throw APP_EXCEPT(L"ResourceManager init failed.\n");
 	}
 
-	if (!INPUT.Init(WINDOW.m_hWnd))
+	if (!INPUT.Init(WINDOWHANDLE))
 	{
 		throw APP_EXCEPT(L"Input init failed.\n");
 	}
@@ -135,13 +136,16 @@ void App::Draw(float dt)
 	// 더블 버퍼링
 	Texture* pBackBuffer = RESOURCE_MANAGER.GetBackBuffer();
 
-	Rectangle(pBackBuffer->GetDC(), 0, 0, 1280, 720);
-
 	SCENE_MANAGER.Draw(pBackBuffer->GetDC(), dt);
 
 	BitBlt(WINDOW.m_hDC, 0, 0, GETRESOLUTION.x, GETRESOLUTION.y, pBackBuffer->GetDC(), 0, 0, SRCCOPY);
 
 	SAFE_RELEASE(pBackBuffer);
+
+	Mouse* pMouse = INPUT.GetMouse();
+
+	pMouse->Draw(WINDOW.m_hDC, dt);
+
 }
 
 // Error handling

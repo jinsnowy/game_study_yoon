@@ -14,13 +14,15 @@ Layer::Layer()
 }
 Layer::~Layer()
 {
-    auto iterEnd = m_ObjList.end();
-    for (auto it = m_ObjList.begin(); it != iterEnd; it++)
+    list<Object*>::iterator it;
+    list<Object*>::iterator iterEnd = m_LayerObjList.end();
+
+    for (it = m_LayerObjList.begin(); it != iterEnd; it++)
     {
         Object::EraseObject(*it);
         SAFE_RELEASE((*it));
     }
-    m_ObjList.clear();
+    m_LayerObjList.clear();
 }
 
 void Layer::AddObject(Object* pObj)
@@ -29,13 +31,13 @@ void Layer::AddObject(Object* pObj)
     pObj->SetLayer(this);
     pObj->AddRef();
     
-    m_ObjList.emplace_back(pObj);
+    m_LayerObjList.push_back(pObj);
 }
 
 void Layer::Input(float dt)
 {
-    auto iterEnd = m_ObjList.end();
-    for (auto it = m_ObjList.begin(); it != iterEnd;)
+    auto iterEnd = m_LayerObjList.end();
+    for (auto it = m_LayerObjList.begin(); it != iterEnd;)
     {
         if (!(*it)->GetEnable())
         {
@@ -49,8 +51,8 @@ void Layer::Input(float dt)
         {
             Object::EraseObject(*it);
             SAFE_RELEASE((*it));
-            it = m_ObjList.erase(it);
-            iterEnd = m_ObjList.end();
+            it = m_LayerObjList.erase(it);
+            iterEnd = m_LayerObjList.end();
         }
         else ++it;
     }
@@ -58,8 +60,8 @@ void Layer::Input(float dt)
 
 void Layer::Update(float dt)
 {
-    auto iterEnd = m_ObjList.end();
-    for (auto it = m_ObjList.begin(); it != iterEnd;)
+    auto iterEnd = m_LayerObjList.end();
+    for (auto it = m_LayerObjList.begin(); it != iterEnd;)
     {
         if (!(*it)->GetEnable())
         {
@@ -73,8 +75,8 @@ void Layer::Update(float dt)
         {
             Object::EraseObject(*it);
             SAFE_RELEASE((*it));
-            it = m_ObjList.erase(it);
-            iterEnd = m_ObjList.end();
+            it = m_LayerObjList.erase(it);
+            iterEnd = m_LayerObjList.end();
         }
         else ++it;
     }
@@ -82,8 +84,8 @@ void Layer::Update(float dt)
 
 void Layer::LateUpdate(float dt)
 {
-    auto iterEnd = m_ObjList.end();
-    for (auto it = m_ObjList.begin(); it != iterEnd;)
+    auto iterEnd = m_LayerObjList.end();
+    for (auto it = m_LayerObjList.begin(); it != iterEnd;)
     {
         if (!(*it)->GetEnable())
         {
@@ -97,8 +99,8 @@ void Layer::LateUpdate(float dt)
         {
             Object::EraseObject(*it);
             SAFE_RELEASE((*it));
-            it = m_ObjList.erase(it);
-            iterEnd = m_ObjList.end();
+            it = m_LayerObjList.erase(it);
+            iterEnd = m_LayerObjList.end();
         }
         else ++it;
     }
@@ -106,8 +108,8 @@ void Layer::LateUpdate(float dt)
 
 void Layer::Collision(float dt)
 {
-    auto iterEnd = m_ObjList.end();
-    for (auto it = m_ObjList.begin(); it != iterEnd;)
+    auto iterEnd = m_LayerObjList.end();
+    for (auto it = m_LayerObjList.begin(); it != iterEnd;)
     {
         if (!(*it)->GetEnable())
         {
@@ -119,8 +121,8 @@ void Layer::Collision(float dt)
         {
             Object::EraseObject(*it);
             SAFE_RELEASE((*it));
-            it = m_ObjList.erase(it);
-            iterEnd = m_ObjList.end();
+            it = m_LayerObjList.erase(it);
+            iterEnd = m_LayerObjList.end();
         }
         else 
         {
@@ -132,8 +134,8 @@ void Layer::Collision(float dt)
 
 void Layer::Draw(HDC hdc, float dt)
 {
-    auto iterEnd = m_ObjList.end();
-    for (auto it = m_ObjList.begin(); it != iterEnd;)
+    auto iterEnd = m_LayerObjList.end();
+    for (auto it = m_LayerObjList.begin(); it != iterEnd;)
     {
         if (!(*it)->GetEnable())
         {
@@ -147,8 +149,8 @@ void Layer::Draw(HDC hdc, float dt)
         {
             Object::EraseObject(*it);
             SAFE_RELEASE((*it));
-            it = m_ObjList.erase(it);
-            iterEnd = m_ObjList.end();
+            it = m_LayerObjList.erase(it);
+            iterEnd = m_LayerObjList.end();
         }
         else ++it;
     }

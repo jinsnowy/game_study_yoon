@@ -144,12 +144,6 @@
     <ClInclude Include="Object\Bullet.h">
       <Filter>Object\03. Bullet</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Keyboard.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Mouse.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Resources\ResourceManager.h">
       <Filter>Resources</Filter>
     </ClInclude>
@@ -204,11 +198,14 @@
     <ClInclude Include="Scene\StartScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Object\UIButton.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Mouse.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinMain.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Window.cpp">
       <Filter>Application</Filter>
     </ClCompile>
@@ -253,12 +250,6 @@
     </ClCompile>
     <ClCompile Include="Object\Bullet.cpp">
       <Filter>Object\03. Bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Keyboard.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Mouse.cpp">
-      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Resources\ResourceManager.cpp">
       <Filter>Resources</Filter>
@@ -310,6 +301,15 @@
     </ClCompile>
     <ClCompile Include="Scene\StartScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\UIButton.cpp">
+      <Filter>Object\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Mouse.cpp">
+      <Filter>Object\04. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
