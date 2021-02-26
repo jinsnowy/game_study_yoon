@@ -1,6 +1,8 @@
 #include "Mouse.h"
 #include "../framework.h"
 #include "../Application/Window.h"
+#include "../Collider/ColliderPoint.h"
+
 Mouse::Mouse()
     : m_tMove()
 {
@@ -27,6 +29,11 @@ bool Mouse::Init()
 
     m_tPos.x = pt.x;
     m_tPos.y = pt.y;
+
+    ColliderPoint* pColl = AddCollider<ColliderPoint>("Mouse");
+
+    SAFE_RELEASE(pColl);
+
     return true;
 }
 

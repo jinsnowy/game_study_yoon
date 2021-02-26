@@ -32,6 +32,7 @@ public:
 	HWND GetWindowHandle() { return m_hWnd; }
 	RESOLUTION GetResolution() noexcept { return m_RS; }
 	static const wchar_t* GetName() { return wndClassName; }
+	void DestroyGame();
 private:
 	friend class App;
 	void MyRegisterClass();

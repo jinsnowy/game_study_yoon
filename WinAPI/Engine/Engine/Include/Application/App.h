@@ -23,8 +23,8 @@ public:
 private:
 	void Process();
 	void Input(float dt);
-	void Update(float dt);
-	void LateUpdate(float dt);
+	int Update(float dt);
+	int LateUpdate(float dt);
 	void Collision(float dt);
 	void Draw(float dt);
 };

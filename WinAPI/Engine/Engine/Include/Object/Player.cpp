@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "../Math.h"
+#include "../Scene/Scene.h"
 #include "../Core/Input.h"
 #include "../Collider/ColliderRect.h"
 #include "../Collider/ColliderPixel.h"
@@ -245,7 +246,7 @@ void Player::HitPixel(Collider* pSrc, Collider* pDst, float dt)
 
 void Player::Fire()
 {
-	Object* pBullet = Object::CreateCloneObject("Bullet", "PlayerBullet", m_pLayer);
+	Object* pBullet = Object::CreateCloneObject("Bullet", "PlayerBullet",m_pScene->GetSceneType(), m_pLayer);
 
 	pBullet->AddCollisionFunction("BulletBody", CS_ENTER, (Bullet*) pBullet, &Bullet::Hit);
 

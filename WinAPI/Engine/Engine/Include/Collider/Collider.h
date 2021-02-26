@@ -10,12 +10,14 @@ protected:
 	Collider(const Collider& coll);
 	virtual ~Collider() = 0;
 protected:
+	bool			m_bUIColl;
 	COLLIDER_TYPE	m_eCollType;
 	class Object*	m_pObject;
 	list<Collider*> m_CollisionList;
 	list <function<void(Collider*, Collider*, float)>> m_FuncList[CS_END];
 	Pos				m_tHitPoint;
 public:
+	void EnableUICollider(bool bUI) { m_bUIColl = bUI; }
 	Pos GetHitPoint() const { return m_tHitPoint; }
 	void SetHitPoint(const Pos& tPos) { m_tHitPoint = tPos; }
 	void AddCollisionFunction(COLLISION_STATE eState, void (*pFunc)(Collider*, Collider*, float))
@@ -92,5 +94,9 @@ protected:
 	bool CollisionRectToSphere(const Rect& src, const Sphere& dst);
 	bool CollisionSphereToSphere(const Sphere& src, const Sphere& dst);
 	bool CollisionRectToPixel(const Rect& src, const vector<Pixel>& vecPixel, int iWidth, int iHeight);
+	bool CollisionSphereToPixel(const Sphere& src, const vector<Pixel>& vecPixel, int iWidth, int iHeight);
+	bool CollisionRectToPoint(const Rect& src, const Pos& dst);
+	bool CollisionSphereToPoint(const Sphere& src, const Pos& dst);
+	bool CollisionPixelToPoint(const vector<Pixel>& vecPixel, int iWidth, int iHeight, const Pos& dst);
 };
 

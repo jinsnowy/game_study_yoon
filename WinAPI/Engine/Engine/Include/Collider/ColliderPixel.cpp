@@ -1,6 +1,7 @@
 #include "ColliderPixel.h"
 #include "ColliderRect.h"
 #include "ColliderSphere.h"
+#include "ColliderPoint.h"
 #include "../Core/PathManager.h"
 
 ColliderPixel::ColliderPixel()
@@ -86,15 +87,19 @@ bool ColliderPixel::Init()
 
 void ColliderPixel::Input(float dt)
 {
+    Collider::Input(dt);
 }
 
 int ColliderPixel::Update(float dt)
 {
+    Collider::Update(dt);
     return 0;
 }
 
 int ColliderPixel::LateUpdate(float dt)
 {
+    Collider::LateUpdate(dt);
+
     return 0;
 }
 
@@ -104,12 +109,17 @@ bool ColliderPixel::CheckCollision(Collider* pDst)
     {
     case CT_RECT:
         return CollisionRectToPixel(static_cast<ColliderRect*>(pDst)->GetWorldInfo(), m_vecPixel, m_iWidth, m_iHeight);
+    case CT_POINT:
+        return CollisionPixelToPoint(m_vecPixel, m_iWidth, m_iHeight, static_cast<ColliderPoint*>(pDst)->GetWorldInfo());
+    case CT_SPHERE:
+        return CollisionSphereToPixel(static_cast<ColliderSphere*>(pDst)->GetWorldInfo(), m_vecPixel, m_iWidth, m_iHeight);
     }
     return true;
 }
 
 void ColliderPixel::Draw(HDC hdc, float dt)
 {
+    Collider::Draw(hdc, dt);
 }
 
 ColliderPixel* ColliderPixel::Clone()

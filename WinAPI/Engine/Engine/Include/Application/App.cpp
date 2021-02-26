@@ -17,14 +17,14 @@ App::App()
 	// _CrtSetBreakAlloc(320);
 #ifdef _DEBUG
 	// 콘솔창을 생성시켜준다
-	// AllocConsole();
+	AllocConsole();
 #endif
 }
 
 App::~App()
 {
 #ifdef _DEBUG
-	// FreeConsole();
+	FreeConsole();
 #endif
 
 	SCENE_MANAGER->Release();
@@ -83,14 +83,14 @@ void App::Init()
 		throw APP_EXCEPT(L"ResourceManager init failed.\n");
 	}
 
-	if (!INPUT->Init(WINDOWHANDLE))
-	{
-		throw APP_EXCEPT(L"Input init failed.\n");
-	}
-
 	if (!COLLISION_MANAGER->Init())
 	{
 		throw APP_EXCEPT(L"Collision Manager init failed.\n");
+	}
+
+	if (!INPUT->Init(WINDOWHANDLE))
+	{
+		throw APP_EXCEPT(L"Input init failed.\n");
 	}
 
 	// 씬 초기화 전에 카메라 초기화
@@ -110,28 +110,46 @@ void App::Process()
 	const float dt = TIMER->Tick();
 
 	Input(dt);
-	Update(dt);
-	LateUpdate(dt);
+
+	if (Update(dt) == SC_CHANGE)
+	{
+
+		return;
+	}
+		
+
+	if (LateUpdate(dt) == SC_CHANGE)
+	{
+
+		return;
+	}
+		
+
 	Collision(dt);
 	Draw(dt);
 }
 
 void App::Input(float dt)
 {
+	INPUT->Update(dt);
 	SCENE_MANAGER->Input(dt);
 	CAMERA->Input(dt);
 }
 
-void App::Update(float dt)
+int App::Update(float dt)
 {
-	INPUT->Update(dt);
-	SCENE_MANAGER->Update(dt);
+	SCENE_CHANGE sc;
+	sc = SCENE_MANAGER->Update(dt);
 	CAMERA->Update(dt);
+	return sc;
 }
 
-void App::LateUpdate(float dt)
+int App::LateUpdate(float dt)
 {
-	SCENE_MANAGER->LateUpdate(dt);
+	SCENE_CHANGE sc;
+	sc = SCENE_MANAGER->LateUpdate(dt);
+
+	return sc;
 }
 
 void App::Collision(float dt)

@@ -156,6 +156,7 @@
     <ClInclude Include="Application\Window.h" />
     <ClInclude Include="Collider\Collider.h" />
     <ClInclude Include="Collider\ColliderPixel.h" />
+    <ClInclude Include="Collider\ColliderPoint.h" />
     <ClInclude Include="Collider\ColliderRect.h" />
     <ClInclude Include="Collider\ColliderSphere.h" />
     <ClInclude Include="Collider\CollisionManager.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="Application\Window.cpp" />
     <ClCompile Include="Collider\Collider.cpp" />
     <ClCompile Include="Collider\ColliderPixel.cpp" />
+    <ClCompile Include="Collider\ColliderPoint.cpp" />
     <ClCompile Include="Collider\ColliderRect.cpp" />
     <ClCompile Include="Collider\ColliderSphere.cpp" />
     <ClCompile Include="Collider\CollisionManager.cpp" />
@@ -245,6 +247,7 @@
     <Image Include="..\Bin\Texture\Stage1.jpg" />
     <Image Include="..\Bin\Texture\Stage2.bmp" />
     <Image Include="..\Bin\Texture\Stage2.jpg" />
+    <Image Include="..\Bin\Texture\StardewValley_TitleScreen_SpriteSheet.bmp" />
     <Image Include="Engine.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

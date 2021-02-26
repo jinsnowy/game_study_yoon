@@ -69,6 +69,11 @@ BOOL Window::Init(int width, int height, const wchar_t* name)
 	return init;
 }
 
+void Window::DestroyGame()
+{
+	DestroyWindow(m_hWnd);
+}
+
 void Window::MyRegisterClass()
 {
 	WNDCLASSEX wc = { 0 };

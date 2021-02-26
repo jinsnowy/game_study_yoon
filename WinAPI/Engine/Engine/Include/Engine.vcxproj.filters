@@ -81,9 +81,6 @@
     <ClInclude Include="framework.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -192,9 +189,6 @@
     <ClInclude Include="Object\UI.h">
       <Filter>Object\04. UI</Filter>
     </ClInclude>
-    <ClInclude Include="Object\UIPanel.h">
-      <Filter>Object\04. UI</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\StartScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
@@ -202,6 +196,15 @@
       <Filter>Object\04. UI</Filter>
     </ClInclude>
     <ClInclude Include="Object\Mouse.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider\ColliderPoint.h">
+      <Filter>Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\UIPanel.h">
       <Filter>Object\04. UI</Filter>
     </ClInclude>
   </ItemGroup>
@@ -296,9 +299,6 @@
     <ClCompile Include="Object\UI.cpp">
       <Filter>Object\04. UI</Filter>
     </ClCompile>
-    <ClCompile Include="Object\UIPanel.cpp">
-      <Filter>Object\04. UI</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\StartScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
@@ -309,6 +309,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Object\Mouse.cpp">
+      <Filter>Object\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider\ColliderPoint.cpp">
+      <Filter>Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\UIPanel.cpp">
       <Filter>Object\04. UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -352,6 +358,9 @@
       <Filter>Textures</Filter>
     </Image>
     <Image Include="..\Bin\Texture\Player\Spritesheet.png">
+      <Filter>Textures</Filter>
+    </Image>
+    <Image Include="..\Bin\Texture\StardewValley_TitleScreen_SpriteSheet.bmp">
       <Filter>Textures</Filter>
     </Image>
   </ItemGroup>

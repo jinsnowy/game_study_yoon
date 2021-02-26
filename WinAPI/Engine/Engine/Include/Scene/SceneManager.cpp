@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "InGameScene.h"
 #include "StartScene.h"
+#include "../Collider/CollisionManager.h"
 
 DEFINITION_SINGLE(SceneManager)
 
@@ -27,14 +28,16 @@ void SceneManager::Input(float dt)
 	m_pScene->Input(dt);
 }
 
-void SceneManager::Update(float dt)
+SCENE_CHANGE SceneManager::Update(float dt)
 {
 	m_pScene->Update(dt);
+	return ChangeScene();
 }
 
-void SceneManager::LateUpdate(float dt)
+SCENE_CHANGE SceneManager::LateUpdate(float dt)
 {
 	m_pScene->LateUpdate(dt);
+	return ChangeScene();
 }
 
 void SceneManager::Collision(float dt)
@@ -45,4 +48,22 @@ void SceneManager::Collision(float dt)
 void SceneManager::Draw(HDC hdc, float dt)
 {
 	m_pScene->Draw(hdc, dt);
+}
+
+SCENE_CHANGE SceneManager::ChangeScene()
+{
+	if (m_pNextScene)
+	{
+		SAFE_DELETE(m_pScene);
+		m_pScene = m_pNextScene;
+		m_pNextScene = nullptr;
+
+		COLLISION_MANAGER->Clear();
+
+		m_pScene->SetSceneType(SC_CURRENT);
+		Scene::ChangeProtoType();
+
+		return SC_CHANGE;
+	}
+	return SC_NONE;
 }

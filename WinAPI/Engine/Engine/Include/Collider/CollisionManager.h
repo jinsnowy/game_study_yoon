@@ -11,4 +11,5 @@ public:
 	void AddObject(class Object* pObj);
 	void Collision(float dt);
 	bool CheckCollision(class Object* pSrc, class Object* pDst, float dt);
+	void Clear();
 };

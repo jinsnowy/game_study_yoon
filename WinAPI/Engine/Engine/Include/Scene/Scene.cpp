@@ -2,7 +2,7 @@
 #include "Layer.h"
 #include "../Object/Object.h"
 
-unordered_map<string, Object*> Scene::m_mapProtoType;
+unordered_map<string, Object*> Scene::m_mapProtoType[SC_END];
 
 Scene::Scene()
 {
@@ -10,27 +10,28 @@ Scene::Scene()
 	pLayer = CreateLayer("HUD", INT_MAX - 1);
 	pLayer = CreateLayer("Default", 1);
 	pLayer = CreateLayer("Stage");
+	m_eSceneType = SC_CURRENT;
 }
 
 Scene::~Scene()
 {
-	EraseAllPrototypes();
+	EraseAllPrototypes(m_eSceneType);
 	Safe_Delete_VecList(m_LayerList);
 }
 
-void Scene::ErasePrototype(const string& strPrototypeKey)
+void Scene::ErasePrototype(const string& strPrototypeKey, SCENE_CREATE sc)
 {
-	auto it = m_mapProtoType.find(strPrototypeKey);
-	if (it == m_mapProtoType.end())
+	auto it = m_mapProtoType[sc].find(strPrototypeKey);
+	if (it == m_mapProtoType[sc].end())
 		return;
 
 	SAFE_RELEASE(it->second);
-	m_mapProtoType.erase(it);
+	m_mapProtoType[sc].erase(it);
 }
 
-void Scene::EraseAllPrototypes()
+void Scene::EraseAllPrototypes(SCENE_CREATE sc)
 {
-	Safe_Release_Map(m_mapProtoType);
+	Safe_Release_Map(m_mapProtoType[sc]);
 }
 
 Layer* Scene::FindLayer(const string& tag)
@@ -185,10 +186,17 @@ void Scene::Draw(HDC hdc, float dt)
 	}
 }
 
-Object* Scene::FindPrototype(const string& strkey)
+Object* Scene::FindPrototype(const string& strkey, SCENE_CREATE sc)
 {
-	auto it = m_mapProtoType.find(strkey);
-	if (it == m_mapProtoType.end())
+	auto it = m_mapProtoType[sc].find(strkey);
+	if (it == m_mapProtoType[sc].end())
 		return nullptr;
 	return it->second;
+}
+
+void Scene::ChangeProtoType()
+{
+	EraseAllPrototypes(SC_CURRENT);
+	m_mapProtoType[SC_CURRENT] = std::move(m_mapProtoType[SC_NEXT]);
+	m_mapProtoType[SC_NEXT].clear();
 }

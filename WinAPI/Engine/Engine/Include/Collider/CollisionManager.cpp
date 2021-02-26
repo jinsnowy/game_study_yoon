@@ -2,8 +2,7 @@
 #include "../Object/Object.h"
 #include "Collider.h"
 
-
-DEFINITION_SINGLE(CollisionManager);
+DEFINITION_SINGLE(CollisionManager)
 
 CollisionManager::CollisionManager()
 {
@@ -16,6 +15,11 @@ CollisionManager::~CollisionManager()
 bool CollisionManager::Init()
 {
     return true;
+}
+
+void CollisionManager::Clear()
+{
+    m_CollisionObjList.clear();
 }
 
 void CollisionManager::AddObject(Object* pObj)

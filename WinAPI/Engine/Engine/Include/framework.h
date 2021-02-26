@@ -89,7 +89,6 @@ void Safe_Delete_VecList(T& p)
 	{
 		SAFE_DELETE((*iter));
 	}
-
 	p.clear();
 }
 
@@ -103,7 +102,6 @@ void Safe_Release_VecList(T& p)
 	{
 		SAFE_RELEASE((*iter));
 	}
-
 	p.clear();
 }
 

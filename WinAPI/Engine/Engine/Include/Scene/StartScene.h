@@ -10,4 +10,8 @@ private:
     ~StartScene();
 public:
     virtual bool Init();
+
+public:
+    void StartButtonCallback(float fTime);
+    void EndButtonCallback(float fTime);
 };

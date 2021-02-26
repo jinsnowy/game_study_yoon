@@ -54,7 +54,7 @@ void UI::Draw(HDC hdc, float dt)
     if (m_pTexture)
     {
         Pos tPos = m_tPos - m_tSize * m_tPivot;
-        Pos tImagePos = Pos(0, 0);
+        Pos tImagePos = m_tImageOffset;
         if (m_pAnimation && m_bEnableAnimation)
         {
             AnimationClip* pClip = m_pAnimation->GetCurrentClip();

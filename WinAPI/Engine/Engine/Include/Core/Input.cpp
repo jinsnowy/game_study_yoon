@@ -1,6 +1,8 @@
 #include "Input.h"
 #include "../Object/Mouse.h"
 #include "../Animation/Animation.h"
+#include "../Collider/ColliderPoint.h"
+#include "../Collider/CollisionManager.h"
 
 DEFINITION_SINGLE(Input)
 Input::Input()
@@ -89,6 +91,7 @@ void Input::Update(float dt)
 
 	m_pMouse->Update(dt);
 	m_pMouse->LateUpdate(dt);
+	COLLISION_MANAGER->AddObject(m_pMouse);
 }
 
 bool Input::KeyDown(const string& strKey) const

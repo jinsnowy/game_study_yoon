@@ -6,23 +6,26 @@ class SceneManager
 {
 	DECLARE_SINGLE(SceneManager)
 private:
-private:
 	Scene* m_pScene;
 	Scene* m_pNextScene;
+	SCENE_CHANGE ChangeScene();
+
 public:
 	class Scene* GetScene() const { return m_pScene; }
 public:
 	bool Init();
 	void Input(float dt);
-	void Update(float dt);
-	void LateUpdate(float dt);
+	SCENE_CHANGE Update(float dt);
+	SCENE_CHANGE LateUpdate(float dt);
 	void Collision(float dt);
 	void Draw(HDC hdc, float dt);
-
 	template<typename T>
-	T* CreateScene(SCENE_CREATE sc)
+	T* CreateScene(SCENE_CREATE sc = SC_CURRENT)
 	{
 		T* pScene = new T;
+
+		pScene->SetSceneType(sc);
+
 		if (!pScene->Init())
 		{
 			SAFE_DELETE(pScene);

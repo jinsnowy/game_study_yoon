@@ -3,6 +3,7 @@
 #include "../Application/Window.h"
 #include "../Resources/Texture.h"
 #include "../Collider/ColliderRect.h"
+#include "../Scene/Scene.h"
 #include "Bullet.h"
 
 Minion::Minion()
@@ -108,7 +109,7 @@ void Minion::CollisionBullet(Collider* pSrc, Collider* pDst, float dt)
 
 void Minion::Fire()
 {
-	Object* pBullet = Object::CreateCloneObject("Bullet", "MinionBullet", m_pLayer);
+	Object* pBullet = Object::CreateCloneObject("Bullet", "MinionBullet",m_pScene->GetSceneType(), m_pLayer);
 
 	pBullet->AddCollisionFunction("BulletBody", CS_ENTER, (Bullet*)pBullet, &Bullet::Hit);
 

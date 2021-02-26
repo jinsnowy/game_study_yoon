@@ -139,6 +139,7 @@ public:
 	Pos GetPos() const { return m_tPos; }
 	Pos GetPivot() const { return m_tPivot; }
 	Size GetSize() const { return m_tSize; }
+	Size GetImageOffset() const { return m_tImageOffset; }
 
 	void SetPos(float x, float y) { m_tPos.x = x; m_tPos.y = y; }
 	void SetSize(float x, float y) { m_tSize.x = x; m_tSize.y = y; }
@@ -182,6 +183,6 @@ public:
 		AddObject(pObj);
 		return pObj;
 	}
-	Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer);
+	Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, SCENE_CREATE sc, class Layer* pLayer);
 };
 

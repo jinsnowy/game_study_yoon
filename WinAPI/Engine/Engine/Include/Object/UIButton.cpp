@@ -1,7 +1,10 @@
 #include "UIButton.h"
+#include "../Core/Input.h"
 #include "../Collider/ColliderRect.h"
 
 UIButton::UIButton()
+	: m_bEnableCallback(false),
+	m_eState(BS_NONE)
 {
 
 }
@@ -9,6 +12,8 @@ UIButton::UIButton()
 UIButton::UIButton(const UIButton& ui)
 	: UI(ui)
 {
+	m_bEnableCallback = ui.m_bEnableCallback;
+	m_eState = BS_NONE;
 }
 
 UIButton::~UIButton()
@@ -18,6 +23,10 @@ UIButton::~UIButton()
 bool UIButton::Init()
 {
 	ColliderRect* pColl = AddCollider<ColliderRect>("ButtonBody");
+
+	//pColl->AddCollisionFunction(CS_ENTER, this, &UIButton::MouseOn);
+	//pColl->AddCollisionFunction(CS_LEAVE, this, &UIButton::MouseOut);
+
 	SAFE_RELEASE(pColl);
 	return true;
 }
@@ -36,6 +45,21 @@ int UIButton::Update(float dt)
 int UIButton::LateUpdate(float dt)
 {
 	UI::LateUpdate(dt);
+	
+	if (m_eState != BS_NONE)
+	{
+		if (KEYPRESS("MouseLButton"))
+		{
+			m_eState = BS_CLICK;
+		}
+	}
+
+	if (m_eState == BS_CLICK && KEYUP("MouseLButton"))
+	{
+		if (m_bEnableCallback)
+			m_BtnCallback(dt);
+	}
+
 	return 0;
 }
 
@@ -52,4 +76,22 @@ void UIButton::Draw(HDC hdc, float dt)
 UIButton* UIButton::Clone()
 {
 	return new UIButton(*this);
+}
+
+void UIButton::MouseOn(Collider* pSrc, Collider* pDst, float dt)
+{
+	if (pDst->GetTag() == "Mouse")
+	{
+		m_eState = BS_MOUSEON;
+		SetImageOffset(m_tMouseOnImageOffset);
+	}
+}
+
+void UIButton::MouseOut(Collider* pSrc, Collider* pDst, float dt)
+{
+	if (pDst->GetTag() == "Mouse")
+	{
+		m_eState = BS_NONE;
+		SetImageOffset(m_tMouseOutImageOffset);
+	}
 }

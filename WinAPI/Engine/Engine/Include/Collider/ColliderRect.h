@@ -1,5 +1,6 @@
 #pragma once
 #include "Collider.h"
+
 class ColliderRect : public Collider
 {
 	friend class Object;
@@ -29,4 +30,3 @@ public:
 	virtual void Draw(HDC hdc, float dt);
 	virtual ColliderRect* Clone();
 };
-

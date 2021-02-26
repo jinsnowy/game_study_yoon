@@ -1,6 +1,7 @@
 #include "ColliderSphere.h"
 #include "ColliderRect.h"
 #include "ColliderPixel.h"
+#include "ColliderPoint.h"
 #include "../Object/Object.h"
 #include "../Core/Camera.h"
 
@@ -53,9 +54,11 @@ bool ColliderSphere::CheckCollision(Collider* pDst)
     switch (pDst->GetColliderType())
     {
     case CT_SPHERE:
-        return CollisionSphereToSphere(m_tWorldInfo, ((ColliderSphere*)pDst)->GetWorldInfo());
+        return CollisionSphereToSphere(m_tWorldInfo, static_cast<ColliderSphere*>(pDst)->GetWorldInfo());
     case CT_RECT:
-        return CollisionRectToSphere(((ColliderRect*)pDst)->GetWorldInfo(), m_tWorldInfo);
+        return CollisionRectToSphere(static_cast<ColliderRect*>(pDst)->GetWorldInfo(), m_tWorldInfo);
+    case CT_POINT:
+        return CollisionSphereToPoint(m_tWorldInfo, static_cast<ColliderPoint*>(pDst)->GetWorldInfo());
     }
     return false;
 }
@@ -68,7 +71,10 @@ void ColliderSphere::Draw(HDC hdc, float dt)
     HPEN OldPen = (HPEN)SelectObject(hdc, myPen);
 
     HBRUSH OldBrush = (HBRUSH)SelectObject(hdc, GetStockObject(NULL_BRUSH));
-    Pos tPos = CAMERA->GetTopLeft();
+    Pos tPos = Pos(0, 0);
+
+    if (!m_bUIColl)
+        tPos = CAMERA->GetTopLeft();
 
     int left = m_tWorldInfo.center.x - m_tWorldInfo.radius - tPos.x;
     int right = left + 2 * m_tWorldInfo.radius;

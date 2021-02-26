@@ -317,7 +317,7 @@ void Object::Draw(HDC hdc, float dt)
         Pos tPos = m_tPos - m_tSize * m_tPivot;
         tPos -= CAMERA->GetTopLeft();
 
-        Pos tImagePos = Pos(0, 0);
+        Pos tImagePos = m_tImageOffset;
         if (m_pAnimation && m_bEnableAnimation)
         {
             AnimationClip* pClip = m_pAnimation->GetCurrentClip();
@@ -337,9 +337,9 @@ void Object::Draw(HDC hdc, float dt)
         if (m_pTexture->GetColorKeyEnable())
         {
             TransparentBlt(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
-                m_pTexture->GetDC(), tImagePos.x, tImagePos.y,
-                int(m_tSize.x), int(m_tSize.y),
-                m_pTexture->GetColorKey());
+                                m_pTexture->GetDC(), int(tImagePos.x), int(tImagePos.y),
+                                int(m_tSize.x), int(m_tSize.y),
+                                m_pTexture->GetColorKey());
         }
         else 
         {
@@ -370,9 +370,9 @@ void Object::Draw(HDC hdc, float dt)
     }
 }
 
-Object* Object::CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer)
+Object* Object::CreateCloneObject(const string& strPrototypeKey, const string& strTag, SCENE_CREATE sc, class Layer* pLayer)
 {
-    Object* pProto = Scene::FindPrototype(strPrototypeKey);
+    Object* pProto = Scene::FindPrototype(strPrototypeKey, sc);
 
     if (!pProto)
         return nullptr;

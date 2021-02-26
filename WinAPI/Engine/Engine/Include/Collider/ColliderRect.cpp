@@ -1,9 +1,9 @@
 #include "ColliderRect.h"
 #include "ColliderSphere.h"
 #include "ColliderPixel.h"
+#include "ColliderPoint.h"
 #include "../Object/Object.h"
 #include "../Core/Camera.h"
-#include <Windows.h>
 
 ColliderRect::ColliderRect()
 	:
@@ -71,6 +71,8 @@ bool ColliderRect::CheckCollision(Collider* pDst)
 		return CollisionRectToPixel(m_tWorldInfo, static_cast<ColliderPixel*>(pDst)->GetPixel(),
 											      static_cast<ColliderPixel*>(pDst)->GetWidth(), 
 											      static_cast<ColliderPixel*>(pDst)->GetHeight());
+	case CT_POINT:
+		return CollisionRectToPoint(m_tWorldInfo, static_cast<ColliderPoint*>(pDst)->GetWorldInfo());
 	}
 	return false;
 }
@@ -83,7 +85,9 @@ void ColliderRect::Draw(HDC hDC, float dt)
 	HPEN OldPen = (HPEN)SelectObject(hDC, myPen);
 
 	HBRUSH OldBrush = (HBRUSH)SelectObject(hDC, GetStockObject(NULL_BRUSH));
-	Pos tPos = CAMERA->GetTopLeft();
+	Pos tPos = Pos(0, 0);
+	if(!m_bUIColl)
+		tPos = CAMERA->GetTopLeft();
 
 	int left = int(m_tWorldInfo.left - tPos.x);
 	int top = int(m_tWorldInfo.top - tPos.y);

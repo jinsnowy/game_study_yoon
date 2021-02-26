@@ -9,13 +9,19 @@ typedef struct _tagPixel
 	unsigned char b;
 }Pixel;
 
-// Sene Type
+// Scene Type
 enum SCENE_CREATE
 {
 	SC_CURRENT,
-	SC_NEXT
+	SC_NEXT,
+	SC_END
 };
-
+// Sceene
+enum SCENE_CHANGE
+{
+	SC_NONE,
+	SC_CHANGE
+};
 // Move dir type
 enum MOVE_DIR
 {
