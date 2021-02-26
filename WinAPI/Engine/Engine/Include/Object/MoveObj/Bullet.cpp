@@ -1,9 +1,9 @@
 #include "Bullet.h"
-#include "../Object/Ref.h"
-#include "../Resources/Texture.h"
-#include "../Collider/ColliderRect.h"
-#include "../Collider/ColliderSphere.h"
-#include "../Core/Camera.h"
+#include "../../Object/Ref.h"
+#include "../../Resources/Texture.h"
+#include "../../Collider/ColliderRect.h"
+#include "../../Collider/ColliderSphere.h"
+#include "../../Core/Camera.h"
 Bullet::Bullet()
     : m_Dist(0.f),
       m_LimitDist(500.f)

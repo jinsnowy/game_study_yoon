@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include <cassert>
 #include "../Object/Object.h"
 
 DEFINITION_SINGLE(Camera)
@@ -6,9 +7,9 @@ DEFINITION_SINGLE(Camera)
 Camera::Camera()
 	:
 	m_tPos(0.f,0.f),
-	m_tClientRS(0, 0),
+	m_tClientRS(0.f, 0.f),
 	m_tWorldRS(0, 0),
-	m_tPivot(0.5f, 0.5f),
+	m_tPivot(0, 0),
 	m_pTarget(nullptr)
 {
 }
@@ -20,10 +21,13 @@ Camera::~Camera()
 
 bool Camera::Init(const Pos& tPos, const RESOLUTION& tRS, const RESOLUTION& tWorldRS)
 {
+	if (tWorldRS.x < tRS.x || tWorldRS.y < tRS.y)
+		return false;
+
 	m_tPos = tPos;
 	m_tClientRS = tRS;
 	m_tWorldRS = tWorldRS;
-	m_tPivot = Pos(0.5f, 0.5f);
+
 	return true;
 }
 
@@ -92,6 +96,29 @@ void Camera::Input(float dt)
 
 void Camera::Update(float dt)
 {
+}
+
+void Camera::Scroll(float x, float y)
+{
+	assert(m_tWorldRS.x >= m_tClientRS.x && m_tWorldRS.y >= m_tClientRS.y);
+	
+	m_tPos.x += x;
+	m_tPos.y += y;
+
+	if (m_tPos.x < 0)
+		m_tPos.x = 0;
+	else if (m_tPos.x > m_tWorldRS.x - m_tClientRS.x)
+		m_tPos.x = m_tWorldRS.x - m_tClientRS.x;
+
+	if (m_tPos.y < 0)
+		m_tPos.y = 0;
+	else if (m_tPos.y > m_tWorldRS.y - m_tClientRS.y)
+		m_tPos.y = m_tWorldRS.y - m_tClientRS.y;
+}
+
+void Camera::ReleaseTarget()
+{
+	SAFE_RELEASE(m_pTarget);
 }
 
 void Camera::SetTarget(Object* pTarget)

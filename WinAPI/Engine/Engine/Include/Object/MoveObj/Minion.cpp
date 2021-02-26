@@ -1,9 +1,9 @@
 #include "Minion.h"
-#include "../framework.h"
-#include "../Application/Window.h"
-#include "../Resources/Texture.h"
-#include "../Collider/ColliderRect.h"
-#include "../Scene/Scene.h"
+#include "../../framework.h"
+#include "../../Application/Window.h"
+#include "../../Resources/Texture.h"
+#include "../../Collider/ColliderRect.h"
+#include "../../Scene/Scene.h"
 #include "Bullet.h"
 
 Minion::Minion()

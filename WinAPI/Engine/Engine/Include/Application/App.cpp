@@ -113,14 +113,11 @@ void App::Process()
 
 	if (Update(dt) == SC_CHANGE)
 	{
-
 		return;
 	}
 		
-
 	if (LateUpdate(dt) == SC_CHANGE)
 	{
-
 		return;
 	}
 		
@@ -148,7 +145,6 @@ int App::LateUpdate(float dt)
 {
 	SCENE_CHANGE sc;
 	sc = SCENE_MANAGER->LateUpdate(dt);
-
 	return sc;
 }
 
@@ -172,7 +168,6 @@ void App::Draw(float dt)
 	Mouse* pMouse = INPUT->GetMouse();
 
 	pMouse->Draw(WINDOW->m_hDC, dt);
-
 }
 
 // Error handling

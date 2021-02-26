@@ -312,11 +312,16 @@ void Object::Collision(float dt)
 
 void Object::Draw(HDC hdc, float dt)
 {
+    Pos tPos = m_tPos - m_tSize * m_tPivot;
+    tPos -= CAMERA->GetTopLeft();
+
+    // 카메라 컬링
+    RESOLUTION tClientRS = CAMERA->GetClientRS();
+    if (tPos.x + m_tSize.x < 0 || tPos.x > tClientRS.x || tPos.y + m_tSize.y < 0 || tPos.y > tClientRS.y)
+        return;
+
     if (m_pTexture)
     {
-        Pos tPos = m_tPos - m_tSize * m_tPivot;
-        tPos -= CAMERA->GetTopLeft();
-
         Pos tImagePos = m_tImageOffset;
         if (m_pAnimation && m_bEnableAnimation)
         {
@@ -343,7 +348,8 @@ void Object::Draw(HDC hdc, float dt)
         }
         else 
         {
-            BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
+            BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
+                m_pTexture->GetDC(), int(tImagePos.x), int(tImagePos.y), SRCCOPY);
         }
     }
 

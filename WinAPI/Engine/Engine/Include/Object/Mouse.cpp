@@ -9,7 +9,7 @@ Mouse::Mouse()
 }
 
 Mouse::Mouse(const Mouse& ui)
-    : UI(ui)
+    : UI(ui), m_tMove(ui.m_tMove)
 {
 }
 

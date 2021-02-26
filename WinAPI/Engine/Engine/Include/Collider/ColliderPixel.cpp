@@ -51,7 +51,8 @@ bool ColliderPixel::SetPixelInfo(const char* pFileName, const string& strPathKey
 
     m_vecPixel.clear();
 
-    m_vecPixel.resize(m_iWidth * m_iHeight);
+    int totalSize = m_iWidth * m_iHeight;
+    m_vecPixel.resize(totalSize);
 
     fread(&m_vecPixel[0], sizeof(Pixel), m_vecPixel.size(), pFile);
 
@@ -60,9 +61,11 @@ bool ColliderPixel::SetPixelInfo(const char* pFileName, const string& strPathKey
     for (int i = 0; i < m_iHeight / 2; ++i)
     {
         // ÇöÀç ÀÎµ¦½ºÀÇ ÇÈ¼¿ ÇÑ ÁÙÀ» ÀúÀåÇØµÐ´Ù.
-        memcpy(pPixelArr, &m_vecPixel[i * m_iWidth], sizeof(Pixel) * m_iWidth);
-        memcpy(&m_vecPixel[i * m_iWidth], &m_vecPixel[(m_iHeight - 1 - i) * m_iWidth], sizeof(Pixel) * m_iWidth);
-        memcpy(&m_vecPixel[(m_iHeight - 1 - i) * m_iWidth], pPixelArr, sizeof(Pixel) * m_iWidth);
+        int low = i * m_iWidth;
+        int high = (m_iHeight - 1 - i) * m_iWidth;
+        memcpy(pPixelArr, &m_vecPixel[low], sizeof(Pixel) * m_iWidth);
+        memcpy(&m_vecPixel[low], &m_vecPixel[high], sizeof(Pixel) * m_iWidth);
+        memcpy(&m_vecPixel[high], pPixelArr, sizeof(Pixel) * m_iWidth);
     }
 
     delete[] pPixelArr;

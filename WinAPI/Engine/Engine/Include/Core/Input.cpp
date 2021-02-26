@@ -8,7 +8,9 @@ DEFINITION_SINGLE(Input)
 Input::Input()
 	: m_hWnd(nullptr),
 	  m_pCreateKey(nullptr),
-		m_pMouse(nullptr)
+	  m_pMouse(nullptr),
+	  m_tMouseMove(),
+	  m_tMousePos()
 {
 }
 

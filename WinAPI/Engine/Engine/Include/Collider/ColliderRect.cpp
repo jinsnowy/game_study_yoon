@@ -79,14 +79,11 @@ bool ColliderRect::CheckCollision(Collider* pDst)
 
 void ColliderRect::Draw(HDC hDC, float dt)
 {
+#ifdef _DEBUG
 	Collider::Draw(hDC, dt);
 
-	HPEN myPen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
-	HPEN OldPen = (HPEN)SelectObject(hDC, myPen);
-
-	HBRUSH OldBrush = (HBRUSH)SelectObject(hDC, GetStockObject(NULL_BRUSH));
 	Pos tPos = Pos(0, 0);
-	if(!m_bUIColl)
+	if (!m_bUIColl)
 		tPos = CAMERA->GetTopLeft();
 
 	int left = int(m_tWorldInfo.left - tPos.x);
@@ -94,10 +91,15 @@ void ColliderRect::Draw(HDC hDC, float dt)
 	int right = int(m_tWorldInfo.right - tPos.x);
 	int bottom = int(m_tWorldInfo.bottom - tPos.y);
 
+	HPEN myPen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+	HPEN OldPen = (HPEN)SelectObject(hDC, myPen);
+	HBRUSH OldBrush = (HBRUSH)SelectObject(hDC, GetStockObject(NULL_BRUSH));
+
 	Rectangle(hDC, left, top, right, bottom);
 	
 	DeleteObject(SelectObject(hDC, OldPen));
 	DeleteObject(SelectObject(hDC, OldBrush));
+#endif
 }
 
 ColliderRect* ColliderRect::Clone()

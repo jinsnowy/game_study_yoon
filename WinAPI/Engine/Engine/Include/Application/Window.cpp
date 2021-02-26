@@ -144,8 +144,9 @@ LRESULT Window::HandleMsg(HWND m_hWnd, UINT msg, WPARAM wParam, LPARAM lParam) n
 	switch (msg)
 	{
 	case WM_CLOSE:
+	case WM_DESTROY:
 		PostQuitMessage(0);
-		return 0; // not to call DefWindowProc eventually calling DestroyWindow
+		return 0;
 	// 게임 프레임이 업데이트 된 이후 상태 변경이 필요한 연산을 집어 넣는다.
 	case WM_RENDER_RESET:
 		break;

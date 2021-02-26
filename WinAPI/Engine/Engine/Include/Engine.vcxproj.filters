@@ -123,32 +123,14 @@
     <ClInclude Include="Types\Types.h">
       <Filter>Types</Filter>
     </ClInclude>
-    <ClInclude Include="Object\MovableObject.h">
-      <Filter>Object\01. MoveObj</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\StaticObject.h">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Minion.h">
-      <Filter>Object\01. MoveObj</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Player.h">
-      <Filter>Object\01. MoveObj</Filter>
-    </ClInclude>
     <ClInclude Include="Object\Ref.h">
       <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Bullet.h">
-      <Filter>Object\03. Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Resources\ResourceManager.h">
       <Filter>Resources</Filter>
     </ClInclude>
     <ClInclude Include="Resources\Texture.h">
       <Filter>Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Stage.h">
-      <Filter>Object\02. StaticObj\01. Stage</Filter>
     </ClInclude>
     <ClInclude Include="Core\FrameTimer.h">
       <Filter>Core\01. FrameTimer</Filter>
@@ -186,14 +168,8 @@
     <ClInclude Include="Animation\Animation.h">
       <Filter>Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Object\UI.h">
-      <Filter>Object\04. UI</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\StartScene.h">
       <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\UIButton.h">
-      <Filter>Object\04. UI</Filter>
     </ClInclude>
     <ClInclude Include="Object\Mouse.h">
       <Filter>Object\04. UI</Filter>
@@ -204,8 +180,38 @@
     <ClInclude Include="targetver.h">
       <Filter>Object\04. UI</Filter>
     </ClInclude>
-    <ClInclude Include="Object\UIPanel.h">
-      <Filter>Object\04. UI</Filter>
+    <ClInclude Include="Scene\MapEditScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\Tile.h">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\MoveObj\Player.h">
+      <Filter>Object\01. MoveObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\MoveObj\MovableObject.h">
+      <Filter>Object\01. MoveObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\MoveObj\Minion.h">
+      <Filter>Object\01. MoveObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\StaticObject.h">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\UI.h">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\UIButton.h">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\UIPanel.h">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\Stage.h">
+      <Filter>Object\02. StaticObj\01. Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\MoveObj\Bullet.h">
+      <Filter>Object\03. Bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -233,35 +239,14 @@
     <ClCompile Include="Scene\Scene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Object.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\MovableObject.cpp">
-      <Filter>Object\01. MoveObj</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\StaticObject.cpp">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Player.cpp">
-      <Filter>Object\01. MoveObj</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Minion.cpp">
-      <Filter>Object\01. MoveObj</Filter>
-    </ClCompile>
     <ClCompile Include="Object\Ref.cpp">
       <Filter>Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Bullet.cpp">
-      <Filter>Object\03. Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Resources\ResourceManager.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
     <ClCompile Include="Resources\Texture.cpp">
       <Filter>Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Stage.cpp">
-      <Filter>Object\02. StaticObj\01. Stage</Filter>
     </ClCompile>
     <ClCompile Include="Core\FrameTimer.cpp">
       <Filter>Core\01. FrameTimer</Filter>
@@ -296,14 +281,8 @@
     <ClCompile Include="Animation\Animation.cpp">
       <Filter>Animation</Filter>
     </ClCompile>
-    <ClCompile Include="Object\UI.cpp">
-      <Filter>Object\04. UI</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\StartScene.cpp">
       <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\UIButton.cpp">
-      <Filter>Object\04. UI</Filter>
     </ClCompile>
     <ClCompile Include="WinMain.cpp">
       <Filter>소스 파일</Filter>
@@ -314,8 +293,41 @@
     <ClCompile Include="Collider\ColliderPoint.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
-    <ClCompile Include="Object\UIPanel.cpp">
-      <Filter>Object\04. UI</Filter>
+    <ClCompile Include="Scene\MapEditScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\Tile.cpp">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\MoveObj\Player.cpp">
+      <Filter>Object\01. MoveObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\MoveObj\MovableObject.cpp">
+      <Filter>Object\01. MoveObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\MoveObj\Minion.cpp">
+      <Filter>Object\01. MoveObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\StaticObject.cpp">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\UI.cpp">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\UIButton.cpp">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\UIPanel.cpp">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\Stage.cpp">
+      <Filter>Object\02. StaticObj\01. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\MoveObj\Bullet.cpp">
+      <Filter>Object\03. Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Object.cpp">
+      <Filter>Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

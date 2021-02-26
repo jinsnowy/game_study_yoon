@@ -1,5 +1,5 @@
 #pragma once
-#include "Object.h"
+#include "../Object.h"
 class MovableObject :
     public Object
 {

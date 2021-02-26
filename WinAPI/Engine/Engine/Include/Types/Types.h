@@ -16,12 +16,21 @@ enum SCENE_CREATE
 	SC_NEXT,
 	SC_END
 };
+
 // Sceene
 enum SCENE_CHANGE
 {
 	SC_NONE,
 	SC_CHANGE
 };
+
+// Tile Option
+enum TILE_OPTION
+{
+	TO_NONE,
+	TO_MOVE
+};
+
 // Move dir type
 enum MOVE_DIR
 {

@@ -1,12 +1,12 @@
 #include <cassert>
 #include "UI.h"
-#include "../Scene/Layer.h"
-#include "../Scene/SceneManager.h"
-#include "../Scene/Scene.h"
-#include "../Resources/ResourceManager.h"
-#include "../Resources/Texture.h"
-#include "../Collider/Collider.h"
-#include "../Animation/Animation.h"
+#include "../../Scene/Layer.h"
+#include "../../Scene/SceneManager.h"
+#include "../../Scene/Scene.h"
+#include "../../Resources/ResourceManager.h"
+#include "../../Resources/Texture.h"
+#include "../../Collider/Collider.h"
+#include "../../Animation/Animation.h"
 
 UI::UI()
 {

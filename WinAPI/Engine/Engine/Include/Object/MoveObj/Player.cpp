@@ -1,13 +1,13 @@
 #include <cassert>
 #include "Player.h"
 #include "Bullet.h"
-#include "../Math.h"
-#include "../Scene/Scene.h"
-#include "../Core/Input.h"
-#include "../Collider/ColliderRect.h"
-#include "../Collider/ColliderPixel.h"
-#include "../Core/Camera.h"
-#include "../Animation/Animation.h"
+#include "../../Math.h"
+#include "../../Scene/Scene.h"
+#include "../../Core/Input.h"
+#include "../../Collider/ColliderRect.h"
+#include "../../Collider/ColliderPixel.h"
+#include "../../Core/Camera.h"
+#include "../../Animation/Animation.h"
 
 Player::Player()
 {

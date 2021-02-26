@@ -1,10 +1,12 @@
 #include "UIButton.h"
-#include "../Core/Input.h"
-#include "../Collider/ColliderRect.h"
+#include "../../Core/Input.h"
+#include "../../Collider/ColliderRect.h"
 
 UIButton::UIButton()
 	: m_bEnableCallback(false),
-	m_eState(BS_NONE)
+	m_eState(BS_NONE),
+	m_tMouseOnImageOffset(),
+	m_tMouseOutImageOffset()
 {
 
 }
@@ -12,6 +14,8 @@ UIButton::UIButton()
 UIButton::UIButton(const UIButton& ui)
 	: UI(ui)
 {
+	m_tMouseOnImageOffset = ui.m_tMouseOnImageOffset;
+	m_tMouseOutImageOffset = ui.m_tMouseOutImageOffset;
 	m_bEnableCallback = ui.m_bEnableCallback;
 	m_eState = BS_NONE;
 }
@@ -24,8 +28,9 @@ bool UIButton::Init()
 {
 	ColliderRect* pColl = AddCollider<ColliderRect>("ButtonBody");
 
-	//pColl->AddCollisionFunction(CS_ENTER, this, &UIButton::MouseOn);
-	//pColl->AddCollisionFunction(CS_LEAVE, this, &UIButton::MouseOut);
+	pColl->AddCollisionFunction(CS_ENTER, this, &UIButton::MouseOn);
+	pColl->AddCollisionFunction(CS_LEAVE, this, &UIButton::MouseOut);
+	pColl->EnableUICollider(true);
 
 	SAFE_RELEASE(pColl);
 	return true;

@@ -67,6 +67,7 @@ void ColliderSphere::Draw(HDC hdc, float dt)
 {
     Collider::Draw(hdc,dt);
 
+#ifdef _DEBUG
     HPEN myPen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
     HPEN OldPen = (HPEN)SelectObject(hdc, myPen);
 
@@ -85,6 +86,7 @@ void ColliderSphere::Draw(HDC hdc, float dt)
 
     DeleteObject(SelectObject(hdc, OldPen));
     DeleteObject(SelectObject(hdc, OldBrush));
+#endif
 }
 
 ColliderSphere* ColliderSphere::Clone()

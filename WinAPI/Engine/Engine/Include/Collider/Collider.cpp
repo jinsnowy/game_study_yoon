@@ -8,7 +8,8 @@ Collider::Collider()
 	:
 	m_eCollType(CT_RECT),
 	m_pObject(nullptr),
-	m_bUIColl(false)	
+	m_bUIColl(false),
+	m_tHitPoint()
 {
 }
 
@@ -152,8 +153,8 @@ bool Collider::CollisionSphereToPixel(const Sphere& src, const vector<Pixel>& ve
 	m_tHitPoint.x = -1;
 	m_tHitPoint.y = -1;
 
-	int iStartX = src.center.x - src.radius, iEndX = src.center.x + src.radius;
-	int iStartY = src.center.y - src.radius, iEndY = src.center.y + src.radius;
+	int iStartX = int(src.center.x - src.radius), iEndX = int(src.center.x + src.radius);
+	int iStartY = int(src.center.y - src.radius), iEndY = int(src.center.y + src.radius);
 
 	iStartX = iStartX < 0 ? 0 : iStartX;
 	iEndX = iEndX >= iWidth ? iWidth - 1 : iEndX;
@@ -165,7 +166,7 @@ bool Collider::CollisionSphereToPixel(const Sphere& src, const vector<Pixel>& ve
 	{
 		for (int j = iStartX; j <= iEndX; ++j)
 		{
-			if (Math::Distance(Pos(i, j), src.center) > src.radius) continue;
+			if (Math::Distance(Pos(float(i), float(j)), src.center) > src.radius) continue;
 
 			int idx = i * iWidth + j;
 			const Pixel& pixel = vecPixel[idx];
