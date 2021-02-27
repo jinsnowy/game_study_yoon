@@ -163,6 +163,14 @@ public:
 	virtual void Draw(HDC hdc, float dt);
 	virtual Object* Clone() = 0;
 public:
+	virtual void Save(FILE* pFile);
+	virtual void Load(FILE* pFile);
+public:
+	void SaveFromPath(const char* pFileName, const string& strPathKey = DATA_PATH);
+	void SaveFromFullPath(const char* pFullPath);
+	void LoadFromPath(const char* pFileNmae, const string& strPathKey = DATA_PATH);
+	void LoadFromFullPath(const char* pFullPath);
+public:
 	template<typename T>
 	static T* CreateObject(const string& strTag, class Layer* pLayer = nullptr)
 	{

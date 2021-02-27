@@ -32,6 +32,7 @@ bool Input::Init(HWND hWnd)
 	AddKey("Fire", VK_SPACE);
 	AddKey(VK_CONTROL, "Skill1", '1');
 	AddKey(VK_LBUTTON, "MouseLButton");
+	AddKey(VK_RBUTTON, "MouseRButton");
 
 	// 마우스 위치를 얻어오는 함수이다.
 	GetCursorPos(&m_tMousePos);
@@ -118,6 +119,21 @@ bool Input::KeyUp(const string& strKey) const
 	if (!pInfo)
 		return false;
 	return pInfo->bUp;
+}
+
+Pos Input::GetMouseClientPos() const
+{
+	return m_pMouse->GetPos();
+}
+
+Pos Input::GetMouseWorldPos() const
+{
+	return m_pMouse->GetWorldPos();
+}
+
+Pos Input::GetMouseMove() const
+{
+	return m_pMouse->GetMove();
 }
 
 Input::KeyInfo* Input::FindKey(const string& strKey) const

@@ -263,3 +263,81 @@ Animation* Animation::Clone()
 {
 	return new Animation(*this);
 }
+
+void Animation::SaveFromPath(const char* pFileName, const string& strPathKey)
+{
+}
+
+void Animation::Save(FILE* pFile)
+{
+	// Tag 정보 저장
+	int iLength = m_strTag.length();
+
+	// Tag 길이를 저장한다.
+	fwrite(&iLength, 4, 1, pFile);
+
+	// Tag 문자열을 저장한다.
+	fwrite(m_strTag.c_str(), 1, iLength, pFile);
+
+	int iCount = m_mapClip.size();
+	fwrite(&iCount, 4, 1, pFile);
+
+	unordered_map<string, AnimationClip*>::iterator iter;
+	unordered_map<string, AnimationClip*>::iterator iterEnd = m_mapClip.end();
+
+	for (iter = m_mapClip.begin(); iter != iterEnd; ++iter)
+	{
+		const auto& clip = iter->second;
+
+		fwrite(&clip->eType, 4, 1, pFile);
+		fwrite(&clip->eOption, 4, 1, pFile);
+
+		iCount = clip->vecTexture.size();
+		fwrite(&iCount, 4, 1, pFile);
+		for (int i = 0; i < iCount; i++)
+		{
+			clip->vecTexture[i]->Save(pFile);
+		}
+
+		fwrite(&clip->fAnimationTime, 4, 1, pFile);
+		fwrite(&clip->fAnimationLimitTime, 4, 1, pFile);
+		fwrite(&clip->fAnimationFrameTime, 4, 1, pFile);
+		fwrite(&clip->iFrameX, 4, 1, pFile);
+		fwrite(&clip->iFrameY, 4, 1, pFile);
+		fwrite(&clip->iFrameMaxX, 4, 1, pFile);
+		fwrite(&clip->iFrameMaxY, 4, 1, pFile);
+		fwrite(&clip->iStartX, 4, 1, pFile);
+		fwrite(&clip->iStartY, 4, 1, pFile);
+		fwrite(&clip->iLengthX, 4, 1, pFile);
+		fwrite(&clip->iLengthY, 4, 1, pFile);
+		fwrite(&clip->fOptionTime, 4, 1, pFile);
+		fwrite(&clip->fOptionLimitTime, 4, 1, pFile);
+		fwrite(&clip->tFrameSize, sizeof(Vec2F), 1, pFile);
+	}
+
+	// m_strDefaultClip 정보 저장
+	iLength = m_strDefaultClip.length();
+
+	// m_strDefaultClip 길이를 저장한다.
+	fwrite(&iLength, 4, 1, pFile);
+
+	// m_strDefaultClip 문자열을 저장한다.
+	fwrite(m_strDefaultClip.c_str(), 1, iLength, pFile);
+
+	// m_strCurClip 정보 저장
+	iLength = m_strCurClip.length();
+
+	// m_strCurClip 길이를 저장한다.
+	fwrite(&iLength, 4, 1, pFile);
+
+	// m_strCurClip 문자열을 저장한다.
+	fwrite(m_strCurClip.c_str(), 1, iLength, pFile);
+}
+
+void Animation::LoadFromPath(const char* pFileName, const string& strPathKey)
+{
+}
+
+void Animation::Load(FILE* pFile)
+{
+}

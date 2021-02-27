@@ -89,6 +89,9 @@ public:
 	virtual bool CheckCollision(Collider* pDst);
 	virtual void Draw(HDC hdc, float dt);
 	virtual Collider* Clone() = 0;
+public:
+	virtual void Save(FILE* pFile);
+	virtual void Load(FILE* pFile);
 protected:
 	bool CollisionRectToRect(const Rect& src, const Rect& dst);
 	bool CollisionRectToSphere(const Rect& src, const Sphere& dst);

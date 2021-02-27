@@ -13,6 +13,8 @@ private:
 	int m_iWidth;
 	int m_iHeight;
 	vector<Pixel> m_vecPixel;
+	string m_strFileName;
+	string m_strPathKey;
 public:
 	const vector<Pixel>& GetPixel() const
 	{
@@ -36,6 +38,9 @@ public:
 	virtual bool CheckCollision(Collider* pDst);
 	virtual void Draw(HDC hdc, float dt);
 	virtual ColliderPixel* Clone();
+public:
+	virtual void Save(FILE* pFile);
+	virtual void Load(FILE* pFile);
 };
 
 

@@ -56,6 +56,43 @@ Texture* ResourceManager::LoadTexture(const string& strKey,
 	return pTexture;
 }
 
+Texture* ResourceManager::LoadTexture(FILE* pFile)
+{
+	int iLength = 0;
+
+	char strKey[MAX_PATH] = {};
+	char strPathKey[MAX_PATH] = {};
+	wchar_t strFileName[MAX_PATH] = {};
+
+	// key의 길이를 저장한다.
+	fread(&iLength, 4, 1, pFile);
+	fread(strKey, 1, iLength, pFile);
+	strKey[iLength] = 0;
+
+	// FileName 저장
+	iLength = 0;
+	fread(&iLength, 4, 1, pFile);
+	fread(strFileName, 2, iLength, pFile);
+	strFileName[iLength] = 0;
+
+	// PathKey 저장
+	iLength = 0;
+	fread(&iLength, 4, 1, pFile);
+	fread(strPathKey, 1, iLength, pFile);
+	strPathKey[iLength] = 0;
+
+	Texture* pTexture = RESOURCE_MANAGER->LoadTexture(strKey, strFileName, strPathKey);
+
+	// ColorKey
+	if (pTexture)
+	{
+		fread(&pTexture->m_bColorKeyEnable, 1, 1, pFile);
+		fread(&pTexture->m_ColorKey, sizeof(COLORREF), 1, pFile);
+	}
+
+	return pTexture;
+}
+
 Texture* ResourceManager::FindTexture(const string& strKey)
 {
 	auto iter = m_mapTexture.find(strKey);

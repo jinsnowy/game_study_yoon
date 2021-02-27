@@ -92,3 +92,14 @@ ColliderPoint* ColliderPoint::Clone()
 {
 	return new ColliderPoint(*this);
 }
+
+void ColliderPoint::Save(FILE* pFile)
+{
+	Collider::Save(pFile);
+
+}
+
+void ColliderPoint::Load(FILE* pFile)
+{
+	Collider::Load(pFile);
+}

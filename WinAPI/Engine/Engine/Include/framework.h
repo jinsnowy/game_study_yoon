@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include "fmod.hpp"
 #include "targetver.h"
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
 #define NOMINMAX
@@ -17,11 +17,13 @@
 // Path Key
 #define ROOT_PATH		"RootPath"
 #define TEXTURE_PATH	"TexturePath"
+#define DATA_PATH		"DataPath"
 
 #define WM_RENDER_RESET (WM_USER + 1)
 
 #define WINDOW Window::Instance()
 #define WINDOWHANDLE Window::Instance()->GetWindowHandle()
+#define WINDOWINSTANCE Window::Instance()->GetWindowInstance()
 #define GETRESOLUTION Window::Instance()->GetResolution()
 #define GETDC Window::Instance()->GetWndDC()
 
@@ -32,6 +34,7 @@
 #define RESOURCE_MANAGER ResourceManager::Instance()
 #define CAMERA Camera::Instance()
 #define INPUT Input::Instance()
+
 
 
 // C 런타임 헤더 파일입니다.
@@ -71,6 +74,7 @@
 
 // 동적 링크 라이브러리
 #pragma comment(lib, "msimg32")
+#pragma comment(lib, "fmod_vc")
 
 using namespace std;
 typedef Vec2F Size;

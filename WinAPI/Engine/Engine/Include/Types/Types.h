@@ -9,6 +9,11 @@ typedef struct _tagPixel
 	unsigned char b;
 }Pixel;
 
+enum TILE_EDIT_MODE
+{
+	TEM_TEXTURE,
+	TEM_OPTION
+};
 // Scene Type
 enum SCENE_CREATE
 {
@@ -28,7 +33,7 @@ enum SCENE_CHANGE
 enum TILE_OPTION
 {
 	TO_NONE,
-	TO_MOVE
+	TO_NOMOVE,
 };
 
 // Move dir type

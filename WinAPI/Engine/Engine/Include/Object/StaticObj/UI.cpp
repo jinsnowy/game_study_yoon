@@ -74,13 +74,15 @@ void UI::Draw(HDC hdc, float dt)
         if (m_pTexture->GetColorKeyEnable())
         {
             TransparentBlt(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
-                m_pTexture->GetDC(), tImagePos.x, tImagePos.y,
+                m_pTexture->GetDC(), int(tImagePos.x), int(tImagePos.y),
                 int(m_tSize.x), int(m_tSize.y),
                 m_pTexture->GetColorKey());
         }
         else
         {
-            BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y), m_pTexture->GetDC(), 0, 0, SRCCOPY);
+            BitBlt(hdc, int(tPos.x), int(tPos.y),
+                int(m_tSize.x), int(m_tSize.y),
+                m_pTexture->GetDC(), 0, 0, SRCCOPY);
         }
     }
 

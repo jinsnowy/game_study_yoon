@@ -35,6 +35,9 @@ public:
 	bool KeyPress(const string& strKey) const;
 	bool KeyUp(const string& strKey) const;
 	class Mouse* GetMouse() const { return m_pMouse; } 
+	Pos GetMouseClientPos() const;
+	Pos GetMouseWorldPos() const;
+	Pos GetMouseMove() const;
 public:
 	template<typename T>
 	bool AddKey(const T& data)

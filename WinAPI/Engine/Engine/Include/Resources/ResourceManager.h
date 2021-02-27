@@ -15,5 +15,6 @@ public:
 	class Texture* LoadTexture(const string& strKey,
 								const wchar_t* pFileName,
 								const string& strPathKey = TEXTURE_PATH);
+	class Texture* LoadTexture(FILE* pFile);
 	class Texture* FindTexture(const string& strKey);
 };

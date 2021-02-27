@@ -25,6 +25,9 @@ ColliderPixel::~ColliderPixel()
 
 bool ColliderPixel::SetPixelInfo(const char* pFileName, const string& strPathKey)
 {
+    m_strFileName = pFileName;
+    m_strPathKey = strPathKey;
+
     const char* pPath = PATH_MANAGER->FindPathByMultiByte(strPathKey);
     string strPath;
 
@@ -128,4 +131,42 @@ void ColliderPixel::Draw(HDC hdc, float dt)
 ColliderPixel* ColliderPixel::Clone()
 {
     return new ColliderPixel(*this);
+}
+
+void ColliderPixel::Save(FILE* pFile)
+{
+    Collider::Save(pFile);
+
+    // FileName 历厘
+    int iLength = m_strFileName.length();
+    fwrite(&iLength, 4, 1, pFile);
+    fwrite(m_strFileName.c_str(), 2, iLength, pFile);
+
+    // PathKey 历厘
+    iLength = m_strPathKey.length();
+    fwrite(&iLength, 4, 1, pFile);
+    fwrite(m_strPathKey.c_str(), 1, iLength, pFile);
+}
+
+void ColliderPixel::Load(FILE* pFile)
+{
+    Collider::Load(pFile);
+
+    int iLength = 0;
+    char strFileName[MAX_PATH] = {};
+    char strPathKey[MAX_PATH] = {};
+
+    // FileName 历厘
+    iLength = 0;
+    fread(&iLength, 4, 1, pFile);
+    fread(strFileName, 1, iLength, pFile);
+    strFileName[iLength] = 0;
+
+    // PathKey 历厘
+    iLength = 0;
+    fread(&iLength, 4, 1, pFile);
+    fread(strPathKey, 1, iLength, pFile);
+    strPathKey[iLength] = 0;
+
+    SetPixelInfo(strFileName, strPathKey);
 }

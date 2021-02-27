@@ -27,5 +27,15 @@ public:
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
 	virtual Stage* Clone();
+	virtual void Save(FILE* pFile);
+	virtual void Load(FILE* pFile);
+
+public:
+	void ChangeTileTexture(const Pos& tPos, class Texture* pTexture);
+	void ChangeTileOption(const Pos& tPos, TILE_OPTION eOption);
+	int GetTileIndex(const Pos& tPos);
+	int GetTileIndex(float x, float y);
+private:
+	void ClearTile();
 };
 

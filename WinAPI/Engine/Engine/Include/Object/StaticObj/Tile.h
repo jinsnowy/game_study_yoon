@@ -7,12 +7,10 @@ private:
     friend class Object;
     friend class Stage;
 private:
-	TILE_OPTION m_eOption;
+	TILE_OPTION		m_eOption;
+	class Texture*	m_pOptionTex;
 public:
-	void SetTileOption(TILE_OPTION eOption)
-	{
-		m_eOption = eOption;
-	}
+	void SetTileOption(TILE_OPTION eOption);
 	TILE_OPTION GetTileOption() const
 	{
 		return m_eOption;
@@ -29,5 +27,8 @@ public:
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
 	virtual Tile* Clone();
+public:
+	virtual void Save(FILE* pFile);
+	virtual void Load(FILE* pFile);
 };
 

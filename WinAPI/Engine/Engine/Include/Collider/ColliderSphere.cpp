@@ -93,3 +93,13 @@ ColliderSphere* ColliderSphere::Clone()
 {
     return new ColliderSphere(*this);
 }
+
+void ColliderSphere::Save(FILE* pFile)
+{
+    Collider::Save(pFile);
+}
+
+void ColliderSphere::Load(FILE* pFile)
+{
+    Collider::Load(pFile);
+}

@@ -2,6 +2,7 @@
 #include "../framework.h"
 #include "../Application/Window.h"
 #include "../Collider/ColliderPoint.h"
+#include "../Core/Camera.h"
 
 Mouse::Mouse()
     : m_tMove()
@@ -56,6 +57,8 @@ int Mouse::Update(float dt)
 
     m_tPos.x = pt.x;
     m_tPos.y = pt.y;
+
+    m_tWorldPos = m_tPos + CAMERA->GetPos();
     return 0;
 }
 

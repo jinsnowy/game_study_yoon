@@ -61,6 +61,34 @@ void Collider::Draw(HDC hdc, float dt)
 {
 }
 
+void Collider::Save(FILE* pFile)
+{
+	// Tag 정보 저장
+	int iLength = m_strTag.length();
+
+	// Tag 길이를 저장한다.
+	fwrite(&iLength, 4, 1, pFile);
+
+	// Tag 문자열을 저장한다.
+	fwrite(m_strTag.c_str(), 1, iLength, pFile);
+
+	// 충돌체 타입을 저장한다.
+	fwrite(&m_eCollType, 4, 1, pFile);
+}
+
+void Collider::Load(FILE* pFile)
+{
+	char strTag[MAX_PATH] = {};
+	int iLength = 0;
+	
+	fread(&iLength, 4, 1, pFile);
+	fread(strTag, 1, iLength, pFile);
+
+	m_strTag = strTag;
+
+	fread(&m_eCollType, 4, 1, pFile);
+}
+
 bool Collider::CollisionRectToRect(const Rect& src, const Rect& dst)
 {
 	if (src.right < dst.left) return false;

@@ -33,6 +33,10 @@ bool PathManager::Init()
 	if (!CreatePath(TEXTURE_PATH, L"Texture\\"))
 		return false;
 
+	// Data 경로 설정
+	if (!CreatePath(DATA_PATH, L"Data\\"))
+		return false;
+
 	return true;
 }
 

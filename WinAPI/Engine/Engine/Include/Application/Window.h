@@ -29,8 +29,9 @@ private:
 	RESOLUTION m_RS;
 public:
 	BOOL Init(int width, int height, const wchar_t* name);
-	HDC GetWndDC() { return m_hDC; }
+	HINSTANCE GetWindowInstance() { return m_hInst; }
 	HWND GetWindowHandle() { return m_hWnd; }
+	HDC GetWndDC() { return m_hDC; }
 	RESOLUTION GetResolution() noexcept { return m_RS; }
 	static const wchar_t* GetName() { return wndClassName; }
 	void DestroyGame();

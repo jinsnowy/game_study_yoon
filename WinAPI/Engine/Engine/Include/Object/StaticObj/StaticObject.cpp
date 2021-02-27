@@ -44,3 +44,13 @@ void StaticObject::Draw(HDC hDC, float dt)
 {
     Object::Draw(hDC, dt);
 }
+
+void StaticObject::Save(FILE* pFile)
+{
+    Object::Save(pFile);
+}
+
+void StaticObject::Load(FILE* pFile)
+{
+    Object::Load(pFile);
+}

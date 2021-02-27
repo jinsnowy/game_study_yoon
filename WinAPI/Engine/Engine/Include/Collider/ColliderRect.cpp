@@ -102,6 +102,16 @@ void ColliderRect::Draw(HDC hDC, float dt)
 #endif
 }
 
+void ColliderRect::Save(FILE* pFile)
+{
+	Collider::Save(pFile);
+}
+
+void ColliderRect::Load(FILE* pFile)
+{
+	Collider::Load(pFile);
+}
+
 ColliderRect* ColliderRect::Clone()
 {
 	return new ColliderRect(*this);

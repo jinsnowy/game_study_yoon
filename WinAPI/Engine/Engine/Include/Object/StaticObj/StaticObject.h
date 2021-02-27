@@ -15,4 +15,7 @@ public:
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
 	virtual StaticObject* Clone() = 0;
+public:
+	virtual void Save(FILE* pFile);
+	virtual void Load(FILE* pFile);
 };
