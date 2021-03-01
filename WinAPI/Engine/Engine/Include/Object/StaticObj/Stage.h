@@ -15,7 +15,8 @@ private:
 	int m_iTileNumY;
 	int m_iTileSizeX;
 	int m_iTileSizeY;
-	vector<class Tile*> m_vecTile;
+	Texture* m_baseTexture = nullptr;
+	vector<class Tile*> m_groundTile;
 public:
 	void CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY,
 		const string& strKey = "", const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);
@@ -29,12 +30,13 @@ public:
 	virtual Stage* Clone();
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
-
 public:
+	Texture* GetBaseTexture()const { return m_baseTexture; }
 	void ChangeTileTexture(const Pos& tPos, class Texture* pTexture);
 	void ChangeTileOption(const Pos& tPos, TILE_OPTION eOption);
 	int GetTileIndex(const Pos& tPos);
 	int GetTileIndex(float x, float y);
+	RESOLUTION GetTileSize() const { return { m_iTileSizeX, m_iTileSizeY }; }
 private:
 	void ClearTile();
 };

@@ -1,6 +1,7 @@
 #include "Stage.h"
 #include "Tile.h"
 #include "../../Resources/Texture.h"
+#include "../../Resources/ResourceManager.h"
 #include "../../framework.h"
 #include "../../Core/Camera.h"
 #include "../../Application/Window.h"
@@ -14,11 +15,11 @@ Stage::Stage(const Stage& stage)
     :
     StaticObject(stage)
 {
-    m_vecTile.clear();
+    m_groundTile.clear();
 
-    for (size_t i = 0; i < stage.m_vecTile.size(); ++i)
+    for (size_t i = 0; i < stage.m_groundTile.size(); ++i)
     {
-        m_vecTile.push_back(stage.m_vecTile[i]->Clone());
+        m_groundTile.push_back(stage.m_groundTile[i]->Clone());
     }
 }
 
@@ -40,13 +41,14 @@ void Stage::DrawBackGround(HDC hdc, COLORREF color)
 
 void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, const string& strKey, const wchar_t* pFileName, const string& strPathKey)
 {
-    Safe_Release_VecList(m_vecTile);
+    SAFE_RELEASE(m_baseTexture);
+    Safe_Release_VecList(m_groundTile);
 
     m_iTileNumX = iNumX;
     m_iTileNumY = iNumY;
     m_iTileSizeX = iSizeX;
     m_iTileSizeY = iSizeY;
-
+    m_baseTexture = RESOURCE_MANAGER->LoadTexture(strKey, pFileName);
     Pos offset;
     for (int i = 0; i < iNumY; ++i)
     {
@@ -60,8 +62,7 @@ void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, const strin
             pTile->SetSize(iSizeX, iSizeY);
             pTile->SetPos(offset.x, offset.y);
             pTile->SetTexture(strKey, pFileName, strPathKey);
-            // pTile->SetImageOffset(offset.x, offset.y);
-            m_vecTile.push_back(pTile);
+            m_groundTile.push_back(pTile);
         }
     }
 }
@@ -101,23 +102,11 @@ void Stage::Collision(float dt)
 
 void Stage::Draw(HDC hDC, float dt)
 {
-    //// StaticObject::Draw(hDC, dt);
-    //if (m_pTexture)
-    //{
-    //    Pos tPos = m_tPos - m_tPivot * m_tSize;
-    //    Pos tCamTopLeft = CAMERA->GetTopLeft();
-    //    BitBlt(hDC, int(tPos.x), int(tPos.y),
-    //                CAMERA->GetClientRS().x, CAMERA->GetClientRS().y,
-    //                m_pTexture->GetDC(),
-    //                int(tCamTopLeft.x), int(tCamTopLeft.y),
-    //                SRCCOPY);
-    //}
-
     DrawBackGround(hDC, RGB(73, 139, 97));
 
-    for (size_t i = 0; i < m_vecTile.size(); ++i)
+    for (size_t i = 0; i < m_groundTile.size(); ++i)
     {
-        m_vecTile[i]->Draw(hDC, dt);
+        m_groundTile[i]->Draw(hDC, dt);
     }
 
     // Grid를 그린다.
@@ -153,9 +142,9 @@ void Stage::Save(FILE* pFile)
     fwrite(&m_iTileSizeX, 4, 1, pFile);
     fwrite(&m_iTileSizeY, 4, 1, pFile);
 
-    for (size_t i = 0; i < m_vecTile.size(); ++i)
+    for (size_t i = 0; i < m_groundTile.size(); ++i)
     {
-        m_vecTile[i]->Save(pFile);
+        m_groundTile[i]->Save(pFile);
     }
 }
 
@@ -177,7 +166,7 @@ void Stage::Load(FILE* pFile)
 
         pTile->Load(pFile);
 
-        m_vecTile.push_back(pTile);
+        m_groundTile.push_back(pTile);
     }
 }
 
@@ -188,7 +177,7 @@ void Stage::ChangeTileTexture(const Pos& tPos, Texture* pTexture)
     if (ind == -1)
         return;
 
-    m_vecTile[ind]->SetTexture(pTexture);
+    m_groundTile[ind]->SetTexture(pTexture);
 }
 
 void Stage::ChangeTileOption(const Pos& tPos, TILE_OPTION eOption)
@@ -198,7 +187,7 @@ void Stage::ChangeTileOption(const Pos& tPos, TILE_OPTION eOption)
     if (ind == -1)
         return;
 
-    m_vecTile[ind]->SetTileOption(eOption);
+    m_groundTile[ind]->SetTileOption(eOption);
 }
 
 int Stage::GetTileIndex(const Pos& tPos)
@@ -219,10 +208,10 @@ int Stage::GetTileIndex(float x, float y)
 
 void Stage::ClearTile()
 {
-    for (size_t i = 0; i < m_vecTile.size(); ++i)
+    SAFE_RELEASE(m_baseTexture);
+    for (size_t i = 0; i < m_groundTile.size(); ++i)
     {
-        Object::EraseObject(m_vecTile[i]);
+        Object::EraseObject(m_groundTile[i]);
     }
-
-    Safe_Release_VecList(m_vecTile);
+    Safe_Release_VecList(m_groundTile);
 }

@@ -102,3 +102,15 @@ Texture* ResourceManager::FindTexture(const string& strKey)
 	iter->second->AddRef();
 	return iter->second;
 }
+
+void ResourceManager::AddTexture(const string& strKey, Texture* pTexture)
+{
+	if (FindTexture(strKey))
+		return;
+	
+	if (pTexture)
+	{
+		pTexture->AddRef();
+		m_mapTexture.insert(make_pair(strKey, pTexture));
+	}
+}

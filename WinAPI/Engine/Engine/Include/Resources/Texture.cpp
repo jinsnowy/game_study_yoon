@@ -23,7 +23,9 @@ Texture::~Texture()
 }
 
 bool Texture::LoadTexture(HINSTANCE hInst, HDC hDC,
-                          const string& strKey, const wchar_t* pFileName, const string& strPathKey)
+                          const string& strKey,
+                          const wchar_t* pFileName,
+                          const string& strPathKey)
 {
     m_strFileName = pFileName;
     m_strKey = strKey;
@@ -53,6 +55,7 @@ bool Texture::LoadTexture(HINSTANCE hInst, HDC hDC,
 
     return true;
 }
+
 
 void Texture::SaveFromPath(const char* pFileName, const string& strPathKey)
 {

@@ -1,9 +1,11 @@
 #include "UIButton.h"
 #include "../../Core/Input.h"
 #include "../../Collider/ColliderRect.h"
+#include "../../Sound/SoundManager.h"
 
 UIButton::UIButton()
 	: m_bEnableCallback(false),
+	m_bUseSound(false),
 	m_eState(BS_NONE),
 	m_tMouseOnImageOffset(),
 	m_tMouseOutImageOffset()
@@ -89,6 +91,10 @@ void UIButton::MouseOn(Collider* pSrc, Collider* pDst, float dt)
 	{
 		m_eState = BS_MOUSEON;
 		SetImageOffset(m_tMouseOnImageOffset);
+		if (m_bUseSound)
+		{
+			SOUND_MANAGER->PlaySound(m_strSoundTag);
+		}
 	}
 }
 

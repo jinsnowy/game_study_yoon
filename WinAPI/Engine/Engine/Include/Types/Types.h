@@ -14,6 +14,15 @@ enum TILE_EDIT_MODE
 	TEM_TEXTURE,
 	TEM_OPTION
 };
+
+enum SOUND_CHANNEL
+{
+	SD_BACKGROUND,
+	SD_MAIN,
+	SD_EFFECT,
+	SD_END
+};
+
 // Scene Type
 enum SCENE_CREATE
 {

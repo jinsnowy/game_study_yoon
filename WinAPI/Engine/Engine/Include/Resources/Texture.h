@@ -14,6 +14,11 @@ public:
                      const string& strKey,
                      const wchar_t* pFileName,
                      const string& strPathKey = TEXTURE_PATH);
+    void TileDraw(HDC hdc, int px, int py, int size = TILESIZE)
+    {
+        TransparentBlt(hdc, px, py, size, size,
+            GetDC(), 0, 0, size, size, GetColorKey());
+    }
     HDC GetDC() const { return m_hMemDC; }
 private:
     HDC         m_hMemDC;

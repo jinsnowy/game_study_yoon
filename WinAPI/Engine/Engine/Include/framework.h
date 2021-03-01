@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include "fmod.hpp"
+
 #include "targetver.h"
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
 #define NOMINMAX
@@ -13,11 +13,13 @@
 // 매크로
 #define PI		3.141592f
 #define GRAVITY 600.f
+#define TILESIZE 64
 
 // Path Key
 #define ROOT_PATH		"RootPath"
 #define TEXTURE_PATH	"TexturePath"
 #define DATA_PATH		"DataPath"
+#define SOUND_PATH		"SoundPath"
 
 #define WM_RENDER_RESET (WM_USER + 1)
 
@@ -34,6 +36,7 @@
 #define RESOURCE_MANAGER ResourceManager::Instance()
 #define CAMERA Camera::Instance()
 #define INPUT Input::Instance()
+#define SOUND_MANAGER SoundManager::Instance()
 
 
 
@@ -51,6 +54,7 @@
 #include <string>
 #include <sstream>
 #include <typeinfo>
+#include <filesystem>
 
 // 자료구조
 #include <bitset>
@@ -77,6 +81,7 @@
 #pragma comment(lib, "fmod_vc")
 
 using namespace std;
+namespace fs = std::filesystem;
 typedef Vec2F Size;
 typedef Vec2F Pos;
 typedef Vec2I RESOLUTION;

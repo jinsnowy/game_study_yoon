@@ -18,10 +18,16 @@ bool PathManager::Init()
 	GetModuleFileName(NULL, strPath, MAX_PATH);
 
 	// 루트 경로 찾기
+	bool skip = true;
 	for (int i = lstrlen(strPath) - 1; i >= 0; --i)
 	{
 		if (strPath[i] == '/' || strPath[i] == '\\')
 		{
+			if (skip)
+			{
+				skip = false;
+				continue;
+			}
 			memset(strPath + (i + 1), 0, sizeof(wchar_t) * (MAX_PATH - (i + 1)));
 			break;
 		}
@@ -35,6 +41,10 @@ bool PathManager::Init()
 
 	// Data 경로 설정
 	if (!CreatePath(DATA_PATH, L"Data\\"))
+		return false;
+
+	// Sound 경로 설정
+	if (!CreatePath(SOUND_PATH, L"Sounds\\"))
 		return false;
 
 	return true;

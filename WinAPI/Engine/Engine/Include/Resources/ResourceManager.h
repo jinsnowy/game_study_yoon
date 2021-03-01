@@ -17,4 +17,5 @@ public:
 								const string& strPathKey = TEXTURE_PATH);
 	class Texture* LoadTexture(FILE* pFile);
 	class Texture* FindTexture(const string& strKey);
+	void AddTexture(const string& strKey, Texture* pTexture);
 };

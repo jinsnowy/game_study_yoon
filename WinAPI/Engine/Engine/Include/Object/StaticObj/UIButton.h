@@ -20,6 +20,8 @@ private:
 	virtual ~UIButton();
 
 private:
+	bool m_bUseSound;
+	string m_strSoundTag;
 	Pos m_tMouseOnImageOffset;
 	Pos m_tMouseOutImageOffset;
 	function<void(float fTime)> m_BtnCallback;
@@ -40,6 +42,15 @@ public:
 	{
 		m_BtnCallback = bind(pFunc, placeholders::_1);
 		m_bEnableCallback = true;
+	}
+	void SetSoundTag(const string& strTag)
+	{
+		m_bUseSound = false;
+		if (strTag.size())
+		{
+			m_bUseSound = true;
+			m_strSoundTag = strTag;
+		}
 	}
 	virtual bool Init();
 	virtual void Input(float dt);

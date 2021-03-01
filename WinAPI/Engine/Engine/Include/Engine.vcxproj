@@ -72,27 +72,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>../Bin/</OutDir>
-    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;$(IncludePath)</IncludePath>
+    <OutDir>../Bin/x86/</OutDir>
+    <LibraryPath>../Bin/x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>../Bin/</OutDir>
-    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x86;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;$(IncludePath)</IncludePath>
+    <OutDir>../Bin/x86/</OutDir>
+    <LibraryPath>../Bin/x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>../Bin/</OutDir>
-    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;$(IncludePath)</IncludePath>
+    <OutDir>../Bin/x64/</OutDir>
+    <LibraryPath>../Bin/x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>../Bin/</OutDir>
-    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;$(IncludePath)</IncludePath>
+    <OutDir>../Bin/x64/</OutDir>
+    <LibraryPath>../Bin/x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -182,12 +182,14 @@
     <ClInclude Include="Object\MoveObj\Player.h" />
     <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Object\Ref.h" />
+    <ClInclude Include="Object\StaticObj\TargetRect.h" />
     <ClInclude Include="Object\StaticObj\Stage.h" />
     <ClInclude Include="Object\StaticObj\StaticObject.h" />
     <ClInclude Include="Object\StaticObj\Tile.h" />
     <ClInclude Include="Object\StaticObj\UI.h" />
     <ClInclude Include="Object\StaticObj\UIButton.h" />
     <ClInclude Include="Object\StaticObj\UIPanel.h" />
+    <ClInclude Include="Object\StaticObj\UITileSelect.h" />
     <ClInclude Include="Other\UserException.h" />
     <ClInclude Include="Other\WindowsMessageMap.h" />
     <ClInclude Include="Resource.h" />
@@ -199,6 +201,8 @@
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\StartScene.h" />
+    <ClInclude Include="Sound\fmod.hpp" />
+    <ClInclude Include="Sound\SoundManager.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Types\Circle.h" />
     <ClInclude Include="Types\Rect.h" />
@@ -227,12 +231,14 @@
     <ClCompile Include="Object\MoveObj\Player.cpp" />
     <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Object\Ref.cpp" />
+    <ClCompile Include="Object\StaticObj\TargetRect.cpp" />
     <ClCompile Include="Object\StaticObj\Stage.cpp" />
     <ClCompile Include="Object\StaticObj\StaticObject.cpp" />
     <ClCompile Include="Object\StaticObj\Tile.cpp" />
     <ClCompile Include="Object\StaticObj\UI.cpp" />
     <ClCompile Include="Object\StaticObj\UIButton.cpp" />
     <ClCompile Include="Object\StaticObj\UIPanel.cpp" />
+    <ClCompile Include="Object\StaticObj\UITileSelect.cpp" />
     <ClCompile Include="Other\UserException.cpp" />
     <ClCompile Include="Other\WindowsMessageMap.cpp" />
     <ClCompile Include="Resources\ResourceManager.cpp" />
@@ -243,6 +249,7 @@
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\StartScene.cpp" />
+    <ClCompile Include="Sound\SoundManager.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>

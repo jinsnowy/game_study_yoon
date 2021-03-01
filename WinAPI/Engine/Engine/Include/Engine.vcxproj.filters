@@ -76,6 +76,9 @@
     <Filter Include="Object\04. UI">
       <UniqueIdentifier>{10da58ba-9575-40ec-85d4-504c55e6693b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{074a5fba-2e37-4bd1-a852-be30f4a0b839}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -171,14 +174,8 @@
     <ClInclude Include="Scene\StartScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Mouse.h">
-      <Filter>Object\04. UI</Filter>
-    </ClInclude>
     <ClInclude Include="Collider\ColliderPoint.h">
       <Filter>Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Object\04. UI</Filter>
     </ClInclude>
     <ClInclude Include="Scene\MapEditScene.h">
       <Filter>Scene</Filter>
@@ -198,20 +195,38 @@
     <ClInclude Include="Object\StaticObj\StaticObject.h">
       <Filter>Object\02. StaticObj</Filter>
     </ClInclude>
-    <ClInclude Include="Object\StaticObj\UI.h">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\StaticObj\UIButton.h">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\StaticObj\UIPanel.h">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClInclude>
     <ClInclude Include="Object\StaticObj\Stage.h">
       <Filter>Object\02. StaticObj\01. Stage</Filter>
     </ClInclude>
     <ClInclude Include="Object\MoveObj\Bullet.h">
       <Filter>Object\03. Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundManager.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\fmod.hpp">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\UIButton.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\UIPanel.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\UI.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Mouse.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\TargetRect.h">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\UITileSelect.h">
+      <Filter>Object\04. UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -287,9 +302,6 @@
     <ClCompile Include="WinMain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Mouse.cpp">
-      <Filter>Object\04. UI</Filter>
-    </ClCompile>
     <ClCompile Include="Collider\ColliderPoint.cpp">
       <Filter>Collider</Filter>
     </ClCompile>
@@ -311,15 +323,6 @@
     <ClCompile Include="Object\StaticObj\StaticObject.cpp">
       <Filter>Object\02. StaticObj</Filter>
     </ClCompile>
-    <ClCompile Include="Object\StaticObj\UI.cpp">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\StaticObj\UIButton.cpp">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\StaticObj\UIPanel.cpp">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClCompile>
     <ClCompile Include="Object\StaticObj\Stage.cpp">
       <Filter>Object\02. StaticObj\01. Stage</Filter>
     </ClCompile>
@@ -328,6 +331,27 @@
     </ClCompile>
     <ClCompile Include="Object\Object.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundManager.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\UIButton.cpp">
+      <Filter>Object\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\UIPanel.cpp">
+      <Filter>Object\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\UI.cpp">
+      <Filter>Object\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Mouse.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\TargetRect.cpp">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\UITileSelect.cpp">
+      <Filter>Object\04. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

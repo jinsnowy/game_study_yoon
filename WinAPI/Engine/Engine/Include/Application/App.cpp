@@ -8,13 +8,14 @@
 #include "../Scene/SceneManager.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
+#include "../Sound/SoundManager.h"
 #include "../Object/Mouse.h"
 
 
 App::App()
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	// _CrtSetBreakAlloc(320);
+	// _CrtSetBreakAlloc(2952);
 #ifdef _DEBUG
 	// 콘솔창을 생성시켜준다
 	AllocConsole();
@@ -32,6 +33,7 @@ App::~App()
 	COLLISION_MANAGER->Release();
 	INPUT->Release();
 	RESOURCE_MANAGER->Release();
+	SOUND_MANAGER->Release();
 	PATH_MANAGER->Release();
 	TIMER->Release();
 	WINDOW->Release();
@@ -81,6 +83,11 @@ void App::Init()
 	if (!RESOURCE_MANAGER->Init(WINDOW->m_hInst, WINDOW->m_hDC))
 	{
 		throw APP_EXCEPT(L"ResourceManager init failed.\n");
+	}
+
+	if (!SOUND_MANAGER->Init())
+	{
+		throw APP_EXCEPT(L"SoundManager init failed.\n");
 	}
 
 	if (!COLLISION_MANAGER->Init())
@@ -138,6 +145,7 @@ int App::Update(float dt)
 	SCENE_CHANGE sc;
 	sc = SCENE_MANAGER->Update(dt);
 	CAMERA->Update(dt);
+	SOUND_MANAGER->Update(dt);
 	return sc;
 }
 
