@@ -163,13 +163,11 @@ void MapEditScene::Input(float dt)
     if (KEYPRESS("MouseRButton"))
     {
         Pos tMouseWorldPos = MOUSEWORLDPOS;
+        SAFE_RELEASE(m_pSelTexture);
         switch (m_eTem)
         {
         case TEM_TEXTURE:
-            if (m_pSelTexture)
-            {
-                m_pStage->ChangeTileTexture(tMouseWorldPos, m_pStage->GetBaseTexture());
-            }
+               m_pStage->SetTileNone(tMouseWorldPos);
             break;
         case TEM_OPTION:
             m_pStage->ChangeTileOption(tMouseWorldPos, m_eEditOption);
@@ -289,7 +287,7 @@ void MapEditScene::SetUpBaseTiles()
 
     Layer* pStageLayer = FindLayer("Stage");
     m_pStage = Object::CreateObject<Stage>("Stage", pStageLayer);
-    m_pStage->CreateTile(100, 100, 64, 64, "BaseTile", L"SV/BaseTile.bmp");
+    m_pStage->CreateTile(100, 100, 64, 64, "", L"");
 }
 
 void MapEditScene::SetUpBackButton()
@@ -324,9 +322,12 @@ void MapEditScene::SetUpTileSelectUI()
 
     // Ground 타일들
     m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_GROUND, L"SV/Ground/");
+    // 바닥 타일 타일들
+    m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_FLOOR, L"SV/FloorTile/");
     // 선택 번호 타일들
     m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_NUMBER, L"SV/Numbers/Select/");
-
+    // 선택 태그 타일들
+    m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_TAG, L"SV/Numbers/Tag/");
     m_pSelUI->SetTexture(pTex);
     m_pSelUI->SetSize(pTex->GetWidth(), pTex->GetHeight());
     m_pSelUI->SetPos(GETRESOLUTION.x - pTex->GetWidth() - 50, 200.f);

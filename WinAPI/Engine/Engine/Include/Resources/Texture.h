@@ -19,6 +19,11 @@ public:
         TransparentBlt(hdc, px, py, size, size,
             GetDC(), 0, 0, size, size, GetColorKey());
     }
+    void TileDraw(HDC hdc, int px, int py, int size_x ,int size_y)
+    {
+        TransparentBlt(hdc, px, py, size_x, size_y,
+            GetDC(), 0, 0, size_x, size_y, GetColorKey());
+    }
     HDC GetDC() const { return m_hMemDC; }
 private:
     HDC         m_hMemDC;
@@ -49,6 +54,7 @@ public:
     {
         return m_bColorKeyEnable;
     }
+    Size GetSize() const { return { float(m_tInfo.bmWidth), float(m_tInfo.bmHeight) }; }
     long GetWidth() const
     {
         return m_tInfo.bmWidth;

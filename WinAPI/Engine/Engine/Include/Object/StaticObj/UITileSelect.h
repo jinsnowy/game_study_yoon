@@ -15,16 +15,20 @@ private:
 	enum class UISEL_TYPE
 	{
 		SEL_GROUND = 0,
+		SEL_FLOOR,
 		SEL_NUMBER,
+		SEL_TAG,
 		SEL_END
 	};
 private:
-	static constexpr int m_iSelButtonSize = 30;
+	static constexpr int m_iSelButtonSize = 40;
+	static constexpr int m_iSelTagWidth = 30;
+	static constexpr int m_iSelTagHeight = 50;
 	int m_iCurPageNum = 0;
-	int m_iCurSel = 0;
-	int m_iMarginWidth = 20;
-	int m_iMarginHeight = 40;
-	int m_iMarginItem = 20;
+	UISEL_TYPE m_eCurSel = UISEL_TYPE::SEL_GROUND;
+	int m_iMarginWidth = 10;
+	int m_iMarginHeight = 10;
+	int m_iMarginItem = 10;
 	friend class Object;
 	friend class Scene;
 	vector<vector<Texture*>> m_BaseTiles;

@@ -2,6 +2,7 @@
 #include "../../Resources/ResourceManager.h"
 #include "../../Resources/Texture.h"
 #include "../../Core/Camera.h"
+#include "../../Animation/Animation.h"
 
 Tile::Tile():
 	m_eOption(TO_NONE)
@@ -23,6 +24,11 @@ Tile::Tile(const Tile& tile)
 Tile::~Tile()
 {
 	SAFE_RELEASE(m_pOptionTex);
+}
+
+void Tile::ReleaseTexture()
+{
+	SAFE_RELEASE(m_pTexture);
 }
 
 void Tile::SetTileOption(TILE_OPTION eOption)
@@ -68,7 +74,69 @@ void Tile::Collision(float dt)
 
 void Tile::Draw(HDC hDC, float dt)
 {
-	StaticObject::Draw(hDC, dt);
+    if (m_pTexture)
+    {
+        Size tSize = m_pTexture->GetSize();
+        Pos tPos = m_tPos - tSize * m_tPivot;
+        tPos -= CAMERA->GetTopLeft();
+
+        // 카메라 컬링
+        RESOLUTION tClientRS = CAMERA->GetClientRS();
+        if (tPos.x + tSize.x < 0 || tPos.x > tClientRS.x || tPos.y + tSize.y < 0 || tPos.y > tClientRS.y)
+            return;
+
+        Pos tImagePos = m_tImageOffset;
+        if (m_pAnimation && m_bEnableAnimation)
+        {
+            AnimationClip* pClip = m_pAnimation->GetCurrentClip();
+
+            switch (pClip->eType)
+            {
+            case AT_FRAME:
+                SetTexture(pClip->vecTexture[pClip->iFrameX]);
+                break;
+            case AT_ATLAS:
+                tImagePos.x = pClip->iFrameX * m_tSize.x + m_tImageOffset.x;
+                tImagePos.y = pClip->iFrameY * m_tSize.y + m_tImageOffset.y;
+                break;
+            }
+        }
+
+        if (m_pTexture->GetColorKeyEnable())
+        {
+            TransparentBlt(hDC, int(tPos.x), int(tPos.y), int(tSize.x), int(tSize.y),
+                m_pTexture->GetDC(), int(tImagePos.x), int(tImagePos.y),
+                int(tSize.x), int(tSize.y),
+                m_pTexture->GetColorKey());
+        }
+        else
+        {
+            BitBlt(hDC, int(tPos.x), int(tPos.y), int(tSize.x), int(tSize.y),
+                m_pTexture->GetDC(), int(tImagePos.x), int(tImagePos.y), SRCCOPY);
+        }
+    }
+
+    list<Collider*>::iterator iter;
+    list<Collider*>::iterator iterEnd = m_ColliderList.end();
+
+    for (iter = m_ColliderList.begin(); iter != iterEnd;)
+    {
+        if (!(*iter)->GetEnable())
+        {
+            ++iter;
+            continue;
+        }
+
+        (*iter)->Draw(hDC, dt);
+
+        if (!(*iter)->GetLife())
+        {
+            SAFE_RELEASE((*iter));
+            iter = m_ColliderList.erase(iter);
+            iterEnd = m_ColliderList.end();
+        }
+        else ++iter;
+    }
 
     Pos tPos = m_tPos - m_tSize * m_tPivot;
     tPos -= CAMERA->GetTopLeft();

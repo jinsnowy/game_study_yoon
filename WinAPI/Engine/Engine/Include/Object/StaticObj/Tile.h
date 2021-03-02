@@ -10,6 +10,7 @@ private:
 	TILE_OPTION		m_eOption;
 	class Texture*	m_pOptionTex;
 public:
+	void ReleaseTexture();
 	void SetTileOption(TILE_OPTION eOption);
 	TILE_OPTION GetTileOption() const
 	{

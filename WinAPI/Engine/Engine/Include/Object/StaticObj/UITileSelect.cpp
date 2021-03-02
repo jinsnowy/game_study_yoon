@@ -33,8 +33,8 @@ Texture* UITileSelect::SelectTile(const Pos& screenPos)
             if (screenPos.x >= px && screenPos.x < px + TILESIZE
                 && screenPos.y >= py && screenPos.y < py + TILESIZE)
             {
-                m_BaseTiles[m_iCurSel][itemInd]->AddRef();
-                return m_BaseTiles[m_iCurSel][itemInd];
+                m_BaseTiles[int(m_eCurSel)][itemInd]->AddRef();
+                return m_BaseTiles[int(m_eCurSel)][itemInd];
             }
             ++itemInd;
             px += (TILESIZE + m_iMarginItem);
@@ -42,10 +42,26 @@ Texture* UITileSelect::SelectTile(const Pos& screenPos)
         px = st_x;
         py += (TILESIZE + m_iMarginItem);
     }
+    // 태그 클릭
+    st_x = tPos.x - m_iSelTagWidth;
+    st_y = tPos.y;
+    px = st_x, py = st_y;
 
-    int pageNum = m_BaseTiles[m_iCurSel].size() / (itemNumY * itemNumX) + 1;
+    int tagNum = int(UISEL_TYPE::SEL_END) - 2;
+    for (int i = 0; i < tagNum; i++)
+    {
+        if (screenPos.x >= px && screenPos.x < px + m_iSelTagWidth
+            && screenPos.y >= py && screenPos.y < py + m_iSelTagHeight)
+        {
+            m_eCurSel = static_cast<UISEL_TYPE> (i + int(UISEL_TYPE::SEL_GROUND));
+            return nullptr;
+        }
+        py += m_iSelTagHeight;
+    }
+    // 페이지 클릭
+    int pageNum = m_BaseTiles[int(m_eCurSel)].size() / (itemNumY * itemNumX) + 1;
 
-    px = st_x; py = tPos.y + tSize.y - m_iSelButtonSize - 20;
+    px = tPos.x; py = tPos.y - m_iSelButtonSize;
     for (int i = 0; i < pageNum; i++)
     {
         if (screenPos.x >= px && screenPos.x < px + m_iSelButtonSize
@@ -128,7 +144,7 @@ void UITileSelect::Collision(float dt)
 
 void UITileSelect::Draw(HDC hdc, float dt)
 {
-    assert(m_iCurSel < int(UISEL_TYPE::SEL_END));
+    assert(int(m_eCurSel) < int(UISEL_TYPE::SEL_END));
     UI::Draw(hdc, dt);
 
     Pos tPos = GetPos();
@@ -139,25 +155,41 @@ void UITileSelect::Draw(HDC hdc, float dt)
         SetMargin(m_iMarginWidth, m_iMarginHeight);
     }
 
-    int st_x = tPos.x + (tSize.x - totalSizeX) / 2;
-    int st_y = tPos.y + (tSize.y - totalSizeY) / 2;
-    int tileNum = m_BaseTiles[m_iCurSel].size();
+    // 태그 번호
+    int st_x = tPos.x  - m_iSelTagWidth;
+    int st_y = tPos.y;
+    int px = st_x, py = st_y;
 
-    int px = st_x, py = st_y, itemInd = m_iCurPageNum * itemNumX * itemNumY;
+    int tagNum = int(UISEL_TYPE::SEL_END) - 2;
+    for (int i = 0; i < tagNum; i++)
+    {
+        m_BaseTiles[int(UISEL_TYPE::SEL_TAG)][0]
+            ->TileDraw(hdc, px, py, m_iSelTagWidth, m_iSelTagHeight);
+        py += m_iSelTagHeight;
+    }
+
+    // 타일 번호
+    st_x = tPos.x + (tSize.x - totalSizeX) / 2;
+    st_y = tPos.y + (tSize.y - totalSizeY) / 2;
+    int tileNum = m_BaseTiles[int(m_eCurSel)].size();
+
+    px = st_x, py = st_y;
+    int itemInd = m_iCurPageNum * itemNumX * itemNumY;
     for (int j = 0; j < itemNumY && itemInd < tileNum; j++)
     {
         for (int i = 0; i < itemNumX && itemInd < tileNum; i++)
         {
-            m_BaseTiles[m_iCurSel][itemInd++]->TileDraw(hdc, px, py);
+            m_BaseTiles[int(m_eCurSel)][itemInd++]->TileDraw(hdc, px, py);
             px += (TILESIZE + m_iMarginItem);
         }
         px = st_x;
         py += (TILESIZE + m_iMarginItem);
     }
 
+    // 페이지 번호
     const int pageNum = tileNum / (itemNumY * itemNumX) + 1;
 
-    px = st_x; py = tPos.y + tSize.y - m_iSelButtonSize - 20;
+    px = tPos.x; py = tPos.y - m_iSelButtonSize;
     for (int i = 0; i < pageNum; i++)
     {
         m_BaseTiles[int(UISEL_TYPE::SEL_NUMBER)][i]->TileDraw(hdc, px, py, m_iSelButtonSize);

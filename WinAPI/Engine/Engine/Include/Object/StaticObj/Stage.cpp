@@ -170,6 +170,16 @@ void Stage::Load(FILE* pFile)
     }
 }
 
+void Stage::SetTileNone(const Pos& tPos)
+{
+    int ind = GetTileIndex(tPos);
+
+    if (ind == -1)
+        return;
+
+    m_groundTile[ind]->ReleaseTexture();
+}
+
 void Stage::ChangeTileTexture(const Pos& tPos, Texture* pTexture)
 {
     int ind = GetTileIndex(tPos);

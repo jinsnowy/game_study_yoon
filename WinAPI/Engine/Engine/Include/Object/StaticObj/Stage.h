@@ -32,6 +32,7 @@ public:
 	virtual void Load(FILE* pFile);
 public:
 	Texture* GetBaseTexture()const { return m_baseTexture; }
+	void SetTileNone(const Pos& tPos);
 	void ChangeTileTexture(const Pos& tPos, class Texture* pTexture);
 	void ChangeTileOption(const Pos& tPos, TILE_OPTION eOption);
 	int GetTileIndex(const Pos& tPos);
