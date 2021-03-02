@@ -215,6 +215,13 @@ Collider* Object::GetCollider(const string& strTag)
 }
 // --------------------------
 
+Size Object::GetImageSize() const
+{
+    if (m_pTexture)
+        return m_pTexture->GetSize();
+    return Size(0, 0);
+}
+
 void Object::SetAsTextureSize()
 {
     assert(m_pTexture);

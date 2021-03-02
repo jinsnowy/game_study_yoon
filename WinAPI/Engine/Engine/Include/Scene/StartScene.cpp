@@ -1,7 +1,7 @@
 #include "StartScene.h"
 #include "SceneManager.h"
 #include "Layer.h"
-#include "InGameScene.h"
+#include "InHouseScene.h"
 #include "../Application/Window.h"
 #include "../Object/StaticObj/Stage.h"
 #include "../Application/Window.h"
@@ -136,7 +136,7 @@ void StartScene::StartButtonCallback(float fTime)
 {
     SOUND_MANAGER->PlaySound("StartScene_Click");
     SOUND_MANAGER->PauseSound(SD_BACKGROUND);
-    SCENE_MANAGER->CreateScene<InGameScene>(SC_NEXT);
+    SCENE_MANAGER->CreateScene<InHouseScene>(SC_NEXT);
 }
 
 void StartScene::EndButtonCallback(float fTime)

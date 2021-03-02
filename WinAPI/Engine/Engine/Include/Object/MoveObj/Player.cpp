@@ -88,12 +88,12 @@ bool Player::Init()
 	SetPivot(0.5f, 0.5f);
 	SetSpeed(400.0f);
 
-	SetTexture("PlayerIdle", L"Player/AmongUs/idle.bmp");
+	SetTexture("PlayerIdle", L"Player/AmongUs/IdleRight.bmp");
 	SetColorKey(255, 255, 255);
 	m_iHP = 1000;
 
 	// 중력을 적용한다.
-	SetPhysics(true);
+	SetPhysics(false);
 
 	// 점프할 힘을 설정한다.
 	SetForce(500.f);
@@ -149,14 +149,14 @@ bool Player::Init()
 void Player::Input(float dt)
 {
 	MovableObject::Input(dt);
-	if (KEYDOWN("MoveBack"))
+	if (KEYPRESS("MoveBack"))
 	{
-		// MoveYFromSpeed(dt, MD_FRONT);
+		MoveYFromSpeed(dt, MD_FRONT);
 	}
-	if (KEYDOWN("MoveFront"))
+	if (KEYPRESS("MoveFront"))
 	{
-		Jump();
-		// MoveYFromSpeed(dt, MD_BACK);
+		// Jump();
+		 MoveYFromSpeed(dt, MD_BACK);
 	}
 	if (KEYPRESS("MoveLeft"))
 	{
@@ -168,14 +168,14 @@ void Player::Input(float dt)
 		MoveXFromSpeed(dt, MD_FRONT);
 		SetState(PlayerState::WALK_RIGHT);
 	}
-	if (KEYDOWN("Fire"))
-	{
-		Fire();
-	}
-	if (KEYDOWN("Skill1"))
-	{
-		MessageBox(NULL, L"Skill1", L"Skill1", MB_OK);
-	}
+	//if (KEYDOWN("Fire"))
+	//{
+	//	Fire();
+	//}
+	//if (KEYDOWN("Skill1"))
+	//{
+	//	MessageBox(NULL, L"Skill1", L"Skill1", MB_OK);
+	//}
 	if (!KEYPRESS("MoveRight") && !KEYPRESS("MoveLeft"))
 	{
 		auto curState = GetState();

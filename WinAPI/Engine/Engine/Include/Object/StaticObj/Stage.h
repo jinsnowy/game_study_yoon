@@ -21,6 +21,8 @@ public:
 	void CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY,
 		const string& strKey = "", const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);
 public:
+	int GetStageWidth() const { return m_iTileNumX * m_iTileSizeX; }
+	int GetStageHeight() const { return m_iTileNumY * m_iTileSizeY; }
 	virtual bool Init();
 	virtual void Input(float dt);
 	virtual int Update(float dt);

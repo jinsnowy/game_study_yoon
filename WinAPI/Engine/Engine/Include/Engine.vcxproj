@@ -195,7 +195,8 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Resources\ResourceManager.h" />
     <ClInclude Include="Resources\Texture.h" />
-    <ClInclude Include="Scene\InGameScene.h" />
+    <ClInclude Include="Scene\GameScene.h" />
+    <ClInclude Include="Scene\InHouseScene.h" />
     <ClInclude Include="Scene\Layer.h" />
     <ClInclude Include="Scene\MapEditScene.h" />
     <ClInclude Include="Scene\Scene.h" />
@@ -244,7 +245,8 @@
     <ClCompile Include="Other\WindowsMessageMap.cpp" />
     <ClCompile Include="Resources\ResourceManager.cpp" />
     <ClCompile Include="Resources\Texture.cpp" />
-    <ClCompile Include="Scene\InGameScene.cpp" />
+    <ClCompile Include="Scene\GameScene.cpp" />
+    <ClCompile Include="Scene\InHouseScene.cpp" />
     <ClCompile Include="Scene\Layer.cpp" />
     <ClCompile Include="Scene\MapEditScene.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />

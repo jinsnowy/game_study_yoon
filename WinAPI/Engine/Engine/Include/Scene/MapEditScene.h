@@ -22,7 +22,6 @@ private:
     class UITileSelect* m_pSelUI = nullptr;
     class UIButton* m_pSelButton = nullptr;
     STAGE_TAG m_eCurStage = ST_GROUND;
-
     int             m_iEditTileTex;
     vector<class Stage*>    m_vecStage;
     static wchar_t m_strText[MAX_PATH];
@@ -34,7 +33,7 @@ public:
     virtual void Draw(HDC hDC, float dt);
 private:
     void SetUpCamera();
-    void SetUpBackButton();
+    void SetUpUIButton();
     void SetUpTileSelectUI();
     void SetUpBaseStage(STAGE_TAG eStageTag, const string& strlayerTag, int numX, int numY);
     void SetUpDefaultStages(int numX, int numY);

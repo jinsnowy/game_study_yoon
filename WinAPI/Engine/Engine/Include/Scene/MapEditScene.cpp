@@ -54,7 +54,7 @@ bool MapEditScene::Init()
 
     SetUpDefaultStages(50, 50);
 
-    SetUpBackButton();
+    SetUpUIButton();
 
     SetUpTileSelectUI();
 
@@ -98,7 +98,9 @@ void MapEditScene::Input(float dt)
             SAFE_RELEASE(m_pSelTexture);
             m_pSelTexture = selTex;
         }
-        else {
+
+        if (!m_pSelUI->SelectUITag(tMouseClientPos))
+        {
             switch (m_eTem)
             {
             case TEM_TEXTURE:
@@ -280,7 +282,7 @@ void MapEditScene::LoadStage(STAGE_TAG eStageTag, const string& strlayerTag, FIL
     m_vecStage[eStageTag]->LoadFromFile(pFile);
 }
 
-void MapEditScene::SetUpBackButton()
+void MapEditScene::SetUpUIButton()
 {
     Layer* pLayer = FindLayer("UI");
     UIButton* pBackBtn = Object::CreateObject<UIButton>("BackButton", pLayer);
@@ -319,7 +321,7 @@ void MapEditScene::SetUpBackButton()
             pBtn->SetImageOffset(120, 0);
         }
         Size tSize = pBtn->GetSize();
-        pBtn->SetPos(250.f + i * tSize.x, GETRESOLUTION.y - tSize.y - 30);
+        pBtn->SetPos(250.f + i * tSize.x, 20);
         ColliderRect* pRC = static_cast<ColliderRect*>(pBtn->GetCollider("ButtonBody"));
         
         pRC->SetRect(0.f, 0.f, tSize.x, tSize.y);

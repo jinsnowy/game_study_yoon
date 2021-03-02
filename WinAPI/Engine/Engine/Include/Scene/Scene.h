@@ -8,6 +8,8 @@ class Scene
 	friend class Object;
 	friend class SceneManager;
 private:
+	void DrawBackGround(HDC hdc, COLORREF color);
+	void SetSceneType(SCENE_CREATE eType) { m_eSceneType = eType; }
 	static unordered_map<string, class Object*> m_mapProtoType[SC_END];
 	static Object* FindPrototype(const string& strkey, SCENE_CREATE sc);
 	static void ChangeProtoType();
@@ -36,11 +38,7 @@ protected:
 	virtual ~Scene() = 0;
 	list<Layer*> m_LayerList;
 	SCENE_CREATE m_eSceneType;
-
 public:
-	void DrawBackGround(HDC hdc, COLORREF color);
-public:
-	void SetSceneType(SCENE_CREATE eType){ m_eSceneType = eType; }
 	SCENE_CREATE GetSceneType() const { return m_eSceneType; }
 	Layer* FindLayer(const string& tag);
 	Layer* CreateLayer(const string& tag, int zOrder = 0);

@@ -114,9 +114,6 @@
     <ClInclude Include="Scene\Layer.h">
       <Filter>Scene\Layer</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\InGameScene.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Scene.h">
       <Filter>Scene</Filter>
     </ClInclude>
@@ -231,6 +228,12 @@
     <ClInclude Include="utils.h">
       <Filter>Types</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\GameScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\InHouseScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\Window.cpp">
@@ -250,9 +253,6 @@
     </ClCompile>
     <ClCompile Include="Scene\Layer.cpp">
       <Filter>Scene\Layer</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\InGameScene.cpp">
-      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Scene.cpp">
       <Filter>Scene</Filter>
@@ -358,6 +358,12 @@
     </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>Types</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\GameScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\InHouseScene.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

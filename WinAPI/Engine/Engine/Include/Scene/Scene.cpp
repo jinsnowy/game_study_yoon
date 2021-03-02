@@ -10,6 +10,7 @@ Scene::Scene()
 {
 	Layer* pLayer = CreateLayer("UI", INT_MAX);
 	pLayer = CreateLayer("HUD", INT_MAX - 1);
+	pLayer = CreateLayer("Player", 4);
 	pLayer = CreateLayer("Static", 3);
 	pLayer = CreateLayer("OnAir", 2);
 	pLayer = CreateLayer("Object", 1);

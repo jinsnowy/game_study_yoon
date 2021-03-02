@@ -139,6 +139,7 @@ public:
 	Pos GetPos() const { return m_tPos; }
 	Pos GetPivot() const { return m_tPivot; }
 	Size GetSize() const { return m_tSize; }
+	Size GetImageSize() const;
 	Size GetImageOffset() const { return m_tImageOffset; }
 
 	void SetAsTextureSize();
