@@ -16,7 +16,7 @@ private:
 	int m_iTileSizeX;
 	int m_iTileSizeY;
 	Texture* m_baseTexture = nullptr;
-	vector<class Tile*> m_groundTile;
+	vector<class Tile*> m_baseTile;
 public:
 	void CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY,
 		const string& strKey = "", const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);

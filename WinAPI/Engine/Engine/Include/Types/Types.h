@@ -9,6 +9,22 @@ typedef struct _tagPixel
 	unsigned char b;
 }Pixel;
 
+enum STAGE_SHOW {
+	SHOW_ALL,
+	SHOW_GROUND,
+	SHOW_OBJECT,
+	SHOW_ONAIR,
+	SHOW_END
+};
+
+enum STAGE_TAG
+{
+	ST_GROUND = 0,
+	ST_OBJECT,
+	ST_ONAIR,
+	ST_END
+};
+
 enum TILE_EDIT_MODE
 {
 	TEM_TEXTURE,

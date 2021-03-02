@@ -34,6 +34,7 @@ private:
 	vector<vector<Texture*>> m_BaseTiles;
 public:
 	Texture* SelectTile(const Pos& screenPos);
+	bool SelectUITag(const Pos& screenPos);
 	void SetMargin(int w, int h);
 	void LoadNumbers(const wchar_t* pBaseFolderName = L"SV/Numbers/Select/", const string& strPathKey = TEXTURE_PATH);
 	void LoadTiles(UISEL_TYPE eSel, const wchar_t* pBaseFolderName, const string& strPathKey = TEXTURE_PATH);

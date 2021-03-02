@@ -9,6 +9,11 @@ UITileSelect::UITileSelect()
     m_BaseTiles.resize(size_t(UISEL_TYPE::SEL_END));
 }
 
+bool UITileSelect::SelectUITag(const Pos& screenPos)
+{
+    return false;
+}
+
 UITileSelect::~UITileSelect()
 {
     for (auto& tiles : m_BaseTiles)
@@ -155,25 +160,12 @@ void UITileSelect::Draw(HDC hdc, float dt)
         SetMargin(m_iMarginWidth, m_iMarginHeight);
     }
 
-    // 태그 번호
-    int st_x = tPos.x  - m_iSelTagWidth;
-    int st_y = tPos.y;
-    int px = st_x, py = st_y;
-
-    int tagNum = int(UISEL_TYPE::SEL_END) - 2;
-    for (int i = 0; i < tagNum; i++)
-    {
-        m_BaseTiles[int(UISEL_TYPE::SEL_TAG)][0]
-            ->TileDraw(hdc, px, py, m_iSelTagWidth, m_iSelTagHeight);
-        py += m_iSelTagHeight;
-    }
-
     // 타일 번호
-    st_x = tPos.x + (tSize.x - totalSizeX) / 2;
-    st_y = tPos.y + (tSize.y - totalSizeY) / 2;
+    int st_x = tPos.x + (tSize.x - totalSizeX) / 2;
+    int st_y = tPos.y + (tSize.y - totalSizeY) / 2;
     int tileNum = m_BaseTiles[int(m_eCurSel)].size();
 
-    px = st_x, py = st_y;
+    int px = st_x, py = st_y;
     int itemInd = m_iCurPageNum * itemNumX * itemNumY;
     for (int j = 0; j < itemNumY && itemInd < tileNum; j++)
     {
@@ -195,4 +187,18 @@ void UITileSelect::Draw(HDC hdc, float dt)
         m_BaseTiles[int(UISEL_TYPE::SEL_NUMBER)][i]->TileDraw(hdc, px, py, m_iSelButtonSize);
         px += (m_iSelButtonSize + m_iMarginItem);
     }
+
+
+    // 태그 번호
+    px = tPos.x - m_iSelTagWidth, py = tPos.y;
+    int tagNum = int(UISEL_TYPE::SEL_END) - 2;
+    for (int i = 0; i < tagNum; i++)
+    {
+        m_BaseTiles[int(UISEL_TYPE::SEL_TAG)][0]
+            ->TileDraw(hdc, px, py, m_iSelTagWidth, m_iSelTagHeight);
+        py += m_iSelTagHeight;
+    }
+
+    // Stage 번호
+
 }

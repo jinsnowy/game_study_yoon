@@ -36,13 +36,16 @@ protected:
 	virtual ~Scene() = 0;
 	list<Layer*> m_LayerList;
 	SCENE_CREATE m_eSceneType;
+	STAGE_SHOW m_eCurShowMode = SHOW_ALL;
+public:
+	void DrawBackGround(HDC hdc, COLORREF color);
 public:
 	void SetSceneType(SCENE_CREATE eType){ m_eSceneType = eType; }
 	SCENE_CREATE GetSceneType() const { return m_eSceneType; }
 	Layer* FindLayer(const string& tag);
 	Layer* CreateLayer(const string& tag, int zOrder = 0);
 	static bool LayerSort(const Layer* pL1, const Layer* pL2);
-
+	void ChangeShowMode();
 	virtual bool Init();
 	virtual void Input(float dt);
 	virtual void Update(float dt);

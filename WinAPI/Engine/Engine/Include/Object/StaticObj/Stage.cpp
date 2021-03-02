@@ -15,11 +15,11 @@ Stage::Stage(const Stage& stage)
     :
     StaticObject(stage)
 {
-    m_groundTile.clear();
+    m_baseTile.clear();
 
-    for (size_t i = 0; i < stage.m_groundTile.size(); ++i)
+    for (size_t i = 0; i < stage.m_baseTile.size(); ++i)
     {
-        m_groundTile.push_back(stage.m_groundTile[i]->Clone());
+        m_baseTile.push_back(stage.m_baseTile[i]->Clone());
     }
 }
 
@@ -42,7 +42,7 @@ void Stage::DrawBackGround(HDC hdc, COLORREF color)
 void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, const string& strKey, const wchar_t* pFileName, const string& strPathKey)
 {
     SAFE_RELEASE(m_baseTexture);
-    Safe_Release_VecList(m_groundTile);
+    Safe_Release_VecList(m_baseTile);
 
     m_iTileNumX = iNumX;
     m_iTileNumY = iNumY;
@@ -62,7 +62,7 @@ void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, const strin
             pTile->SetSize(iSizeX, iSizeY);
             pTile->SetPos(offset.x, offset.y);
             pTile->SetTexture(strKey, pFileName, strPathKey);
-            m_groundTile.push_back(pTile);
+            m_baseTile.push_back(pTile);
         }
     }
 }
@@ -102,11 +102,11 @@ void Stage::Collision(float dt)
 
 void Stage::Draw(HDC hDC, float dt)
 {
-    DrawBackGround(hDC, RGB(73, 139, 97));
+    // DrawBackGround(hDC, RGB(73, 139, 97));
 
-    for (size_t i = 0; i < m_groundTile.size(); ++i)
+    for (size_t i = 0; i < m_baseTile.size(); ++i)
     {
-        m_groundTile[i]->Draw(hDC, dt);
+        m_baseTile[i]->Draw(hDC, dt);
     }
 
     // Grid를 그린다.
@@ -142,9 +142,9 @@ void Stage::Save(FILE* pFile)
     fwrite(&m_iTileSizeX, 4, 1, pFile);
     fwrite(&m_iTileSizeY, 4, 1, pFile);
 
-    for (size_t i = 0; i < m_groundTile.size(); ++i)
+    for (size_t i = 0; i < m_baseTile.size(); ++i)
     {
-        m_groundTile[i]->Save(pFile);
+        m_baseTile[i]->Save(pFile);
     }
 }
 
@@ -166,7 +166,7 @@ void Stage::Load(FILE* pFile)
 
         pTile->Load(pFile);
 
-        m_groundTile.push_back(pTile);
+        m_baseTile.push_back(pTile);
     }
 }
 
@@ -176,8 +176,7 @@ void Stage::SetTileNone(const Pos& tPos)
 
     if (ind == -1)
         return;
-
-    m_groundTile[ind]->ReleaseTexture();
+    m_baseTile[ind]->ReleaseTexture();
 }
 
 void Stage::ChangeTileTexture(const Pos& tPos, Texture* pTexture)
@@ -187,7 +186,7 @@ void Stage::ChangeTileTexture(const Pos& tPos, Texture* pTexture)
     if (ind == -1)
         return;
 
-    m_groundTile[ind]->SetTexture(pTexture);
+    m_baseTile[ind]->SetTexture(pTexture);
 }
 
 void Stage::ChangeTileOption(const Pos& tPos, TILE_OPTION eOption)
@@ -197,7 +196,7 @@ void Stage::ChangeTileOption(const Pos& tPos, TILE_OPTION eOption)
     if (ind == -1)
         return;
 
-    m_groundTile[ind]->SetTileOption(eOption);
+    m_baseTile[ind]->SetTileOption(eOption);
 }
 
 int Stage::GetTileIndex(const Pos& tPos)
@@ -219,9 +218,9 @@ int Stage::GetTileIndex(float x, float y)
 void Stage::ClearTile()
 {
     SAFE_RELEASE(m_baseTexture);
-    for (size_t i = 0; i < m_groundTile.size(); ++i)
+    for (size_t i = 0; i < m_baseTile.size(); ++i)
     {
-        Object::EraseObject(m_groundTile[i]);
+        Object::EraseObject(m_baseTile[i]);
     }
-    Safe_Release_VecList(m_groundTile);
+    Safe_Release_VecList(m_baseTile);
 }

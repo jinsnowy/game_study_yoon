@@ -33,7 +33,7 @@ bool StartScene::Init()
     SOUND_MANAGER->LoadSound("StartScene_Click", false, SD_EFFECT, "ClickButton_StartScene.mp3");
     SOUND_MANAGER->LoadSound("StartScene_On", false, SD_EFFECT, "ClickButtonOn_StartScene.mp3");
 
-    Layer* pLayer = FindLayer("Stage");
+    Layer* pLayer = FindLayer("Ground");
     UIPanel* pBackPanel = Object::CreateObject<UIPanel>("BackPanel", pLayer);
 
     pBackPanel->SetSize(GETRESOLUTION.x, GETRESOLUTION.y);

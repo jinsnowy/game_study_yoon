@@ -23,12 +23,13 @@ MapEditScene::MapEditScene()
     m_eTem = TEM_TEXTURE;
     m_iEditTileTex = 0;
     m_eEditOption = TO_NONE;
+    m_vecStage.resize(ST_END);
 }
 
 MapEditScene::~MapEditScene()
 {
-    Safe_Release_VecList(m_vecTileTex);
-    SAFE_RELEASE(m_pStage);
+    // Safe_Release_VecList(m_vecTileTex);
+    Safe_Release_VecList(m_vecStage);
     SAFE_RELEASE(m_pSelUI);
     SAFE_RELEASE(m_pSelTexture);
 }
@@ -40,9 +41,17 @@ bool MapEditScene::Init()
         return false;
     }
 
+    Texture* pNoneTex = RESOURCE_MANAGER->LoadTexture("TileNoMove", L"NoMove.bmp");
+    pNoneTex->SetColorKey(255, 0, 255);
+    SAFE_RELEASE(pNoneTex);
+
+    Texture* pNoMoveTex = RESOURCE_MANAGER->LoadTexture("TileNone", L"NoOption.bmp");
+    pNoMoveTex->SetColorKey(255, 0, 255);
+    SAFE_RELEASE(pNoMoveTex);
+
     SetUpCamera();
 
-    SetUpBaseTiles();
+    SetUpDefaultStages(50, 50);
 
     SetUpBackButton();
 
@@ -77,67 +86,50 @@ void MapEditScene::Input(float dt)
     {
         CAMERA->Scroll(300.f * dt, 0.f);
     }
-    if (GetAsyncKeyState(VK_F1) & 0x8000)
-    {
-        m_eTem = TEM_TEXTURE;
-    }
-    if (GetAsyncKeyState(VK_F2) & 0x8000)
-    {
-        m_eTem = TEM_OPTION;
-    }
 
-    if (GetAsyncKeyState('1') & 0x8000)
-    {
-        switch (m_eTem)
-        {
-        case TEM_TEXTURE:
-            m_iEditTileTex = 0;
-            break;
-        case TEM_OPTION:
-            m_eEditOption = TO_NONE;
-            break;
-        }
-    }
+    //if (GetAsyncKeyState('1') & 0x8000)
+    //{
+    //    switch (m_eTem)
+    //    {
+    //    case TEM_TEXTURE:
+    //        m_iEditTileTex = 0;
+    //        break;
+    //    case TEM_OPTION:
+    //        m_eEditOption = TO_NONE;
+    //        break;
+    //    }
+    //}
 
-    if (GetAsyncKeyState('2') & 0x8000)
-    {
-        switch (m_eTem)
-        {
-        case TEM_TEXTURE:
-            m_iEditTileTex = 1;
-            break;
-        case TEM_OPTION:
-            m_eEditOption = TO_NOMOVE;
-            break;
-        }
-    }
+    //if (GetAsyncKeyState('2') & 0x8000)
+    //{
+    //    switch (m_eTem)
+    //    {
+    //    case TEM_TEXTURE:
+    //        m_iEditTileTex = 1;
+    //        break;
+    //    case TEM_OPTION:
+    //        m_eEditOption = TO_NOMOVE;
+    //        break;
+    //    }
+    //}
 
-    if (GetAsyncKeyState('3') & 0x8000)
-    {
-        switch (m_eTem)
-        {
-        case TEM_TEXTURE:
-            m_iEditTileTex = 2;
-            break;
-        case TEM_OPTION:
-            m_eEditOption = TO_NONE;
-            break;
-        }
-    }
+    //if (GetAsyncKeyState('3') & 0x8000)
+    //{
+    //    switch (m_eTem)
+    //    {
+    //    case TEM_TEXTURE:
+    //        m_iEditTileTex = 2;
+    //        break;
+    //    case TEM_OPTION:
+    //        m_eEditOption = TO_NONE;
+    //        break;
+    //    }
+    //}
 
     if (KEYPRESS("MouseLButton"))
     {
         Pos tMouseClientPos = MOUSECLIENTPOS;
         Pos tMouseWorldPos = MOUSEWORLDPOS;
-        ColliderRect* rc = static_cast<ColliderRect*>(Object::FindObject("BackButton")->GetCollider("ButtonBody"));
-        Rect bound = rc->GetWorldInfo();
-        SAFE_RELEASE(rc);
-
-        // 뒤로가기 버튼 체크 먼저
-        if (bound.ContainsPoint(tMouseClientPos))
-        {
-            BackButtonCallback();
-        }
         Texture* selTex = m_pSelUI->SelectTile(tMouseClientPos);
         if (selTex)
         {
@@ -150,11 +142,11 @@ void MapEditScene::Input(float dt)
             case TEM_TEXTURE:
                 if (m_pSelTexture)
                 {
-                    m_pStage->ChangeTileTexture(tMouseWorldPos, m_pSelTexture);
+                    m_vecStage[m_eCurStage]->ChangeTileTexture(tMouseWorldPos, m_pSelTexture);
                 }
                 break;
             case TEM_OPTION:
-                m_pStage->ChangeTileOption(tMouseWorldPos, m_eEditOption);
+                m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, m_eEditOption);
                 break;
             }
         }
@@ -167,10 +159,10 @@ void MapEditScene::Input(float dt)
         switch (m_eTem)
         {
         case TEM_TEXTURE:
-               m_pStage->SetTileNone(tMouseWorldPos);
+            m_vecStage[m_eCurStage]->SetTileNone(tMouseWorldPos);
             break;
         case TEM_OPTION:
-            m_pStage->ChangeTileOption(tMouseWorldPos, m_eEditOption);
+            m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, m_eEditOption);
             break;
         }
     }
@@ -185,7 +177,10 @@ void MapEditScene::Input(float dt)
         char strFileName[MAX_PATH] = {};
         WideCharToMultiByte(CP_ACP, 0, m_strText, -1, strFileName, lstrlen(m_strText), 0, 0);
 
-        m_pStage->SaveFromPath(strFileName);
+        for (int i = 0; i < ST_END; i++)
+        {
+            m_vecStage[i]->SaveFromPath(strFileName);
+        }
     }
 
     if (KEYDOWN("Load"))
@@ -197,15 +192,8 @@ void MapEditScene::Input(float dt)
         // 파일명을 이용하여 읽어온다.
         char strFileName[MAX_PATH] = {};
         WideCharToMultiByte(CP_ACP, 0, m_strText, -1, strFileName, lstrlen(m_strText), 0, 0);
-        
-        if (!m_pStage)
-        {
-            Layer* pStageLayer = FindLayer("Stage");
-            m_pStage = Object::CreateObject<Stage>("Stage", pStageLayer);
-        }
-        m_pStage->LoadFromPath(strFileName);
+        LoadDefaultStages(strFileName);
     }
-
 }
 
 INT_PTR MapEditScene::DlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -231,25 +219,18 @@ INT_PTR MapEditScene::DlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return FALSE;
 }
 
-void MapEditScene::BackButtonCallback()
-{
-    SOUND_MANAGER->PlaySound("StartScene_Click");
-    SCENE_MANAGER->CreateScene<StartScene>(SC_NEXT);
-}
-
-
 void MapEditScene::Draw(HDC hDC, float dt)
 {
     Scene::Draw(hDC, dt);
 
+    // 마우스 선택 타일 드로우
     Pos tPos = MOUSEWORLDPOS;
     Pos tCamPos = CAMERA->GetTopLeft();
-    RESOLUTION tileSize = m_pStage->GetTileSize();
 
-    int left = int(tPos.x / tileSize.x) * tileSize.x - tCamPos.x;
-    int top = int(tPos.y / tileSize.y) * tileSize.y - tCamPos.y;
-    int right = left + tileSize.x;
-    int bottom = top + tileSize.y;
+    int left = int(tPos.x / TILESIZE) * TILESIZE - tCamPos.x;
+    int top = int(tPos.y / TILESIZE) * TILESIZE - tCamPos.y;
+    int right = left + TILESIZE;
+    int bottom = top + TILESIZE;
 
     HPEN myPen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
     HPEN OldPen = (HPEN)SelectObject(hDC, myPen);
@@ -275,19 +256,41 @@ void MapEditScene::SetUpCamera()
     CAMERA->ReleaseTarget();
 }
 
-void MapEditScene::SetUpBaseTiles()
+void MapEditScene::SetUpDefaultStages(int numX, int numY)
 {
-    Texture* pNoneTex = RESOURCE_MANAGER->LoadTexture("TileNoMove", L"NoMove.bmp");
-    pNoneTex->SetColorKey(255, 0, 255);
-    SAFE_RELEASE(pNoneTex);
+    SetUpBaseStage(ST_GROUND, "Ground", numX, numY);
+    SetUpBaseStage(ST_OBJECT, "Object", numX, numY);
+    SetUpBaseStage(ST_ONAIR, "OnAir", numX, numY);
+}
 
-    Texture* pNoMoveTex = RESOURCE_MANAGER->LoadTexture("TileNone", L"NoOption.bmp");
-    pNoMoveTex->SetColorKey(255, 0, 255);
-    SAFE_RELEASE(pNoMoveTex);
+void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& strlayerTag, int numX, int numY)
+{
+    if (m_vecStage[eStageTag])
+    {
+        SAFE_RELEASE(m_vecStage[eStageTag]);
+    }
+    Layer* pStageLayer = FindLayer(strlayerTag);
+    m_vecStage[eStageTag] = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
+    m_vecStage[eStageTag]->CreateTile(numX, numY, TILESIZE, TILESIZE, "", L"");
+}
 
-    Layer* pStageLayer = FindLayer("Stage");
-    m_pStage = Object::CreateObject<Stage>("Stage", pStageLayer);
-    m_pStage->CreateTile(100, 100, 64, 64, "", L"");
+void MapEditScene::LoadDefaultStages(const char* fileName)
+{
+    LoadStage(ST_GROUND, "Ground", fileName);
+    LoadStage(ST_OBJECT, "Object", fileName);
+    LoadStage(ST_ONAIR, "OnAir", fileName);
+}
+
+void MapEditScene::LoadStage(STAGE_TAG eStageTag, const string& strlayerTag, const char* fileName)
+{
+    if (m_vecStage[eStageTag])
+    {
+        SAFE_RELEASE(m_vecStage[eStageTag]);
+    }
+
+    Layer* pStageLayer = FindLayer(strlayerTag);
+    m_vecStage[eStageTag] = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
+    m_vecStage[eStageTag]->LoadFromPath(fileName);
 }
 
 void MapEditScene::SetUpBackButton()
@@ -308,6 +311,7 @@ void MapEditScene::SetUpBackButton()
     Size tSize = pBackBtn->GetSize();
     pRC->SetRect(0.f, 0.f, tSize.x, tSize.y);
     SAFE_RELEASE(pRC);
+    pBackBtn->SetCallback(this, &MapEditScene::BackButtonCallback);
     SAFE_RELEASE(pBackBtn);
 }
 
@@ -333,4 +337,10 @@ void MapEditScene::SetUpTileSelectUI()
     m_pSelUI->SetPos(GETRESOLUTION.x - pTex->GetWidth() - 50, 200.f);
 
     SAFE_RELEASE(pTex);
+}
+
+void MapEditScene::BackButtonCallback(float dt)
+{
+    SOUND_MANAGER->PlaySound("StartScene_Click");
+    SCENE_MANAGER->CreateScene<StartScene>(SC_NEXT);
 }
