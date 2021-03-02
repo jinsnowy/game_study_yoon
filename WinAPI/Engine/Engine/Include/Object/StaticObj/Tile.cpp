@@ -29,6 +29,8 @@ Tile::~Tile()
 void Tile::ReleaseTexture()
 {
 	SAFE_RELEASE(m_pTexture);
+    SAFE_RELEASE(m_pOptionTex);
+    m_eOption = TO_NONE;
 }
 
 void Tile::SetTileOption(TILE_OPTION eOption)
@@ -79,7 +81,7 @@ void Tile::Draw(HDC hDC, float dt)
         Size tSize = m_pTexture->GetSize();
         Pos tPos = m_tPos - tSize * m_tPivot;
         tPos -= CAMERA->GetTopLeft();
-
+        tPos.y += TILESIZE;
         // 카메라 컬링
         RESOLUTION tClientRS = CAMERA->GetClientRS();
         if (tPos.x + tSize.x < 0 || tPos.x > tClientRS.x || tPos.y + tSize.y < 0 || tPos.y > tClientRS.y)
@@ -174,7 +176,6 @@ void Tile::Save(FILE* pFile)
 	StaticObject::Save(pFile);
 
 	fwrite(&m_eOption, 4, 1, pFile);
-
 }
 
 void Tile::Load(FILE* pFile)

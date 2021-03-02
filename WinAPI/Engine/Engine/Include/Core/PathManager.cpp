@@ -87,3 +87,38 @@ const char* PathManager::FindPathByMultiByte(const string& strKey)
 
 	return m_strPath;
 }
+
+void PathManager::FileClear(const char* fileName, const string& strBaseKey)
+{
+	const char* pPath = PATH_MANAGER->FindPathByMultiByte(strBaseKey);
+
+	string strFullPath;
+	if (pPath)
+		strFullPath = pPath;
+	strFullPath += fileName;
+
+	FILE* pFile = NULL;
+
+	fopen_s(&pFile, strFullPath.c_str(), "wb");
+
+	if (pFile)
+	{
+		fclose(pFile);
+	}
+}
+
+FILE* PathManager::FileOpen(const char* fileName, const string& strBaseKey, const char* mode)
+{
+	const char* pPath = PATH_MANAGER->FindPathByMultiByte(strBaseKey);
+
+	string strFullPath;
+	if (pPath)
+		strFullPath = pPath;
+	strFullPath += fileName;
+
+	FILE* pFile = NULL;
+
+	fopen_s(&pFile, strFullPath.c_str(), mode);
+
+	return pFile;
+}

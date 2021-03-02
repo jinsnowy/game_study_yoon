@@ -390,6 +390,18 @@ void Object::Draw(HDC hdc, float dt)
     }
 }
 
+void Object::SaveFromFile(FILE* pFile)
+{
+    assert(pFile);
+    Save(pFile);
+}
+
+void Object::LoadFromFile(FILE* pFile)
+{
+    assert(pFile);
+    Load(pFile);
+}
+
 void Object::SaveFromPath(const char* pFileName, const string& strPathKey)
 {
     const char* pPath = PATH_MANAGER->FindPathByMultiByte(DATA_PATH);
@@ -406,7 +418,7 @@ void Object::SaveFromFullPath(const char* pFullPath)
 {
     FILE* pFile = NULL;
 
-    fopen_s(&pFile, pFullPath, "wb");
+    fopen_s(&pFile, pFullPath, "ab");
 
     if (pFile)
     {

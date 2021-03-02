@@ -41,14 +41,12 @@ void Stage::DrawBackGround(HDC hdc, COLORREF color)
 
 void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, const string& strKey, const wchar_t* pFileName, const string& strPathKey)
 {
-    SAFE_RELEASE(m_baseTexture);
     Safe_Release_VecList(m_baseTile);
 
     m_iTileNumX = iNumX;
     m_iTileNumY = iNumY;
     m_iTileSizeX = iSizeX;
     m_iTileSizeY = iSizeY;
-    m_baseTexture = RESOURCE_MANAGER->LoadTexture(strKey, pFileName);
     Pos offset;
     for (int i = 0; i < iNumY; ++i)
     {
@@ -62,6 +60,7 @@ void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, const strin
             pTile->SetSize(iSizeX, iSizeY);
             pTile->SetPos(offset.x, offset.y);
             pTile->SetTexture(strKey, pFileName, strPathKey);
+            pTile->SetPivot(0.0f, 1.0f);
             m_baseTile.push_back(pTile);
         }
     }
@@ -170,6 +169,17 @@ void Stage::Load(FILE* pFile)
     }
 }
 
+string Stage::GetTileName(const Pos& pos)
+{
+    int ind = GetTileIndex(pos);
+    if (ind == -1)
+        return "";
+
+    if(m_baseTile[ind]->m_pTexture)
+        return m_baseTile[ind]->m_pTexture->GetTag();
+    return "";
+}
+
 void Stage::SetTileNone(const Pos& tPos)
 {
     int ind = GetTileIndex(tPos);
@@ -217,10 +227,10 @@ int Stage::GetTileIndex(float x, float y)
 
 void Stage::ClearTile()
 {
-    SAFE_RELEASE(m_baseTexture);
     for (size_t i = 0; i < m_baseTile.size(); ++i)
     {
         Object::EraseObject(m_baseTile[i]);
+        const Tile* tile = m_baseTile[i];
     }
     Safe_Release_VecList(m_baseTile);
 }

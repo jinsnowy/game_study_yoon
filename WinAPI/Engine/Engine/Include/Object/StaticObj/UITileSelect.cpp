@@ -30,7 +30,7 @@ Texture* UITileSelect::SelectTile(const Pos& screenPos)
     int st_x = tPos.x + (tSize.x - totalSizeX) / 2;
     int st_y = tPos.y + (tSize.y - totalSizeY) / 2;
 
-    int px = st_x, py = st_y, itemInd = 0;
+    int px = st_x, py = st_y, itemInd = m_iCurPageNum * itemNumX * itemNumY;
     for (int j = 0; j < itemNumY; ++j)
     {
         for (int i = 0; i < itemNumX; ++i)
@@ -58,7 +58,7 @@ Texture* UITileSelect::SelectTile(const Pos& screenPos)
         if (screenPos.x >= px && screenPos.x < px + m_iSelTagWidth
             && screenPos.y >= py && screenPos.y < py + m_iSelTagHeight)
         {
-            m_eCurSel = static_cast<UISEL_TYPE> (i + int(UISEL_TYPE::SEL_GROUND));
+            m_eCurSel = static_cast<UISEL_TYPE> (i);
             return nullptr;
         }
         py += m_iSelTagHeight;

@@ -56,7 +56,7 @@ public:
 	bool GetEnable() const { return m_bEnable; }
 	bool GetLife() const { return m_bLife; }
 	size_t GetId() const { return m_id; }
-	std::string GetTag() const { return m_strTag; }
+	virtual std::string GetTag() const { return m_strTag; }
 	void Die() { m_bLife = false; }
 	void SetEnable(bool bEnable) { m_bEnable = bEnable; }
 	void SetTag(const std::string& tagName);

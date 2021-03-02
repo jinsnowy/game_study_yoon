@@ -167,6 +167,8 @@ public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
 public:
+	void SaveFromFile(FILE* pFile);
+	void LoadFromFile(FILE* pFile);
 	void SaveFromPath(const char* pFileName, const string& strPathKey = DATA_PATH);
 	void SaveFromFullPath(const char* pFullPath);
 	void LoadFromPath(const char* pFileNmae, const string& strPathKey = DATA_PATH);

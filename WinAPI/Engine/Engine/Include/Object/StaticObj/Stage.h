@@ -3,6 +3,7 @@
 
 class Stage : public StaticObject
 {
+	friend class MapEditScene;
 	friend class Object;
 	friend class Scene;
 private:
@@ -15,7 +16,6 @@ private:
 	int m_iTileNumY;
 	int m_iTileSizeX;
 	int m_iTileSizeY;
-	Texture* m_baseTexture = nullptr;
 	vector<class Tile*> m_baseTile;
 public:
 	void CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY,
@@ -31,7 +31,7 @@ public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
 public:
-	Texture* GetBaseTexture()const { return m_baseTexture; }
+	string GetTileName(const Pos& pos);
 	void SetTileNone(const Pos& tPos);
 	void ChangeTileTexture(const Pos& tPos, class Texture* pTexture);
 	void ChangeTileOption(const Pos& tPos, TILE_OPTION eOption);

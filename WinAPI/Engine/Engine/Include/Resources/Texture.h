@@ -36,6 +36,10 @@ private:
     string      m_strKey;
     string      m_strPathKey;
 public:
+    string GetTag() const override
+    {
+        return m_strKey;
+    }
     void SetColorKey(unsigned char r, unsigned char g, unsigned char b)
     {
         m_bColorKeyEnable = true;

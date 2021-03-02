@@ -183,7 +183,6 @@ void Scene::Collision(float dt)
 void Scene::Draw(HDC hdc, float dt)
 {
 	DrawBackGround(hdc, RGB(0, 0, 0));
-
 	STAGE_SHOW eShowMode = SCENE_MANAGER->GetShowMode();
 	auto iterEnd = m_LayerList.end();
 	for (auto it = m_LayerList.begin(); it != iterEnd;)

@@ -29,7 +29,6 @@ MapEditScene::MapEditScene()
 
 MapEditScene::~MapEditScene()
 {
-    // Safe_Release_VecList(m_vecTileTex);
     Safe_Release_VecList(m_vecStage);
     SAFE_RELEASE(m_pSelUI);
     SAFE_RELEASE(m_pSelTexture);
@@ -89,45 +88,6 @@ void MapEditScene::Input(float dt)
         CAMERA->Scroll(300.f * dt, 0.f);
     }
 
-    //if (GetAsyncKeyState('1') & 0x8000)
-    //{
-    //    switch (m_eTem)
-    //    {
-    //    case TEM_TEXTURE:
-    //        m_iEditTileTex = 0;
-    //        break;
-    //    case TEM_OPTION:
-    //        m_eEditOption = TO_NONE;
-    //        break;
-    //    }
-    //}
-
-    //if (GetAsyncKeyState('2') & 0x8000)
-    //{
-    //    switch (m_eTem)
-    //    {
-    //    case TEM_TEXTURE:
-    //        m_iEditTileTex = 1;
-    //        break;
-    //    case TEM_OPTION:
-    //        m_eEditOption = TO_NOMOVE;
-    //        break;
-    //    }
-    //}
-
-    //if (GetAsyncKeyState('3') & 0x8000)
-    //{
-    //    switch (m_eTem)
-    //    {
-    //    case TEM_TEXTURE:
-    //        m_iEditTileTex = 2;
-    //        break;
-    //    case TEM_OPTION:
-    //        m_eEditOption = TO_NONE;
-    //        break;
-    //    }
-    //}
-
     if (KEYPRESS("MouseLButton"))
     {
         Pos tMouseClientPos = MOUSECLIENTPOS;
@@ -146,9 +106,6 @@ void MapEditScene::Input(float dt)
                 {
                     m_vecStage[m_eCurStage]->ChangeTileTexture(tMouseWorldPos, m_pSelTexture);
                 }
-                break;
-            case TEM_OPTION:
-                m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, m_eEditOption);
                 break;
             }
         }
@@ -179,10 +136,7 @@ void MapEditScene::Input(float dt)
         char strFileName[MAX_PATH] = {};
         WideCharToMultiByte(CP_ACP, 0, m_strText, -1, strFileName, lstrlen(m_strText), 0, 0);
 
-        for (int i = 0; i < ST_END; i++)
-        {
-            m_vecStage[i]->SaveFromPath(strFileName);
-        }
+        SaveDefaultStages(strFileName);
     }
 
     if (KEYDOWN("Load"))
@@ -247,9 +201,19 @@ void MapEditScene::Draw(HDC hDC, float dt)
         Size tImgSize = m_pSelTexture->GetSize();
         m_pSelTexture->TileDraw(hDC,
                                 MOUSECLIENTPOS.x,
-                                MOUSECLIENTPOS.y,
+                                MOUSECLIENTPOS.y - tImgSize.y,
                                 tImgSize.x, tImgSize.y);
     }
+#ifdef _DEBUG
+    char buffer[MAX_PATH];
+    for (int i = 0; i < ST_END; ++i)
+    {
+        const string& tileName = m_vecStage[i]->GetTileName(MOUSECLIENTPOS);
+        const string& stageName = m_vecStage[i]->GetTag();
+        sprintf(buffer, "%s : %s\n", stageName.c_str(), tileName.c_str());
+        TextOut(hDC, MOUSECLIENTPOS.x, MOUSECLIENTPOS.y - 100 + 20 * i, GetWChar(buffer), strlen(buffer));
+    }
+#endif
 }
 
 void MapEditScene::SetUpCamera()
@@ -265,15 +229,27 @@ void MapEditScene::SetUpDefaultStages(int numX, int numY)
     SetUpBaseStage(ST_GROUND, "Ground", numX, numY);
     SetUpBaseStage(ST_OBJECT, "Object", numX, numY);
     SetUpBaseStage(ST_ONAIR, "OnAir", numX, numY);
-    SetUpBaseStage(ST_ONAIR, "Static", numX, numY);
+    SetUpBaseStage(ST_STATIC, "Static", numX, numY);
+}
+
+void MapEditScene::SaveDefaultStages(const char* fileName)
+{
+    FILE * pFile = PATH_MANAGER->FileOpen(fileName, DATA_PATH, "wb");
+
+    m_vecStage[ST_GROUND]->SaveFromFile(pFile);
+    m_vecStage[ST_OBJECT]->SaveFromFile(pFile);
+    m_vecStage[ST_ONAIR]->SaveFromFile(pFile);
+    m_vecStage[ST_STATIC]->SaveFromFile(pFile);
+
+    if (pFile)
+    {
+        fclose(pFile);
+    }
 }
 
 void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& strlayerTag, int numX, int numY)
 {
-    if (m_vecStage[eStageTag])
-    {
-        SAFE_RELEASE(m_vecStage[eStageTag]);
-    }
+    SAFE_RELEASE(m_vecStage[eStageTag]);
     Layer* pStageLayer = FindLayer(strlayerTag);
     m_vecStage[eStageTag] = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
     m_vecStage[eStageTag]->CreateTile(numX, numY, TILESIZE, TILESIZE, "", L"");
@@ -281,22 +257,25 @@ void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& strlayerTag
 
 void MapEditScene::LoadDefaultStages(const char* fileName)
 {
-    LoadStage(ST_GROUND, "Ground", fileName);
-    LoadStage(ST_OBJECT, "Object", fileName);
-    LoadStage(ST_ONAIR, "OnAir", fileName);
-    LoadStage(ST_ONAIR, "Static", fileName);
+    FILE* pFile = PATH_MANAGER->FileOpen(fileName, DATA_PATH, "rb");
+
+    LoadStage(ST_GROUND, "Ground", pFile);
+    LoadStage(ST_OBJECT, "Object", pFile);
+    LoadStage(ST_ONAIR, "OnAir", pFile);
+    LoadStage(ST_STATIC, "Static", pFile);
+
+    if (pFile)
+    {
+        fclose(pFile);
+    }
 }
 
-void MapEditScene::LoadStage(STAGE_TAG eStageTag, const string& strlayerTag, const char* fileName)
+void MapEditScene::LoadStage(STAGE_TAG eStageTag, const string& strlayerTag, FILE* pFile)
 {
-    if (m_vecStage[eStageTag])
-    {
-        SAFE_RELEASE(m_vecStage[eStageTag]);
-    }
-
+    SAFE_RELEASE(m_vecStage[eStageTag]);
     Layer* pStageLayer = FindLayer(strlayerTag);
     m_vecStage[eStageTag] = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
-    m_vecStage[eStageTag]->LoadFromPath(fileName);
+    m_vecStage[eStageTag]->LoadFromFile(pFile);
 }
 
 void MapEditScene::SetUpBackButton()
@@ -361,6 +340,8 @@ void MapEditScene::SetUpTileSelectUI()
     m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_GROUND, L"SV/Ground/");
     // 바닥 타일 타일들
     m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_FLOOR, L"SV/FloorTile/");
+    // 하우스 내부
+    m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_INHOUSE, L"SV/Inhouse/");
     // 선택 번호 타일들
     m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_NUMBER, L"SV/Numbers/Select/");
     // 선택 태그 타일들

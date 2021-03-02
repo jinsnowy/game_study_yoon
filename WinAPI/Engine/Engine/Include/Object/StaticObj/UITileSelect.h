@@ -18,6 +18,7 @@ private:
 	{
 		SEL_GROUND = 0,
 		SEL_FLOOR,
+		SEL_INHOUSE,
 		SEL_NUMBER,
 		SEL_TAG,
 		SEL_END
