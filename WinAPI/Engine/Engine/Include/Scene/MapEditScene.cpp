@@ -250,6 +250,7 @@ void MapEditScene::SaveDefaultStages(const char* fileName)
 void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& strlayerTag, int numX, int numY)
 {
     SAFE_RELEASE(m_vecStage[eStageTag]);
+    Object::EraseObject(m_vecStage[eStageTag]);
     Layer* pStageLayer = FindLayer(strlayerTag);
     m_vecStage[eStageTag] = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
     m_vecStage[eStageTag]->CreateTile(numX, numY, TILESIZE, TILESIZE, "", L"");
@@ -273,6 +274,7 @@ void MapEditScene::LoadDefaultStages(const char* fileName)
 void MapEditScene::LoadStage(STAGE_TAG eStageTag, const string& strlayerTag, FILE* pFile)
 {
     SAFE_RELEASE(m_vecStage[eStageTag]);
+    Object::EraseObject(m_vecStage[eStageTag]);
     Layer* pStageLayer = FindLayer(strlayerTag);
     m_vecStage[eStageTag] = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
     m_vecStage[eStageTag]->LoadFromFile(pFile);
