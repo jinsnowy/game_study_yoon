@@ -141,6 +141,7 @@ public:
 	Size GetSize() const { return m_tSize; }
 	Size GetImageOffset() const { return m_tImageOffset; }
 
+	void SetAsTextureSize();
 	void SetPos(float x, float y) { m_tPos.x = x; m_tPos.y = y; }
 	void SetSize(float x, float y) { m_tSize.x = x; m_tSize.y = y; }
 	void SetPivot(float x, float y) { m_tPivot.x = x; m_tPivot.y = y; }

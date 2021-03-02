@@ -215,6 +215,14 @@ Collider* Object::GetCollider(const string& strTag)
 }
 // --------------------------
 
+void Object::SetAsTextureSize()
+{
+    assert(m_pTexture);
+
+    m_tSize.x = float(m_pTexture->GetWidth());
+    m_tSize.y = float(m_pTexture->GetHeight());
+}
+
 // ----------------------- Texture
 void Object::SetTexture(Texture* pTexture)
 {

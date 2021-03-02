@@ -6,6 +6,7 @@ class MapEditScene :
 {
 private:
     friend class SceneManager;
+    const vector<wstring> m_btnFileName = { L"GroundSelTag", L"ObjectSelTag", L"OnAirSelTag", L"StaticTag"};
 private:
     MapEditScene();
     ~MapEditScene();
@@ -19,6 +20,7 @@ private:
     // vector<class Texture*> m_vecTileTex;
     Texture* m_pSelTexture = nullptr;
     class UITileSelect* m_pSelUI = nullptr;
+    class UIButton* m_pSelButton = nullptr;
     STAGE_TAG m_eCurStage = ST_GROUND;
 
     int             m_iEditTileTex;
@@ -27,6 +29,7 @@ private:
 private:
     static INT_PTR CALLBACK DlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     void BackButtonCallback(float dt);
+    void StageButtonCallback(class UIButton* btn, int type, float dt);
 public:
     virtual void Draw(HDC hDC, float dt);
 private:

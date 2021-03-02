@@ -228,6 +228,9 @@
     <ClInclude Include="Object\StaticObj\UITileSelect.h">
       <Filter>Object\04. UI</Filter>
     </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\Window.cpp">
@@ -352,6 +355,9 @@
     </ClCompile>
     <ClCompile Include="Object\StaticObj\UITileSelect.cpp">
       <Filter>Object\04. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>Types</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

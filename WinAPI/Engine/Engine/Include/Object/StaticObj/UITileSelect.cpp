@@ -77,7 +77,6 @@ Texture* UITileSelect::SelectTile(const Pos& screenPos)
         }
         px += (m_iSelButtonSize + m_iMarginItem);
     }
-
     return nullptr;
 }
 
@@ -114,6 +113,7 @@ bool UITileSelect::Init()
 {
     return true;
 }
+
 void UITileSelect::SetMargin(int w, int h)
 {
      m_iMarginWidth = w; m_iMarginHeight = h;
@@ -198,7 +198,5 @@ void UITileSelect::Draw(HDC hdc, float dt)
             ->TileDraw(hdc, px, py, m_iSelTagWidth, m_iSelTagHeight);
         py += m_iSelTagHeight;
     }
-
-    // Stage ¹øÈ£
 
 }

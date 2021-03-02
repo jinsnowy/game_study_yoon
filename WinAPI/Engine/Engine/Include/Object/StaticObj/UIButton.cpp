@@ -90,7 +90,8 @@ void UIButton::MouseOn(Collider* pSrc, Collider* pDst, float dt)
 	if (pDst->GetTag() == "Mouse")
 	{
 		m_eState = BS_MOUSEON;
-		SetImageOffset(m_tMouseOnImageOffset);
+		if(m_bUseMouseOnOutImage)
+			SetImageOffset(m_tMouseOnImageOffset);
 		if (m_bUseSound)
 		{
 			SOUND_MANAGER->PlaySound(m_strSoundTag);
@@ -103,6 +104,7 @@ void UIButton::MouseOut(Collider* pSrc, Collider* pDst, float dt)
 	if (pDst->GetTag() == "Mouse")
 	{
 		m_eState = BS_NONE;
-		SetImageOffset(m_tMouseOutImageOffset);
+		if (m_bUseMouseOnOutImage)
+			SetImageOffset(m_tMouseOutImageOffset);
 	}
 }

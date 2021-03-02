@@ -75,12 +75,14 @@
 #include "Types/Types.h"
 #include "Resource.h"
 #include "Macro.h"
+#include "utils.h"
 
 // 동적 링크 라이브러리
 #pragma comment(lib, "msimg32")
 #pragma comment(lib, "fmod_vc")
 
 using namespace std;
+using namespace util;
 namespace fs = std::filesystem;
 typedef Vec2F Size;
 typedef Vec2F Pos;

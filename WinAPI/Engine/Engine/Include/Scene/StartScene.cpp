@@ -59,11 +59,13 @@ bool StartScene::Init()
     pStartBtn->SetSize(btnWidth, btnHeight);
     pStartBtn->SetTexture("NewButton", L"StartScene/SelectScene.bmp");
     pStartBtn->SetImageOffset(0.f, 0.f);
+    pStartBtn->SetMouseOnOutImage(true);
     pStartBtn->SetMouseOutImageOffset(pStartBtn->GetImageOffset());
     pStartBtn->SetMouseOnImageOffset(pStartBtn->GetImageOffset().x,
                                     btnHeight + pStartBtn->GetImageOffset().y);
     pStartBtn->SetColorKey(255, 255, 255);
     pStartBtn->SetSoundTag("StartScene_On");
+
 
     ColliderRect* pRC = static_cast<ColliderRect*>(pStartBtn->GetCollider("ButtonBody"));
     Size tSize = pStartBtn->GetSize();
@@ -78,6 +80,7 @@ bool StartScene::Init()
     pEditBtn->SetSize(btnWidth, btnHeight);
     pEditBtn->SetTexture("EditButton", L"StartScene/SelectScene.bmp");
     pEditBtn->SetImageOffset(btnWidth, 0.f);
+    pEditBtn->SetMouseOnOutImage(true);
     pEditBtn->SetMouseOutImageOffset(pEditBtn->GetImageOffset());
     pEditBtn->SetMouseOnImageOffset(pEditBtn->GetImageOffset().x,
                                     btnHeight + pEditBtn->GetImageOffset().y);
@@ -97,6 +100,7 @@ bool StartScene::Init()
     pOpBtn->SetSize(btnWidth, btnHeight);
     pOpBtn->SetTexture("ExitButton", L"StartScene/SelectScene.bmp");
     pOpBtn->SetImageOffset(2 * btnWidth, 0.f);
+    pOpBtn->SetMouseOnOutImage(true);
     pOpBtn->SetMouseOutImageOffset(pOpBtn->GetImageOffset());
     pOpBtn->SetMouseOnImageOffset(pOpBtn->GetImageOffset().x,
         btnHeight + pOpBtn->GetImageOffset().y);
@@ -110,6 +114,7 @@ bool StartScene::Init()
     pEndBtn->SetSize(btnWidth, btnHeight);
     pEndBtn->SetTexture("ExitButton", L"StartScene/SelectScene.bmp");
     pEndBtn->SetImageOffset(3 * btnWidth, 0.f);
+    pEndBtn->SetMouseOnOutImage(true);
     pEndBtn->SetMouseOutImageOffset(pEndBtn->GetImageOffset());
     pEndBtn->SetMouseOnImageOffset(pEndBtn->GetImageOffset().x,
                                     btnHeight + pEndBtn->GetImageOffset().y);

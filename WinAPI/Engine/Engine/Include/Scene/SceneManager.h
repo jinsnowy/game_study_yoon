@@ -6,11 +6,14 @@ class SceneManager
 {
 	DECLARE_SINGLE(SceneManager)
 private:
+	STAGE_SHOW m_eCurShowMode = SHOW_ALL;
 	Scene* m_pScene;
 	Scene* m_pNextScene;
 	SCENE_CHANGE ChangeScene();
-
 public:
+	STAGE_SHOW GetShowMode() const { return m_eCurShowMode; };
+	void SetShowmode(STAGE_SHOW eState) { m_eCurShowMode = eState; }
+	void ChangeShowMode();
 	class Scene* GetScene() const { return m_pScene; }
 public:
 	bool Init();
@@ -25,6 +28,7 @@ public:
 		T* pScene = new T;
 
 		pScene->SetSceneType(sc);
+		m_eCurShowMode = SHOW_ALL;
 
 		if (!pScene->Init())
 		{

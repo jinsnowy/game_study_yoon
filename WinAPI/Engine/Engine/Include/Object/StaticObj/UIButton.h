@@ -20,6 +20,7 @@ private:
 	virtual ~UIButton();
 
 private:
+	bool m_bUseMouseOnOutImage = false;
 	bool m_bUseSound;
 	string m_strSoundTag;
 	Pos m_tMouseOnImageOffset;
@@ -28,6 +29,7 @@ private:
 	bool	m_bEnableCallback;
 	BUTTON_STATE m_eState;
 public:
+	void SetMouseOnOutImage(bool bSet) { m_bUseMouseOnOutImage = bSet; }
 	void SetMouseOnImageOffset(float x, float y) { m_tMouseOnImageOffset = Pos(x, y); }
 	void SetMouseOnImageOffset(const Pos& offset) { m_tMouseOnImageOffset = offset; }
 	void SetMouseOutImageOffset(float x, float y) { m_tMouseOutImageOffset = Pos(x, y); }
@@ -36,6 +38,12 @@ public:
 	void SetCallback(T* pObj, void(T::* pFunc)(float))
 	{
 		m_BtnCallback = bind(pFunc, pObj, placeholders::_1);
+		m_bEnableCallback = true;
+	}
+	template<typename T>
+	void SetCallbackByType(T* pObj, UIButton* btn, int type, void(T::* pFunc)(UIButton*, int, float))
+	{
+		m_BtnCallback = bind(pFunc, pObj, btn, type, placeholders::_1);
 		m_bEnableCallback = true;
 	}
 	void SetCallback(void (*pFunc)(float))

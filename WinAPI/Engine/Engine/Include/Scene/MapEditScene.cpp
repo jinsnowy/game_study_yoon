@@ -16,6 +16,7 @@
 #include "../Object/StaticObj/UIPanel.h"
 #include "../Object/StaticObj/UITileSelect.h"
 
+
 wchar_t MapEditScene::m_strText[MAX_PATH] = {};
 
 MapEditScene::MapEditScene()
@@ -32,6 +33,7 @@ MapEditScene::~MapEditScene()
     Safe_Release_VecList(m_vecStage);
     SAFE_RELEASE(m_pSelUI);
     SAFE_RELEASE(m_pSelTexture);
+    SAFE_RELEASE(m_pSelButton);
 }
 
 bool MapEditScene::Init()
@@ -242,9 +244,11 @@ void MapEditScene::Draw(HDC hDC, float dt)
 
     if (m_pSelTexture)
     {
+        Size tImgSize = m_pSelTexture->GetSize();
         m_pSelTexture->TileDraw(hDC,
-                                MOUSECLIENTPOS.x - TILESIZE / 2,
-                                MOUSECLIENTPOS.y - TILESIZE / 2);
+                                MOUSECLIENTPOS.x,
+                                MOUSECLIENTPOS.y,
+                                tImgSize.x, tImgSize.y);
     }
 }
 
@@ -261,6 +265,7 @@ void MapEditScene::SetUpDefaultStages(int numX, int numY)
     SetUpBaseStage(ST_GROUND, "Ground", numX, numY);
     SetUpBaseStage(ST_OBJECT, "Object", numX, numY);
     SetUpBaseStage(ST_ONAIR, "OnAir", numX, numY);
+    SetUpBaseStage(ST_ONAIR, "Static", numX, numY);
 }
 
 void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& strlayerTag, int numX, int numY)
@@ -279,6 +284,7 @@ void MapEditScene::LoadDefaultStages(const char* fileName)
     LoadStage(ST_GROUND, "Ground", fileName);
     LoadStage(ST_OBJECT, "Object", fileName);
     LoadStage(ST_ONAIR, "OnAir", fileName);
+    LoadStage(ST_ONAIR, "Static", fileName);
 }
 
 void MapEditScene::LoadStage(STAGE_TAG eStageTag, const string& strlayerTag, const char* fileName)
@@ -313,6 +319,33 @@ void MapEditScene::SetUpBackButton()
     SAFE_RELEASE(pRC);
     pBackBtn->SetCallback(this, &MapEditScene::BackButtonCallback);
     SAFE_RELEASE(pBackBtn);
+
+    // Stage ¹øÈ£
+    for (int i = 0; i < m_btnFileName.size(); ++i)
+    {
+        wstringstream path;
+        path << L"SV/Numbers/Tag/" << m_btnFileName[i] << L".bmp";
+        string strKey(GetChar(m_btnFileName[i].c_str()));
+        UIButton* pBtn = Object::CreateObject<UIButton>(strKey, pLayer);
+
+        pBtn->SetTexture(strKey, path.str().c_str());
+        pBtn->SetSize(120, 60);
+        pBtn->SetColorKey(255, 255, 255);
+        if (i == 0)
+        {
+            m_pSelButton = pBtn;
+            m_pSelButton->AddRef();
+            pBtn->SetImageOffset(120, 0);
+        }
+        Size tSize = pBtn->GetSize();
+        pBtn->SetPos(250.f + i * tSize.x, GETRESOLUTION.y - tSize.y - 30);
+        ColliderRect* pRC = static_cast<ColliderRect*>(pBtn->GetCollider("ButtonBody"));
+        
+        pRC->SetRect(0.f, 0.f, tSize.x, tSize.y);
+        SAFE_RELEASE(pRC);
+        pBtn->SetCallbackByType(this, pBtn, i, &MapEditScene::StageButtonCallback);
+        SAFE_RELEASE(pBtn);
+    }
 }
 
 
@@ -343,4 +376,43 @@ void MapEditScene::BackButtonCallback(float dt)
 {
     SOUND_MANAGER->PlaySound("StartScene_Click");
     SCENE_MANAGER->CreateScene<StartScene>(SC_NEXT);
+}
+
+void MapEditScene::StageButtonCallback(UIButton* btn, int type, float dt)
+{
+    STAGE_TAG eTag = static_cast<STAGE_TAG>(type);
+    if (m_eCurStage == eTag) return;
+    m_eCurStage = eTag;
+
+    switch (eTag)
+    {
+    case ST_GROUND:
+        SCENE_MANAGER->SetShowmode(SHOW_GROUND);
+        break;
+    case ST_OBJECT:
+        SCENE_MANAGER->SetShowmode(SHOW_OBJECT);
+        break;
+    case ST_ONAIR:
+        SCENE_MANAGER->SetShowmode(SHOW_ONAIR);
+        break;
+    case ST_STATIC:
+        SCENE_MANAGER->SetShowmode(SHOW_STATIC);
+        break;
+    }
+
+    if (m_pSelButton != btn)
+    {
+        if (m_pSelButton)
+        {
+            m_pSelButton->SetImageOffset(0, 0);
+        }
+        SAFE_RELEASE(m_pSelButton);
+
+        if (btn)
+        {
+            m_pSelButton = btn;
+            m_pSelButton->SetImageOffset(120, 0);
+            btn->AddRef();
+        }
+    }
 }

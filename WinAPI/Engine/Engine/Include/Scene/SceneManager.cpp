@@ -26,6 +26,7 @@ bool SceneManager::Init()
 void SceneManager::Input(float dt)
 {
 	m_pScene->Input(dt);
+	ChangeShowMode();
 }
 
 SCENE_CHANGE SceneManager::Update(float dt)
@@ -66,4 +67,24 @@ SCENE_CHANGE SceneManager::ChangeScene()
 		return SC_CHANGE;
 	}
 	return SC_NONE;
+}
+
+void SceneManager::ChangeShowMode()
+{
+	if (GetAsyncKeyState(VK_F1) & 0x8000)
+	{
+		m_eCurShowMode = SHOW_ALL;
+	}
+	if (GetAsyncKeyState(VK_F2) & 0x8000)
+	{
+		m_eCurShowMode = SHOW_GROUND;
+	}
+	if (GetAsyncKeyState(VK_F3) & 0x8000)
+	{
+		m_eCurShowMode = SHOW_OBJECT;
+	}
+	if (GetAsyncKeyState(VK_F4) & 0x8000)
+	{
+		m_eCurShowMode = SHOW_ONAIR;
+	}
 }

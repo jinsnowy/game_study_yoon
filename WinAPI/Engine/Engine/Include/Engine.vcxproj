@@ -208,6 +208,7 @@
     <ClInclude Include="Types\Rect.h" />
     <ClInclude Include="Types\Types.h" />
     <ClInclude Include="Types\Vec2.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation\Animation.cpp" />
@@ -250,6 +251,7 @@
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\StartScene.cpp" />
     <ClCompile Include="Sound\SoundManager.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>

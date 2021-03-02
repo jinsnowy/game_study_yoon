@@ -36,7 +36,7 @@ protected:
 	virtual ~Scene() = 0;
 	list<Layer*> m_LayerList;
 	SCENE_CREATE m_eSceneType;
-	STAGE_SHOW m_eCurShowMode = SHOW_ALL;
+
 public:
 	void DrawBackGround(HDC hdc, COLORREF color);
 public:

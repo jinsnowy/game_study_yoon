@@ -5,6 +5,8 @@ class UITileSelect :
     public UI
 {
 private:
+	friend class Object;
+	friend class Scene;
 	int itemNumX = 0;
 	int itemNumY = 0;
 	int validWidth;
@@ -24,13 +26,14 @@ private:
 	static constexpr int m_iSelButtonSize = 40;
 	static constexpr int m_iSelTagWidth = 30;
 	static constexpr int m_iSelTagHeight = 50;
+	static constexpr int m_iStageTagWidth = 120;
+	static constexpr int m_iStageTagHeight = 80;
 	int m_iCurPageNum = 0;
 	UISEL_TYPE m_eCurSel = UISEL_TYPE::SEL_GROUND;
 	int m_iMarginWidth = 10;
 	int m_iMarginHeight = 10;
 	int m_iMarginItem = 10;
-	friend class Object;
-	friend class Scene;
+	// class Scene* m_pScene = nullptr;
 	vector<vector<Texture*>> m_BaseTiles;
 public:
 	Texture* SelectTile(const Pos& screenPos);

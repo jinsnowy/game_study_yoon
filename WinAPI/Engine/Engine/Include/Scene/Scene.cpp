@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "Layer.h"
 #include "../Object/Object.h"
+#include "../Scene/SceneManager.h"
 #include "../Core/Camera.h"
 
 unordered_map<string, Object*> Scene::m_mapProtoType[SC_END];
@@ -9,6 +10,7 @@ Scene::Scene()
 {
 	Layer* pLayer = CreateLayer("UI", INT_MAX);
 	pLayer = CreateLayer("HUD", INT_MAX - 1);
+	pLayer = CreateLayer("Static", 3);
 	pLayer = CreateLayer("OnAir", 2);
 	pLayer = CreateLayer("Object", 1);
 	pLayer = CreateLayer("Ground", 0);
@@ -79,25 +81,6 @@ bool Scene::LayerSort(const Layer* pL1, const Layer* pL2)
 	return pL1->GetZOrder() < pL2->GetZOrder();
 }
 
-void Scene::ChangeShowMode()
-{
-	if (GetAsyncKeyState(VK_F1) & 0x8000)
-	{
-		m_eCurShowMode = SHOW_ALL;
-	}
-	if (GetAsyncKeyState(VK_F2) & 0x8000)
-	{
-		m_eCurShowMode = SHOW_GROUND;
-	}
-	if (GetAsyncKeyState(VK_F3) & 0x8000)
-	{
-		m_eCurShowMode = SHOW_OBJECT;
-	}
-	if (GetAsyncKeyState(VK_F4) & 0x8000)
-	{
-		m_eCurShowMode = SHOW_ONAIR;
-	}
-}
 
 bool Scene::Init()
 {
@@ -106,7 +89,6 @@ bool Scene::Init()
 
 void Scene::Input(float dt)
 {
-	ChangeShowMode();
 
 	auto iterEnd = m_LayerList.end();
 	for (auto it = m_LayerList.begin(); it != iterEnd;)
@@ -202,13 +184,14 @@ void Scene::Draw(HDC hdc, float dt)
 {
 	DrawBackGround(hdc, RGB(0, 0, 0));
 
+	STAGE_SHOW eShowMode = SCENE_MANAGER->GetShowMode();
 	auto iterEnd = m_LayerList.end();
 	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{
 		const string& layerTag = (*it)->GetTag();
 		if (layerTag == "Ground")
 		{
-			if (m_eCurShowMode != SHOW_ALL && m_eCurShowMode != SHOW_GROUND)
+			if (eShowMode != SHOW_ALL && eShowMode != SHOW_GROUND)
 			{
 				++it;
 				continue;
@@ -216,7 +199,7 @@ void Scene::Draw(HDC hdc, float dt)
 		}
 		else if (layerTag == "Object")
 		{
-			if (m_eCurShowMode != SHOW_ALL && m_eCurShowMode != SHOW_OBJECT)
+			if (eShowMode != SHOW_ALL && eShowMode != SHOW_OBJECT)
 			{
 				++it;
 				continue;
@@ -224,7 +207,15 @@ void Scene::Draw(HDC hdc, float dt)
 		}
 		else if (layerTag == "OnAir")
 		{
-			if (m_eCurShowMode != SHOW_ALL && m_eCurShowMode != SHOW_ONAIR)
+			if (eShowMode != SHOW_ALL && eShowMode != SHOW_ONAIR)
+			{
+				++it;
+				continue;
+			}
+		}
+		else if (layerTag == "Static")
+		{
+			if (eShowMode != SHOW_ALL && eShowMode != SHOW_STATIC)
 			{
 				++it;
 				continue;
