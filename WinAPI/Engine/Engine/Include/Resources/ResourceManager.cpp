@@ -36,6 +36,7 @@ Texture* ResourceManager::LoadTexture(const string& strKey,
 									  const wchar_t* pFileName,
 									  const string& strPathKey)
 {
+	assert(strKey.size());
 	// 먼저 그전에 등록된 텍스쳐인지 확인한다.
 	Texture* pTexture = FindTexture(strKey);
 	if (pTexture)

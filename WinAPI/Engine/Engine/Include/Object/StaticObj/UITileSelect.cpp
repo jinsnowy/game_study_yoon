@@ -6,10 +6,8 @@
 
 UITileSelect::UITileSelect()
 {
-    m_BaseTiles.resize(size_t(UISEL_TYPE::SEL_END));
+    m_BaseTiles.resize(size_t(SEL_END), vector<Texture*>());
 }
-
-
 
 UITileSelect::~UITileSelect()
 {
@@ -17,6 +15,7 @@ UITileSelect::~UITileSelect()
     {
         Safe_Release_VecList(tiles);
     }
+    m_BaseTiles.clear();
 }
 
 Texture* UITileSelect::SelectTile(const Pos& screenPos)
@@ -35,8 +34,9 @@ Texture* UITileSelect::SelectTile(const Pos& screenPos)
             if (screenPos.x >= px && screenPos.x < px + TILESIZE
                 && screenPos.y >= py && screenPos.y < py + TILESIZE)
             {
-                m_BaseTiles[int(m_eCurSel)][itemInd]->AddRef();
-                return m_BaseTiles[int(m_eCurSel)][itemInd];
+
+                m_BaseTiles[m_eCurSel][itemInd]->AddRef();
+                return m_BaseTiles[m_eCurSel][itemInd];
             }
             ++itemInd;
             px += (TILESIZE + m_iMarginItem);
@@ -52,26 +52,11 @@ bool UITileSelect::SelectUITag(const Pos& screenPos)
     Pos tPos = GetPos();
     Pos tSize = GetSize();
 
-    int st_x = tPos.x - m_iSelTagWidth;
-    int st_y = tPos.y;
-    int px = st_x, py = st_y;
-
-    int tagNum = int(UISEL_TYPE::SEL_END) - 2;
-    for (int i = 0; i < tagNum; i++)
-    {
-        if (screenPos.x >= px && screenPos.x < px + m_iSelTagWidth
-            && screenPos.y >= py && screenPos.y < py + m_iSelTagHeight)
-        {
-            m_eCurSel = static_cast<UISEL_TYPE> (i);
-            return true;
-        }
-        py += m_iSelTagHeight;
-    }
 
     // 페이지 클릭
-    int pageNum = m_BaseTiles[int(m_eCurSel)].size() / (itemNumY * itemNumX) + 1;
+    int pageNum = m_BaseTiles[m_eCurSel].size() / (itemNumY * itemNumX) + 1;
 
-    px = tPos.x; py = tPos.y;
+    int px = tPos.x, py = tPos.y;
     for (int i = 0; i < pageNum; i++)
     {
         if (screenPos.x >= px && screenPos.x < px + m_iSelButtonSize
@@ -82,6 +67,22 @@ bool UITileSelect::SelectUITag(const Pos& screenPos)
         }
         px += (m_iSelButtonSize + m_iMarginItem);
     }
+    // 태그번호
+
+    //int st_x = tPos.x - m_iSelTagWidth;
+    //int st_y = tPos.y;
+    //int px = st_x, py = st_y;
+    //int tagNum = int(UISEL_TYPE::SEL_END) - 2;
+//for (int i = 0; i < tagNum; i++)
+//{
+//    if (screenPos.x >= px && screenPos.x < px + m_iSelTagWidth
+//        && screenPos.y >= py && screenPos.y < py + m_iSelTagHeight)
+//    {
+//        m_eCurSel = static_cast<UISEL_TYPE> (i);
+//        return true;
+//    }
+//    py += m_iSelTagHeight;
+//}
 
     if (screenPos.x >= px && screenPos.x < px + tSize.x
         && screenPos.y >= py && screenPos.y < py + tSize.y)
@@ -100,7 +101,7 @@ void UITileSelect::LoadTiles(UISEL_TYPE eSel, const wchar_t* pBaseFolderName, co
     strPath += pBaseFolderName;
     assert(strPath.back() == L'\\' || strPath.back() == L'/');
 
-    const auto extract_key = [](const wchar_t* str, int size)
+    const auto extract_key = [](const char* str, int size)
     {
         int ed = size - 1;
         while (str[ed] != L'.') --ed;
@@ -108,12 +109,13 @@ void UITileSelect::LoadTiles(UISEL_TYPE eSel, const wchar_t* pBaseFolderName, co
         while (str[st] != L'\\' && str[st] != L'/') st--;
         return string(str + st+1, str + ed);
     };
-    
+
+    Texture* pTex;
     for (const auto& entry : fs::directory_iterator(strPath))
     {
         const wchar_t * path = entry.path().c_str();
-        string strkey = extract_key(path, lstrlen(path));
-        Texture * pTex = RESOURCE_MANAGER->LoadTexture(strkey, path, "");
+        string strkey = extract_key(GetChar(path), lstrlen(path));
+        pTex = RESOURCE_MANAGER->LoadTexture(strkey, path, "");
         pTex->SetColorKey(255, 255, 255);
         m_BaseTiles[int(eSel)].push_back(pTex);
     }
@@ -135,6 +137,7 @@ void UITileSelect::SetMargin(int w, int h)
      totalSizeX = itemNumX * TILESIZE + (itemNumX - 1) * m_iMarginItem;
      totalSizeY = itemNumY * TILESIZE + (itemNumY - 1) * m_iMarginItem;
 }
+
 void UITileSelect::Input(float dt)
 {
     UI::Input(dt);
@@ -194,18 +197,18 @@ void UITileSelect::Draw(HDC hdc, float dt)
     px = tPos.x; py = tPos.y;
     for (int i = 0; i < pageNum; i++)
     {
-        m_BaseTiles[int(UISEL_TYPE::SEL_NUMBER)][i]->TileDraw(hdc, px, py, m_iSelButtonSize);
+        m_BaseTiles[SEL_NUMBER][i]->TileDraw(hdc, px, py, m_iSelButtonSize);
         px += (m_iSelButtonSize + m_iMarginItem);
     }
 
     // 태그 번호
-    px = tPos.x - m_iSelTagWidth, py = tPos.y;
-    int tagNum = int(UISEL_TYPE::SEL_END) - 2;
-    for (int i = 0; i < tagNum; i++)
-    {
-        m_BaseTiles[int(UISEL_TYPE::SEL_TAG)][0]
-            ->TileDraw(hdc, px, py, m_iSelTagWidth, m_iSelTagHeight);
-        py += m_iSelTagHeight;
-    }
+    //px = tPos.x - m_iSelTagWidth, py = tPos.y;
+    //int tagNum = int(UISEL_TYPE::SEL_END) - 2;
+    //for (int i = 0; i < tagNum; i++)
+    //{
+    //    m_BaseTiles[int(SEL_TAG)][0]
+    //        ->TileDraw(hdc, px, py, m_iSelTagWidth, m_iSelTagHeight);
+    //    py += m_iSelTagHeight;
+    //}
 
 }

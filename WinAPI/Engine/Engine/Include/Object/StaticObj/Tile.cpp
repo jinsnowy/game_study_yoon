@@ -7,7 +7,6 @@
 Tile::Tile():
 	m_eOption(TO_NONE)
 {
-	m_pOptionTex = RESOURCE_MANAGER->FindTexture("TileNone");
 }
 
 Tile::Tile(const Tile& tile)
@@ -39,11 +38,11 @@ void Tile::SetTileOption(TILE_OPTION eOption)
 	SAFE_RELEASE(m_pOptionTex);
 	switch (eOption)
 	{
-	case TO_NONE:
-		m_pOptionTex = RESOURCE_MANAGER->FindTexture("TileNone");
-		break;
+	//case TO_NONE:
+	//	m_pOptionTex = RESOURCE_MANAGER->FindTexture("1.NoOption");
+	//	break;
 	case TO_NOMOVE:
-		m_pOptionTex = RESOURCE_MANAGER->FindTexture("TileNoMove");
+		m_pOptionTex = RESOURCE_MANAGER->FindTexture("2.NoMove");
 		break;
 	}
 }
@@ -76,16 +75,15 @@ void Tile::Collision(float dt)
 
 void Tile::Draw(HDC hDC, float dt)
 {
+    Pos tPos = m_tPos - m_tSize * m_tPivot;
+    tPos -= CAMERA->GetTopLeft();
+    // 카메라 컬링
+    RESOLUTION tClientRS = CAMERA->GetClientRS();
+    if (tPos.x + m_tSize.x < 0 || tPos.x > tClientRS.x || tPos.y + m_tSize.y < 0 || tPos.y > tClientRS.y)
+        return;
+
     if (m_pTexture)
     {
-        Size tSize = m_pTexture->GetSize();
-        Pos tPos = m_tPos - tSize * m_tPivot;
-        tPos -= CAMERA->GetTopLeft();
-        tPos.y += TILESIZE;
-        // 카메라 컬링
-        RESOLUTION tClientRS = CAMERA->GetClientRS();
-        if (tPos.x + tSize.x < 0 || tPos.x > tClientRS.x || tPos.y + tSize.y < 0 || tPos.y > tClientRS.y)
-            return;
 
         Pos tImagePos = m_tImageOffset;
         if (m_pAnimation && m_bEnableAnimation)
@@ -104,6 +102,7 @@ void Tile::Draw(HDC hDC, float dt)
             }
         }
 
+        Size tSize = GetImageSize();
         if (m_pTexture->GetColorKeyEnable())
         {
             TransparentBlt(hDC, int(tPos.x), int(tPos.y), int(tSize.x), int(tSize.y),
@@ -140,27 +139,20 @@ void Tile::Draw(HDC hDC, float dt)
         else ++iter;
     }
 
-    Pos tPos = m_tPos - m_tSize * m_tPivot;
-    tPos -= CAMERA->GetTopLeft();
-    // 카메라 컬링
-    RESOLUTION tClientRS = CAMERA->GetClientRS();
-    if (tPos.x + m_tSize.x < 0 || tPos.x > tClientRS.x || tPos.y + m_tSize.y < 0 || tPos.y > tClientRS.y)
-        return;
-
     if (m_pOptionTex)
     {
         Pos tImagePos = m_tImageOffset;
 
         if (m_pOptionTex->GetColorKeyEnable())
         {
-            TransparentBlt(hDC, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
+            TransparentBlt(hDC, int(tPos.x), int(tPos.y), TILESIZE, TILESIZE,
 				m_pOptionTex->GetDC(), int(tImagePos.x), int(tImagePos.y),
-                int(m_tSize.x), int(m_tSize.y),
+                TILESIZE, TILESIZE,
 				m_pOptionTex->GetColorKey());
         }
         else
         {
-            BitBlt(hDC, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
+            BitBlt(hDC, int(tPos.x), int(tPos.y), TILESIZE, TILESIZE,
 				m_pOptionTex->GetDC(), int(tImagePos.x), int(tImagePos.y), SRCCOPY);
         }
     }

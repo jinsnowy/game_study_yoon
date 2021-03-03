@@ -8,7 +8,7 @@ private:
     friend class Stage;
 private:
 	TILE_OPTION		m_eOption;
-	class Texture*	m_pOptionTex;
+	class Texture*	m_pOptionTex = nullptr;
 public:
 	void ReleaseTexture();
 	void SetTileOption(TILE_OPTION eOption);

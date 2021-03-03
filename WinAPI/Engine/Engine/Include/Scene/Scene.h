@@ -8,9 +8,10 @@ class Scene
 	friend class Object;
 	friend class SceneManager;
 private:
+	static unordered_map<string, class Object*> m_mapProtoType[SC_END];
+private:
 	void DrawBackGround(HDC hdc, COLORREF color);
 	void SetSceneType(SCENE_CREATE eType) { m_eSceneType = eType; }
-	static unordered_map<string, class Object*> m_mapProtoType[SC_END];
 	static Object* FindPrototype(const string& strkey, SCENE_CREATE sc);
 	static void ChangeProtoType();
 public:
@@ -43,7 +44,6 @@ public:
 	Layer* FindLayer(const string& tag);
 	Layer* CreateLayer(const string& tag, int zOrder = 0);
 	static bool LayerSort(const Layer* pL1, const Layer* pL2);
-	void ChangeShowMode();
 	virtual bool Init();
 	virtual void Input(float dt);
 	virtual void Update(float dt);

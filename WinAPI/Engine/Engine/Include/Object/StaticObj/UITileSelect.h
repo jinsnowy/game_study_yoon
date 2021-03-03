@@ -14,33 +14,24 @@ private:
 	int totalSizeX;
 	int totalSizeY;
 	friend class MapEditScene;
-	enum class UISEL_TYPE
-	{
-		SEL_GROUND = 0,
-		SEL_FLOOR,
-		SEL_INHOUSE,
-		SEL_NUMBER,
-		SEL_TAG,
-		SEL_END
-	};
 private:
 	static constexpr int m_iSelButtonSize = 40;
-	static constexpr int m_iSelTagWidth = 30;
-	static constexpr int m_iSelTagHeight = 50;
 	static constexpr int m_iStageTagWidth = 120;
 	static constexpr int m_iStageTagHeight = 80;
 	int m_iCurPageNum = 0;
-	UISEL_TYPE m_eCurSel = UISEL_TYPE::SEL_GROUND;
+	UISEL_TYPE m_eCurSel = SEL_GROUND;
 	int m_iMarginWidth = 10;
 	int m_iMarginHeight = 10;
 	int m_iMarginItem = 10;
-	// class Scene* m_pScene = nullptr;
 	vector<vector<Texture*>> m_BaseTiles;
 public:
+	void SetCurSelect(UISEL_TYPE eSel) 
+	{
+		m_eCurSel = eSel; m_iCurPageNum= 0;
+	}
 	Texture* SelectTile(const Pos& screenPos);
 	bool SelectUITag(const Pos& screenPos);
 	void SetMargin(int w, int h);
-	void LoadNumbers(const wchar_t* pBaseFolderName = L"SV/Numbers/Select/", const string& strPathKey = TEXTURE_PATH);
 	void LoadTiles(UISEL_TYPE eSel, const wchar_t* pBaseFolderName, const string& strPathKey = TEXTURE_PATH);
 protected:
 	UITileSelect();

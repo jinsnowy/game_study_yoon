@@ -11,13 +11,11 @@
 #include "../Sound/SoundManager.h"
 #include "../Object/Mouse.h"
 
-
 App::App()
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(2925);
 #ifdef _DEBUG
-	// 콘솔창을 생성시켜준다
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(1922);
 	AllocConsole();
 #endif
 }
@@ -30,13 +28,14 @@ App::~App()
 
 	SCENE_MANAGER->Release();
 	CAMERA->Release();
-	COLLISION_MANAGER->Release();
 	INPUT->Release();
+	COLLISION_MANAGER->Release();
 	RESOURCE_MANAGER->Release();
 	SOUND_MANAGER->Release();
 	PATH_MANAGER->Release();
 	TIMER->Release();
 	WINDOW->Release();
+
 }
 
 int App::Go()

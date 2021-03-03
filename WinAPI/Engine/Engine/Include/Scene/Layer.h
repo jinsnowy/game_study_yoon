@@ -18,6 +18,7 @@ private:
 public:
 	~Layer();
 
+	void EraseObject(Object* pObj);
 	void AddObject(Object* pObj);
 	// Get/Set method
 	bool GetEnable() const { return m_bEnable; }

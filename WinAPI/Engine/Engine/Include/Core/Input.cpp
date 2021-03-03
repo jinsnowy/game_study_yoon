@@ -136,6 +136,15 @@ Pos Input::GetMouseMove() const
 	return m_pMouse->GetMove();
 }
 
+void Input::DeleteKey(const string& strKey)
+{
+	if (FindKey(strKey))
+	{
+		delete m_mapKey[strKey];
+		m_mapKey.erase(strKey);
+	}
+}
+
 Input::KeyInfo* Input::FindKey(const string& strKey) const
 {
 	const auto iter = m_mapKey.find(strKey);

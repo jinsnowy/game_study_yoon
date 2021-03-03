@@ -17,19 +17,26 @@
 #include "../Object/StaticObj/UITileSelect.h"
 
 
+
 wchar_t MapEditScene::m_strText[MAX_PATH] = {};
 
 MapEditScene::MapEditScene()
 {
+    m_vecStage.resize(ST_END, nullptr);
     m_eTem = TEM_TEXTURE;
-    m_iEditTileTex = 0;
     m_eEditOption = TO_NONE;
-    m_vecStage.resize(ST_END);
 }
 
 MapEditScene::~MapEditScene()
 {
-    Safe_Release_VecList(m_vecStage);
+    INPUT->DeleteKey("ChangeOption");
+    INPUT->DeleteKey("Save");
+    INPUT->DeleteKey("Load");
+
+    StageClear(ST_GROUND, "Ground");
+    StageClear(ST_OBJECT, "Object");
+    StageClear(ST_STATIC, "Static");
+    
     SAFE_RELEASE(m_pSelUI);
     SAFE_RELEASE(m_pSelTexture);
     SAFE_RELEASE(m_pSelButton);
@@ -42,14 +49,6 @@ bool MapEditScene::Init()
         return false;
     }
 
-    Texture* pNoneTex = RESOURCE_MANAGER->LoadTexture("TileNoMove", L"NoMove.bmp");
-    pNoneTex->SetColorKey(255, 0, 255);
-    SAFE_RELEASE(pNoneTex);
-
-    Texture* pNoMoveTex = RESOURCE_MANAGER->LoadTexture("TileNone", L"NoOption.bmp");
-    pNoMoveTex->SetColorKey(255, 0, 255);
-    SAFE_RELEASE(pNoMoveTex);
-
     SetUpCamera();
 
     SetUpDefaultStages(50, 50);
@@ -58,9 +57,9 @@ bool MapEditScene::Init()
 
     SetUpTileSelectUI();
 
-    m_iEditTileTex = 0;
-    m_eEditOption = TO_NONE;
+    LoadOptionTiles(L"SV/Option/");
 
+    INPUT->AddKey("ChangeOption", 'B');
     INPUT->AddKey("Save", VK_CONTROL, 'S');
     INPUT->AddKey("Load", VK_CONTROL, 'O');
 
@@ -88,26 +87,42 @@ void MapEditScene::Input(float dt)
         CAMERA->Scroll(300.f * dt, 0.f);
     }
 
+    if (GetAsyncKeyState('1'))
+    {
+        m_eTem = TEM_TEXTURE;
+        SetSelectTexture(nullptr);
+    }
+    if (GetAsyncKeyState('2'))
+    {
+        m_eTem = TEM_OPTION;
+        SetSelectTexture(nullptr);
+    }
+
+    if (KEYDOWN("ChangeOption") && m_eTem == TEM_OPTION)
+    {
+        m_eEditOption = static_cast<TILE_OPTION>((m_eEditOption + 1) % TO_END);
+        Texture* selTex = RESOURCE_MANAGER->FindTexture(m_optTexKey[m_eEditOption]);
+        SetSelectTexture(selTex);
+        SAFE_RELEASE(selTex);
+    }
+
     if (KEYPRESS("MouseLButton"))
     {
         Pos tMouseClientPos = MOUSECLIENTPOS;
         Pos tMouseWorldPos = MOUSEWORLDPOS;
-        Texture* selTex = m_pSelUI->SelectTile(tMouseClientPos);
-        if (selTex)
-        {
-            SAFE_RELEASE(m_pSelTexture);
-            m_pSelTexture = selTex;
-        }
+        Texture* pTex = m_pSelUI->SelectTile(tMouseClientPos);
+        if (pTex) 
+            SetSelectTexture(pTex);
 
-        if (!m_pSelUI->SelectUITag(tMouseClientPos))
+        else if (!m_pSelUI->SelectUITag(tMouseClientPos))
         {
             switch (m_eTem)
             {
             case TEM_TEXTURE:
-                if (m_pSelTexture)
-                {
                     m_vecStage[m_eCurStage]->ChangeTileTexture(tMouseWorldPos, m_pSelTexture);
-                }
+                break;
+            case TEM_OPTION:
+                 m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, m_eEditOption);
                 break;
             }
         }
@@ -123,7 +138,7 @@ void MapEditScene::Input(float dt)
             m_vecStage[m_eCurStage]->SetTileNone(tMouseWorldPos);
             break;
         case TEM_OPTION:
-            m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, m_eEditOption);
+            m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, TO_NONE);
             break;
         }
     }
@@ -207,13 +222,18 @@ void MapEditScene::Draw(HDC hDC, float dt)
                                 tImgSize.x, tImgSize.y);
     }
 #ifdef _DEBUG
-    char buffer[MAX_PATH];
+    stringstream ss;
     for (int i = 0; i < ST_END; ++i)
     {
-        const string& tileName = m_vecStage[i]->GetTileName(MOUSECLIENTPOS);
+        const string& tileOption = m_optTexKey[m_vecStage[i]->GetTileOption(MOUSEWORLDPOS)];
+        const string& tileName = m_vecStage[i]->GetTileName(MOUSEWORLDPOS);
         const string& stageName = m_vecStage[i]->GetTag();
-        sprintf(buffer, "%s : %s\n", stageName.c_str(), tileName.c_str());
-        TextOut(hDC, MOUSECLIENTPOS.x, MOUSECLIENTPOS.y - 100 + 20 * i, GetWChar(buffer), strlen(buffer));
+        ss << std::right << setw(5) << stageName << ": " << std::left << setw(10) << tileName 
+            << std::right << setw(5) << ", opt: " << std::left << setw(10) << tileOption << "\n";
+        int length = ss.str().size();
+        TextOut(hDC, MOUSECLIENTPOS.x, MOUSECLIENTPOS.y - 100 + 20 * i, GetWChar(ss.str().c_str()), length);
+        ss.clear();
+        ss.str("");
     }
 #endif
 }
@@ -230,7 +250,6 @@ void MapEditScene::SetUpDefaultStages(int numX, int numY)
 {
     SetUpBaseStage(ST_GROUND, "Ground", numX, numY);
     SetUpBaseStage(ST_OBJECT, "Object", numX, numY);
-    SetUpBaseStage(ST_ONAIR, "OnAir", numX, numY);
     SetUpBaseStage(ST_STATIC, "Static", numX, numY);
 }
 
@@ -240,7 +259,6 @@ void MapEditScene::SaveDefaultStages(const char* fileName)
 
     m_vecStage[ST_GROUND]->SaveFromFile(pFile);
     m_vecStage[ST_OBJECT]->SaveFromFile(pFile);
-    m_vecStage[ST_ONAIR]->SaveFromFile(pFile);
     m_vecStage[ST_STATIC]->SaveFromFile(pFile);
 
     if (pFile)
@@ -251,11 +269,10 @@ void MapEditScene::SaveDefaultStages(const char* fileName)
 
 void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& strlayerTag, int numX, int numY)
 {
-    SAFE_RELEASE(m_vecStage[eStageTag]);
-    Object::EraseObject(m_vecStage[eStageTag]);
+    StageClear(eStageTag, strlayerTag);
     Layer* pStageLayer = FindLayer(strlayerTag);
     m_vecStage[eStageTag] = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
-    m_vecStage[eStageTag]->CreateTile(numX, numY, TILESIZE, TILESIZE, "", L"");
+    m_vecStage[eStageTag]->CreateTile(numX, numY, TILESIZE, TILESIZE, Pos(0.f,0.f));
 }
 
 void MapEditScene::LoadDefaultStages(const char* fileName)
@@ -264,7 +281,6 @@ void MapEditScene::LoadDefaultStages(const char* fileName)
 
     LoadStage(ST_GROUND, "Ground", pFile);
     LoadStage(ST_OBJECT, "Object", pFile);
-    LoadStage(ST_ONAIR, "OnAir", pFile);
     LoadStage(ST_STATIC, "Static", pFile);
 
     if (pFile)
@@ -273,10 +289,23 @@ void MapEditScene::LoadDefaultStages(const char* fileName)
     }
 }
 
+void MapEditScene::StageClear(STAGE_TAG eStageTag, const string& layerTag)
+{
+    if (m_vecStage[eStageTag])
+    {
+        Layer* pLayer = FindLayer(layerTag);
+        assert(pLayer);
+
+        m_vecStage[eStageTag]->ClearTile();
+        pLayer->EraseObject(m_vecStage[eStageTag]);
+        Object::EraseObject(m_vecStage[eStageTag]);
+        SAFE_RELEASE(m_vecStage[eStageTag]);
+    }
+}
+
 void MapEditScene::LoadStage(STAGE_TAG eStageTag, const string& strlayerTag, FILE* pFile)
 {
-    SAFE_RELEASE(m_vecStage[eStageTag]);
-    Object::EraseObject(m_vecStage[eStageTag]);
+    StageClear(eStageTag, strlayerTag);
     Layer* pStageLayer = FindLayer(strlayerTag);
     m_vecStage[eStageTag] = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
     m_vecStage[eStageTag]->LoadFromFile(pFile);
@@ -303,14 +332,14 @@ void MapEditScene::SetUpUIButton()
     pBackBtn->SetCallback(this, &MapEditScene::BackButtonCallback);
     SAFE_RELEASE(pBackBtn);
 
-    // Stage 번호
+    //// Stage 번호
+    wstringstream path;
     for (int i = 0; i < m_btnFileName.size(); ++i)
     {
-        wstringstream path;
+
         path << L"SV/Numbers/Tag/" << m_btnFileName[i] << L".bmp";
         string strKey(GetChar(m_btnFileName[i].c_str()));
         UIButton* pBtn = Object::CreateObject<UIButton>(strKey, pLayer);
-
         pBtn->SetTexture(strKey, path.str().c_str());
         pBtn->SetSize(120, 60);
         pBtn->SetColorKey(255, 255, 255);
@@ -321,13 +350,16 @@ void MapEditScene::SetUpUIButton()
             pBtn->SetImageOffset(120, 0);
         }
         Size tSize = pBtn->GetSize();
-        pBtn->SetPos(250.f + i * tSize.x, 20);
+        pBtn->SetPos(20+i * tSize.x, 20);
         ColliderRect* pRC = static_cast<ColliderRect*>(pBtn->GetCollider("ButtonBody"));
         
         pRC->SetRect(0.f, 0.f, tSize.x, tSize.y);
         SAFE_RELEASE(pRC);
         pBtn->SetCallbackByType(this, pBtn, i, &MapEditScene::StageButtonCallback);
         SAFE_RELEASE(pBtn);
+
+        path.clear();
+        path.str(L"");
     }
 }
 
@@ -337,24 +369,16 @@ void MapEditScene::SetUpTileSelectUI()
     Layer* pLayer = Scene::FindLayer("UI");
 
     Texture* pTex = RESOURCE_MANAGER->LoadTexture("Ground", L"SV/UISelectBase2.bmp");
-
     m_pSelUI = Object::CreateObject<UITileSelect>("SelectUI", pLayer);
-
-    // Ground 타일들
-    m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_GROUND, L"SV/Ground/");
-    // 바닥 타일 타일들
-    m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_FLOOR, L"SV/FloorTile/");
-    // 하우스 내부
-    m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_INHOUSE, L"SV/Inhouse/");
-    // 선택 번호 타일들
-    m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_NUMBER, L"SV/Numbers/Select/");
-    // 선택 태그 타일들
-    m_pSelUI->LoadTiles(UITileSelect::UISEL_TYPE::SEL_TAG, L"SV/Numbers/Tag/");
     m_pSelUI->SetTexture(pTex);
     m_pSelUI->SetSize(pTex->GetWidth(), pTex->GetHeight());
     m_pSelUI->SetPos(GETRESOLUTION.x - pTex->GetWidth() - 50, 200.f);
-
     SAFE_RELEASE(pTex);
+
+    m_pSelUI->LoadTiles(SEL_GROUND, L"SV/TileGround/");
+    m_pSelUI->LoadTiles(SEL_OBJECT, L"SV/TileObject/");
+    m_pSelUI->LoadTiles(SEL_STATIC, L"SV/TileStatic/");
+    m_pSelUI->LoadTiles(SEL_NUMBER, L"SV/Numbers/Select/");
 }
 
 void MapEditScene::BackButtonCallback(float dt)
@@ -372,16 +396,13 @@ void MapEditScene::StageButtonCallback(UIButton* btn, int type, float dt)
     switch (eTag)
     {
     case ST_GROUND:
-        SCENE_MANAGER->SetShowmode(SHOW_GROUND);
+        m_pSelUI->SetCurSelect(SEL_GROUND);
         break;
     case ST_OBJECT:
-        SCENE_MANAGER->SetShowmode(SHOW_OBJECT);
-        break;
-    case ST_ONAIR:
-        SCENE_MANAGER->SetShowmode(SHOW_ONAIR);
+        m_pSelUI->SetCurSelect(SEL_OBJECT);
         break;
     case ST_STATIC:
-        SCENE_MANAGER->SetShowmode(SHOW_STATIC);
+        m_pSelUI->SetCurSelect(SEL_STATIC);
         break;
     }
 
@@ -392,12 +413,48 @@ void MapEditScene::StageButtonCallback(UIButton* btn, int type, float dt)
             m_pSelButton->SetImageOffset(0, 0);
         }
         SAFE_RELEASE(m_pSelButton);
-
         if (btn)
         {
             m_pSelButton = btn;
             m_pSelButton->SetImageOffset(120, 0);
-            btn->AddRef();
+            m_pSelButton->AddRef();
         }
     }
+}
+
+void MapEditScene::LoadOptionTiles(const wchar_t* pBaseFolderName, const string& strPathKey)
+{
+ 
+    const wchar_t* pPath = PATH_MANAGER->FindPath(strPathKey);
+    wstring strPath;
+    if (pPath)
+        strPath = pPath;
+
+    strPath += pBaseFolderName;
+    assert(strPath.back() == L'\\' || strPath.back() == L'/');
+
+    const auto extract_key = [](const char* str, int size)
+    {
+        int ed = size - 1;
+        while (str[ed] != L'.') --ed;
+        int st = ed - 1;
+        while (str[st] != L'\\' && str[st] != L'/') st--;
+        return string(str + st + 1, str + ed);
+    };
+
+    for (const auto& entry : fs::directory_iterator(strPath))
+    {
+        const wchar_t* path = entry.path().c_str();
+        string strkey = extract_key(GetChar(path), lstrlen(path));
+        Texture* pTex = RESOURCE_MANAGER->LoadTexture(strkey, path, "");
+        m_optTexKey.emplace_back(std::move(strkey));
+        pTex->SetColorKey(255, 255, 255);
+        SAFE_RELEASE(pTex);
+    }
+}
+
+void MapEditScene::SetSelectTexture(Texture* tex)
+{
+    SAFE_RELEASE(m_pSelTexture);
+    m_pSelTexture = tex;
 }

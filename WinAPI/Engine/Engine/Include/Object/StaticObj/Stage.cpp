@@ -39,7 +39,7 @@ void Stage::DrawBackGround(HDC hdc, COLORREF color)
     DeleteObject(SelectObject(hdc, OldBrush));
 }
 
-void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, const string& strKey, const wchar_t* pFileName, const string& strPathKey)
+void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, Pos tPivot)
 {
     Safe_Release_VecList(m_baseTile);
 
@@ -52,15 +52,14 @@ void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, const strin
     {
         for (int j = 0; j < iNumX; ++j)
         {
-            Tile* pTile = Object::CreateObject<Tile>("Tile");
+            Tile* pTile = Object::CreateObject<Tile>("Tile", nullptr);
             
             offset.x = j * iSizeX;
             offset.y = i * iSizeY;
 
             pTile->SetSize(iSizeX, iSizeY);
             pTile->SetPos(offset.x, offset.y);
-            pTile->SetTexture(strKey, pFileName, strPathKey);
-            pTile->SetPivot(0.0f, 1.0f);
+            pTile->SetPivot(tPivot);
             m_baseTile.push_back(pTile);
         }
     }
@@ -68,12 +67,6 @@ void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, const strin
 
 bool Stage::Init()
 {
-    //SetPos(0.0f, 0.0f);
-    //SetSize(1920.f, 1080.f);
-    //SetPivot(0.0f, 0.0f);
-
-    //SetTexture("Stage2", L"MaskStage2.bmp");
-
     return true;
 }
 
@@ -101,13 +94,12 @@ void Stage::Collision(float dt)
 
 void Stage::Draw(HDC hDC, float dt)
 {
-    // DrawBackGround(hDC, RGB(73, 139, 97));
-
     for (size_t i = 0; i < m_baseTile.size(); ++i)
     {
         m_baseTile[i]->Draw(hDC, dt);
     }
 
+#ifdef _DEBUG
     // Grid를 그린다.
     Pos tCamPos = CAMERA->GetPos();
     for (int i = 1; i <= m_iTileNumY; ++i)
@@ -123,6 +115,7 @@ void Stage::Draw(HDC hDC, float dt)
         MoveToEx(hDC, i * m_iTileSizeX - tCamPos.x, 0, NULL);
         LineTo(hDC, i * m_iTileSizeX - tCamPos.x, m_iTileNumY * m_iTileSizeY - tCamPos.y);
     }
+#endif
 }
 
 Stage* Stage::Clone()
@@ -161,7 +154,7 @@ void Stage::Load(FILE* pFile)
 
     for (int i = 0; i < m_iTileNumX * m_iTileNumY; ++i)
     {
-        Tile* pTile = Object::CreateObject<Tile>("Tile");
+        Tile* pTile = Object::CreateObject<Tile>("Tile", nullptr);
 
         pTile->Load(pFile);
 
@@ -169,7 +162,14 @@ void Stage::Load(FILE* pFile)
     }
 }
 
-string Stage::GetTileName(const Pos& pos)
+int Stage::GetTileOption(const Pos& pos) const
+{
+    int ind = GetTileIndex(pos);
+    if (ind == -1)
+        return 0;
+    return m_baseTile[ind]->m_eOption;
+}
+string Stage::GetTileName(const Pos& pos) const
 {
     int ind = GetTileIndex(pos);
     if (ind == -1)
@@ -209,12 +209,12 @@ void Stage::ChangeTileOption(const Pos& tPos, TILE_OPTION eOption)
     m_baseTile[ind]->SetTileOption(eOption);
 }
 
-int Stage::GetTileIndex(const Pos& tPos)
+int Stage::GetTileIndex(const Pos& tPos) const
 {
     return GetTileIndex(tPos.x ,tPos.y);
 }
 
-int Stage::GetTileIndex(float x, float y)
+int Stage::GetTileIndex(float x, float y) const
 {
     int idxX = (int)x / m_iTileSizeX;
     int idxY = (int)y / m_iTileSizeY;
@@ -227,10 +227,9 @@ int Stage::GetTileIndex(float x, float y)
 
 void Stage::ClearTile()
 {
-    for (size_t i = 0; i < m_baseTile.size(); ++i)
+    for (int i = 0; i < m_baseTile.size(); ++i)
     {
         Object::EraseObject(m_baseTile[i]);
-        const Tile* tile = m_baseTile[i];
     }
     Safe_Release_VecList(m_baseTile);
 }

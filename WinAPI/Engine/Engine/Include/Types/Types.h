@@ -9,6 +9,14 @@ typedef struct _tagPixel
 	unsigned char b;
 }Pixel;
 
+enum UISEL_TYPE
+{
+	SEL_GROUND = 0,
+	SEL_OBJECT,
+	SEL_STATIC,
+	SEL_NUMBER,
+	SEL_END
+};
 enum STAGE_SHOW {
 	SHOW_ALL,
 	SHOW_GROUND,
@@ -22,7 +30,6 @@ enum STAGE_TAG
 {
 	ST_GROUND = 0,
 	ST_OBJECT,
-	ST_ONAIR,
 	ST_STATIC,
 	ST_END
 };
@@ -61,6 +68,8 @@ enum TILE_OPTION
 {
 	TO_NONE,
 	TO_NOMOVE,
+	// TO_CROP_GROUND,
+	TO_END
 };
 
 // Move dir type

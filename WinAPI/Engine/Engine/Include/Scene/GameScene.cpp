@@ -98,7 +98,6 @@ void GameScene::LoadDefaultStages(const char* fileName)
 
     LoadStage(ST_GROUND, "Ground", pFile);
     LoadStage(ST_OBJECT, "Object", pFile);
-    LoadStage(ST_ONAIR, "OnAir", pFile);
     LoadStage(ST_STATIC, "Static", pFile);
 
     if (pFile)

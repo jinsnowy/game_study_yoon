@@ -78,5 +78,6 @@ public:
 
 		return true;
 	}
+	void DeleteKey(const string& strKey);
 	KeyInfo* FindKey(const string& strKey) const;
 };

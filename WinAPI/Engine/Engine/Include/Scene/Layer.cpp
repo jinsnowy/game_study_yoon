@@ -25,6 +25,22 @@ Layer::~Layer()
     m_LayerObjList.clear();
 }
 
+void Layer::EraseObject(Object* pObj)
+{
+    list<Object*>::iterator iter;
+    list<Object*>::iterator iterEnd = m_LayerObjList.end();
+
+    for (iter = m_LayerObjList.begin(); iter != iterEnd; ++iter)
+    {
+        if ((*iter) == pObj)
+        {
+            SAFE_RELEASE((*iter));
+            m_LayerObjList.erase(iter);
+            return;
+        }
+    }
+}
+
 void Layer::AddObject(Object* pObj)
 {
     pObj->SetScene(m_pScene);

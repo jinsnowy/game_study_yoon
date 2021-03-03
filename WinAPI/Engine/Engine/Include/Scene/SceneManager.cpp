@@ -1,5 +1,4 @@
 #include "SceneManager.h"
-#include "InGameScene.h"
 #include "StartScene.h"
 #include "../Collider/CollisionManager.h"
 

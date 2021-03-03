@@ -3,27 +3,6 @@
 #include "../framework.h"
 class Ref
 {
-private:
-	class IdGenerator
-	{
-	public:
-		IdGenerator()
-			: rng(rnd()), gen(1, numeric_limits<size_t>::max())
-		{}
-		size_t Pick()
-		{
-			return gen(rng);
-		}
-	private:
-		random_device rnd;
-		mt19937 rng;
-		uniform_int_distribution<size_t> gen;
-	};
-	static IdGenerator m_IdGen;
-	static unordered_map<string, size_t> m_IdHashMap;
-	static unordered_map<size_t, size_t> m_IdCountMap;
-	size_t PickUniqueId(const string& tagName);
-	void RemoveId(const string& tagName);
 protected:
 	Ref();
 	virtual ~Ref() = 0;
@@ -34,17 +13,9 @@ protected:
 	size_t m_id;
 	std::string m_strTag;
 public:
-	static size_t FindId(const string& strTag)
-	{
-		auto found = m_IdHashMap.find(strTag);
-		if (found == m_IdHashMap.end())
-			return 0;
-		return found->second;
-	}
 	void AddRef() { ++m_Ref; }
 	int Release()
 	{
-		RemoveId(m_strTag);
 		--m_Ref;
 		if (m_Ref == 0)
 		{

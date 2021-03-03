@@ -9,6 +9,11 @@
 #define NOMINMAX
 // Windows 헤더 파일
 #include <windows.h>
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
 
 // 매크로
 #define PI		3.141592f
@@ -47,6 +52,8 @@
 #include <tchar.h>
 #include <conio.h>
 #include <iomanip>
+#include <assert.h>
+#include <string.h>
 
 // C++ 헤더 파일
 #include <iostream>

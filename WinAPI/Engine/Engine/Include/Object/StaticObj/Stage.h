@@ -18,8 +18,7 @@ private:
 	int m_iTileSizeY;
 	vector<class Tile*> m_baseTile;
 public:
-	void CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY,
-		const string& strKey = "", const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);
+	void CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, Pos tPivot);
 public:
 	int GetStageWidth() const { return m_iTileNumX * m_iTileSizeX; }
 	int GetStageHeight() const { return m_iTileNumY * m_iTileSizeY; }
@@ -33,12 +32,13 @@ public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
 public:
-	string GetTileName(const Pos& pos);
+	int GetTileOption(const Pos& pos) const;
+	string GetTileName(const Pos& pos) const;
 	void SetTileNone(const Pos& tPos);
 	void ChangeTileTexture(const Pos& tPos, class Texture* pTexture);
 	void ChangeTileOption(const Pos& tPos, TILE_OPTION eOption);
-	int GetTileIndex(const Pos& tPos);
-	int GetTileIndex(float x, float y);
+	int GetTileIndex(const Pos& tPos) const;
+	int GetTileIndex(float x, float y) const;
 	RESOLUTION GetTileSize() const { return { m_iTileSizeX, m_iTileSizeY }; }
 private:
 	void ClearTile();
