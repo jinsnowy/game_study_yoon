@@ -20,6 +20,7 @@ private:
     Tile();
     Tile(const Tile& tile);
     ~Tile();
+	void DrawRemains(HDC hDC, float dt);
 public:
 	virtual bool Init();
 	virtual void Input(float dt);

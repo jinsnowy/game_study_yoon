@@ -25,6 +25,8 @@ Tile::~Tile()
 	SAFE_RELEASE(m_pOptionTex);
 }
 
+
+
 void Tile::ReleaseTexture()
 {
 	SAFE_RELEASE(m_pTexture);
@@ -75,16 +77,23 @@ void Tile::Collision(float dt)
 
 void Tile::Draw(HDC hDC, float dt)
 {
-    Pos tPos = m_tPos - m_tSize * m_tPivot;
+    Size tSize = GetImageSize();
+    Pos tPos = m_tPos - tSize * m_tPivot;
     tPos -= CAMERA->GetTopLeft();
+    tPos.y += TILESIZE;
     // 카메라 컬링
     RESOLUTION tClientRS = CAMERA->GetClientRS();
-    if (tPos.x + m_tSize.x < 0 || tPos.x > tClientRS.x || tPos.y + m_tSize.y < 0 || tPos.y > tClientRS.y)
+    if (tPos.x + tSize.x < 0 || tPos.x > tClientRS.x
+        || tPos.y + tSize.y < 0 || tPos.y > tClientRS.y)
+    {
+#ifdef _DEBUG
+        DrawRemains(hDC, dt);
+#endif
         return;
+    }
 
     if (m_pTexture)
     {
-
         Pos tImagePos = m_tImageOffset;
         if (m_pAnimation && m_bEnableAnimation)
         {
@@ -101,8 +110,7 @@ void Tile::Draw(HDC hDC, float dt)
                 break;
             }
         }
-
-        Size tSize = GetImageSize();
+    
         if (m_pTexture->GetColorKeyEnable())
         {
             TransparentBlt(hDC, int(tPos.x), int(tPos.y), int(tSize.x), int(tSize.y),
@@ -138,24 +146,39 @@ void Tile::Draw(HDC hDC, float dt)
         }
         else ++iter;
     }
+#ifdef _DEBUG
+    DrawRemains(hDC, dt);
+#endif
+}
 
+void Tile::DrawRemains(HDC hDC, float dt)
+{
+    Pos tPos = m_tPos;
+    tPos -= CAMERA->GetTopLeft();
+    // 카메라 컬링
+    RESOLUTION tClientRS = CAMERA->GetClientRS();
+    if (tPos.x + TILESIZE < 0 || tPos.x > tClientRS.x
+        || tPos.y + TILESIZE < 0 || tPos.y > tClientRS.y)
+    {
+        return;
+    }
     if (m_pOptionTex)
     {
-        Pos tImagePos = m_tImageOffset;
-
         if (m_pOptionTex->GetColorKeyEnable())
         {
             TransparentBlt(hDC, int(tPos.x), int(tPos.y), TILESIZE, TILESIZE,
-				m_pOptionTex->GetDC(), int(tImagePos.x), int(tImagePos.y),
+                m_pOptionTex->GetDC(), 0, 0,
                 TILESIZE, TILESIZE,
-				m_pOptionTex->GetColorKey());
+                m_pOptionTex->GetColorKey());
         }
         else
         {
             BitBlt(hDC, int(tPos.x), int(tPos.y), TILESIZE, TILESIZE,
-				m_pOptionTex->GetDC(), int(tImagePos.x), int(tImagePos.y), SRCCOPY);
+                m_pOptionTex->GetDC(), 0, 0, SRCCOPY);
         }
     }
+
+
 }
 
 Tile* Tile::Clone()
