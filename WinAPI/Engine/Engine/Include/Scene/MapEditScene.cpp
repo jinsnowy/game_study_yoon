@@ -15,6 +15,9 @@
 #include "../Object/StaticObj/UIButton.h"
 #include "../Object/StaticObj/UIPanel.h"
 #include "../Object/StaticObj/UITileSelect.h"
+#include "../Object/StaticObj/TileObject.h"
+#include "../Object/MoveObj/MovableObject.h"
+#include "../Math.h"
 
 wchar_t MapEditScene::m_strText1[MAX_PATH] = {};
 wchar_t MapEditScene::m_strText2[MAX_PATH] = {};
@@ -22,22 +25,20 @@ wchar_t MapEditScene::m_strText2[MAX_PATH] = {};
 MapEditScene::MapEditScene()
 {
     m_vecStage.resize(ST_END, nullptr);
-    m_eTem = TEM_TEXTURE;
-    m_eEditOption = TO_NONE;
+    m_eSel = TEM_GROUND;
 }
 
 MapEditScene::~MapEditScene()
 {
-    INPUT->DeleteKey("SetTexmode");
-    INPUT->DeleteKey("SetOptionMode");
     INPUT->DeleteKey("ChangeOption");
     INPUT->DeleteKey("ChangeStage");
     INPUT->DeleteKey("ResetStage");
     INPUT->DeleteKey("Save");
     INPUT->DeleteKey("Load");
 
+    DeleteAllEditObjects();
+
     StageClear(ST_GROUND, "Ground");
-    StageClear(ST_OBJECT, "Object");
     StageClear(ST_STATIC, "Static");
     
     SAFE_RELEASE(m_pSelUI);
@@ -60,11 +61,6 @@ bool MapEditScene::Init()
 
     SetUpTileSelectUI();
 
-    LoadOptionTiles(L"SV/Option/");
-
-    INPUT->AddKey("SetTexmode", '1');
-    INPUT->AddKey("SetOptionMode", '2');
-    INPUT->AddKey("ChangeOption", 'B');
     INPUT->AddKey("ChangeStage", VK_TAB);
     INPUT->AddKey("ResetStage", VK_CONTROL, 'R');
     INPUT->AddKey("Save", VK_CONTROL, 'S');
@@ -76,66 +72,43 @@ bool MapEditScene::Init()
 void MapEditScene::Input(float dt)
 {
     Scene::Input(dt);
-
-    if (GetAsyncKeyState('W') & 0x8000)
-    {
-        CAMERA->Scroll(0.f, -300.f * dt);
-    }
-    if (GetAsyncKeyState('S') & 0x8000)
-    {
-        CAMERA->Scroll(0.f, 300.f * dt);
-    }
-    if (GetAsyncKeyState('A') & 0x8000)
-    {
-        CAMERA->Scroll(-300.f * dt, 0.f);
-    }
-    if (GetAsyncKeyState('D') & 0x8000)
-    {
-        CAMERA->Scroll(300.f * dt, 0.f);
-    }
-
-    if (KEYDOWN("SetTexMode"))
-    {
-        m_eTem = TEM_TEXTURE;
-        SetSelectTexture(nullptr);
-    }
-    if (KEYDOWN("SetOptionMode"))
-    {
-        m_eTem = TEM_OPTION;
-        m_eEditOption = static_cast<TILE_OPTION>(TO_NOMOVE);
-        Texture* selTex = RESOURCE_MANAGER->FindTexture(m_optTexKey[m_eEditOption]);
-        SetSelectTexture(selTex);
-    }
-
-    if (KEYDOWN("ChangeOption") && m_eTem == TEM_OPTION)
-    {
-        m_eEditOption = static_cast<TILE_OPTION>((m_eEditOption + 1) % TO_END);
-        Texture* selTex = RESOURCE_MANAGER->FindTexture(m_optTexKey[m_eEditOption]);
-        SetSelectTexture(selTex);
-    }
+    CameraScroll(dt);
 
     if (KEYPRESS("MouseLButton"))
     {
         Pos tMouseClientPos = MOUSECLIENTPOS;
         Pos tMouseWorldPos = MOUSEWORLDPOS;
 
-        if (m_eTem == TEM_TEXTURE)
+        Texture* pTex = m_pSelUI->SelectTile(tMouseClientPos);
+        if (pTex) SetSelectTexture(pTex);
+        else if (!m_pSelUI->SelectUITag(tMouseClientPos))
         {
-            Texture* pTex = m_pSelUI->SelectTile(tMouseClientPos);
-            if (pTex)
-                SetSelectTexture(pTex);
-        }
-        if (!m_pSelUI->SelectUITag(tMouseClientPos))
-        {
-            switch (m_eTem)
+            switch (m_eSel)
             {
-            case TEM_TEXTURE:
+            case TEM_GROUND:
+            case TEM_STATIC:
                  m_vecStage[m_eCurStage]->ChangeTileTexture(tMouseWorldPos, m_pSelTexture);
                 break;
             case TEM_OPTION:
-                 m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, m_eEditOption);
+                 m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, GetCurOption());
                 break;
             }
+        }
+    }
+
+    if (KEYPRESS("MouseRButton"))
+    {
+        Pos tMouseWorldPos = MOUSEWORLDPOS;
+        SAFE_RELEASE(m_pSelTexture);
+        switch (m_eSel)
+        {
+        case TEM_GROUND:
+        case TEM_STATIC:
+            m_vecStage[m_eCurStage]->SetTileNone(tMouseWorldPos);
+            break;
+        case TEM_OPTION:
+            m_vecStage[ST_GROUND]->ChangeTileOption(tMouseWorldPos, TO_NONE);
+            break;
         }
     }
 
@@ -143,22 +116,6 @@ void MapEditScene::Input(float dt)
     {
         ChangeStage();
     }
-
-    if (KEYPRESS("MouseRButton"))
-    {
-        Pos tMouseWorldPos = MOUSEWORLDPOS;
-        SAFE_RELEASE(m_pSelTexture);
-        switch (m_eTem)
-        {
-        case TEM_TEXTURE:
-            m_vecStage[m_eCurStage]->SetTileNone(tMouseWorldPos);
-            break;
-        case TEM_OPTION:
-            m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, TO_NONE);
-            break;
-        }
-    }
-
 
     if (KEYDOWN("ResetStage"))
     {
@@ -191,7 +148,6 @@ void MapEditScene::Input(float dt)
 
         SaveDefaultStages(strFileName);
     }
-
     if (KEYDOWN("Load"))
     {
         ShowCursor(TRUE);
@@ -287,7 +243,8 @@ void MapEditScene::Draw(HDC hDC, float dt)
     stringstream ss;
     for (int i = 0; i < ST_END; ++i)
     {
-        const string& tileOption = m_optTexKey[m_vecStage[i]->GetTileOption(MOUSEWORLDPOS)];
+        string tileOption = "";
+         // const string& tileOption = m_optTexKey[m_vecStage[i]->GetTileOption(MOUSEWORLDPOS)];
         const string& tileName = m_vecStage[i]->GetTileName(MOUSEWORLDPOS);
         const string& stageName = m_vecStage[i]->GetTag();
         ss << std::right << setw(5) << stageName << ": " << std::left << setw(10) << tileName 
@@ -310,17 +267,19 @@ void MapEditScene::SetUpCamera()
 
 void MapEditScene::SetUpDefaultStages(int numX, int numY)
 {
+    m_iTileNumX = numX;
+    m_iTileNumY = numY;
     SetUpBaseStage(ST_GROUND, "Ground", numX, numY);
-    SetUpBaseStage(ST_OBJECT, "Object", numX, numY);
     SetUpBaseStage(ST_STATIC, "Static", numX, numY);
 }
 
 void MapEditScene::SaveDefaultStages(const char* fileName)
 {
+    DeleteAllEditObjects();
+
     FILE * pFile = PATH_MANAGER->FileOpen(fileName, DATA_PATH, "wb");
 
     m_vecStage[ST_GROUND]->SaveFromFile(pFile);
-    m_vecStage[ST_OBJECT]->SaveFromFile(pFile);
     m_vecStage[ST_STATIC]->SaveFromFile(pFile);
 
     if (pFile)
@@ -339,16 +298,34 @@ void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& strlayerTag
 
 void MapEditScene::LoadDefaultStages(const char* fileName)
 {
+    DeleteAllEditObjects();
+
     FILE* pFile = PATH_MANAGER->FileOpen(fileName, DATA_PATH, "rb");
 
     LoadStage(ST_GROUND, "Ground", pFile);
-    LoadStage(ST_OBJECT, "Object", pFile);
     LoadStage(ST_STATIC, "Static", pFile);
 
+    m_iTileNumX = m_vecStage[ST_GROUND]->GetTileSize().x;
+    m_iTileNumY = m_vecStage[ST_GROUND]->GetTileSize().y;
     if (pFile)
     {
         fclose(pFile);
     }
+}
+
+TILE_OPTION MapEditScene::GetCurOption() const
+{
+    if (m_pSelTexture)
+    {
+        const string& strTag = m_pSelTexture->GetTag();
+        if (strTag == "1.NoOption")
+            return TO_NONE;
+        if (strTag == "2.NoMove")
+            return TO_NOMOVE;
+        if (strTag == "3.CropGround")
+            return TO_CROP_GROUND;
+    }
+    return TO_NONE;
 }
 
 void MapEditScene::StageClear(STAGE_TAG eStageTag, const string& layerTag)
@@ -429,9 +406,12 @@ void MapEditScene::SetUpTileSelectUI()
     SAFE_RELEASE(pTex);
 
     m_pSelUI->LoadTiles(SEL_GROUND, L"SV/TileGround/");
-    m_pSelUI->LoadTiles(SEL_OBJECT1, L"SV/TileObject/");
-    m_pSelUI->LoadTiles(SEL_OBJECT2, L"SV/Object/");
     m_pSelUI->LoadTiles(SEL_STATIC, L"SV/TileStatic/");
+
+    m_pSelUI->LoadTiles(SEL_OBJECT, L"SV/Object/");
+    m_pSelUI->LoadTiles(SEL_STATIC_OBJECT, L"SV/TileObject/");
+
+    m_pSelUI->LoadTiles(SEL_OPTION, L"SV/Option/");
     m_pSelUI->LoadTiles(SEL_NUMBER, L"SV/Numbers/Select/");
 }
 
@@ -443,67 +423,36 @@ void MapEditScene::BackButtonCallback(float dt)
 
 void MapEditScene::ChangeStage()
 {
-    m_btn[m_iCurStage]->SetImageOffset(0, 0);
-    m_iCurStage = (m_iCurStage + 1) % (ST_END+1);
-    m_btn[m_iCurStage]->SetImageOffset(120, 0);
+    m_btn[m_eSel]->SetImageOffset(0, 0);
+    m_eSel = static_cast<TILE_EDIT_MODE>((m_eSel + 1) % int(TEM_END));
+    m_btn[m_eSel]->SetImageOffset(120, 0);
 
-    if (m_iCurStage == 0)
+    if (m_eSel == 0)
     {
         m_eCurStage = ST_GROUND;
     }
-    else if (m_iCurStage == 1 || m_iCurStage == 2)
+    else if(m_eSel == 1)
     {
-        m_eCurStage = ST_OBJECT;
-    }
-    else {
         m_eCurStage = ST_STATIC;
     }
  
-    switch (m_iCurStage)
+    switch (m_eSel)
     {
-    case 0:
+    case TEM_GROUND:
         m_pSelUI->SetCurSelect(SEL_GROUND);
         break;
-    case 1:
-        m_pSelUI->SetCurSelect(SEL_OBJECT1);
-        break;
-    case 2:
-        m_pSelUI->SetCurSelect(SEL_OBJECT2);
-        break;
-    case 3:
+    case TEM_STATIC:
         m_pSelUI->SetCurSelect(SEL_STATIC);
         break;
-    }
-}
-
-void MapEditScene::LoadOptionTiles(const wchar_t* pBaseFolderName, const string& strPathKey)
-{
- 
-    const wchar_t* pPath = PATH_MANAGER->FindPath(strPathKey);
-    wstring strPath;
-    if (pPath)
-        strPath = pPath;
-
-    strPath += pBaseFolderName;
-    assert(strPath.back() == L'\\' || strPath.back() == L'/');
-
-    const auto extract_key = [](const char* str, int size)
-    {
-        int ed = size - 1;
-        while (str[ed] != L'.') --ed;
-        int st = ed - 1;
-        while (str[st] != L'\\' && str[st] != L'/') st--;
-        return string(str + st + 1, str + ed);
-    };
-
-    for (const auto& entry : fs::directory_iterator(strPath))
-    {
-        const wchar_t* path = entry.path().c_str();
-        string strkey = extract_key(GetChar(path), lstrlen(path));
-        Texture* pTex = RESOURCE_MANAGER->LoadTexture(strkey, path, "");
-        m_optTexKey.emplace_back(std::move(strkey));
-        pTex->SetColorKey(255, 255, 255);
-        SAFE_RELEASE(pTex);
+    case TEM_OPTION:
+        m_pSelUI->SetCurSelect(SEL_OPTION);
+        break;
+    case TEM_OBJECT:
+        m_pSelUI->SetCurSelect(SEL_OBJECT);
+        break;
+    case TEM_STATIC_OBJECT:
+        m_pSelUI->SetCurSelect(SEL_OBJECT);
+        break;
     }
 }
 
@@ -511,4 +460,92 @@ void MapEditScene::SetSelectTexture(Texture* tex)
 {
     SAFE_RELEASE(m_pSelTexture);
     m_pSelTexture = tex;
+}
+
+void MapEditScene::CameraScroll(float dt)
+{
+    if (GetAsyncKeyState('W') & 0x8000)
+    {
+        CAMERA->Scroll(0.f, -300.f * dt);
+    }
+    if (GetAsyncKeyState('S') & 0x8000)
+    {
+        CAMERA->Scroll(0.f, 300.f * dt);
+    }
+    if (GetAsyncKeyState('A') & 0x8000)
+    {
+        CAMERA->Scroll(-300.f * dt, 0.f);
+    }
+    if (GetAsyncKeyState('D') & 0x8000)
+    {
+        CAMERA->Scroll(300.f * dt, 0.f);
+    }
+}
+
+
+void MapEditScene::DeleteTileObject(int in_index)
+{
+    int index = -1;
+    auto iterEnd = m_objList.end();
+    for (auto iter = m_objList.begin(); iter != iterEnd; ++iter)
+    {
+        TileObject* pTileObj = dynamic_cast<TileObject*>(*iter);
+        if (pTileObj)
+        {
+            in_index = pTileObj->GetTileIndex();
+        }
+        if (in_index == index)
+        {
+            Object::EraseObject((*iter));
+            FindLayer("Object")->EraseObject((*iter));
+            SAFE_RELEASE((*iter));
+            m_objList.erase(iter);
+            return;
+        }
+    }
+}
+
+void MapEditScene::DeleteTileFreeObject(const Pos& worldPos)
+{
+    float minDist = FLT_MAX;
+    Object* pObj = nullptr;
+    list<Object*>::iterator iterTarget;
+    auto iterEnd = m_objList.end();
+    for (auto iter = m_objList.begin(); iter != iterEnd; ++iter)
+    {
+        MovableObject* pMoveObj = dynamic_cast<MovableObject*>(*iter);
+        if (pMoveObj)
+        {
+            float dist = Math::Distance(pMoveObj->GetPos(), worldPos);
+            if (dist < 100.f && dist < minDist)
+            {
+                pObj = pMoveObj;
+                minDist = dist;
+                iterTarget = iter;
+            }
+        }
+    }
+    if (pObj)
+    {
+        Object::EraseObject(pObj);
+        FindLayer("Object")->EraseObject(pObj);
+        SAFE_RELEASE(pObj);
+        m_objList.erase(iterTarget);
+        return;
+    }
+}
+
+void MapEditScene::DeleteAllEditObjects()
+{
+    list<Object*>::iterator iter;
+    list<Object*>::iterator iterEnd = m_objList.end();
+
+    Layer* pLayer = FindLayer("Object");
+    for (iter = m_objList.begin(); iter != iterEnd; ++iter)
+    {
+        Object::EraseObject((*iter));
+        FindLayer("Object")->EraseObject((*iter));
+        SAFE_RELEASE((*iter));
+    }
+    m_objList.clear();
 }
