@@ -1,11 +1,13 @@
 #pragma once
 #include "../framework.h"
 
+class Object;
 class Scene;
 class SceneManager
 {
 	DECLARE_SINGLE(SceneManager)
 private:
+
 	STAGE_SHOW m_eCurShowMode = SHOW_ALL;
 	Scene* m_pScene;
 	Scene* m_pNextScene;

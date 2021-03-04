@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "StartScene.h"
+#include "../Object/Object.h"
 #include "../Collider/CollisionManager.h"
 
 DEFINITION_SINGLE(SceneManager)
@@ -10,6 +11,7 @@ SceneManager::SceneManager()
 	m_pNextScene(nullptr)
 {
 }
+
 
 SceneManager::~SceneManager()
 {
@@ -87,3 +89,4 @@ void SceneManager::ChangeShowMode()
 		m_eCurShowMode = SHOW_STATIC;
 	}
 }
+

@@ -271,7 +271,7 @@ void Animation::SaveFromPath(const char* pFileName, const string& strPathKey)
 void Animation::Save(FILE* pFile)
 {
 	// Tag 정보 저장
-	int iLength = m_strTag.length();
+	size_t iLength = m_strTag.length();
 
 	// Tag 길이를 저장한다.
 	fwrite(&iLength, 4, 1, pFile);
@@ -279,7 +279,7 @@ void Animation::Save(FILE* pFile)
 	// Tag 문자열을 저장한다.
 	fwrite(m_strTag.c_str(), 1, iLength, pFile);
 
-	int iCount = m_mapClip.size();
+	size_t iCount = m_mapClip.size();
 	fwrite(&iCount, 4, 1, pFile);
 
 	unordered_map<string, AnimationClip*>::iterator iter;
@@ -292,7 +292,7 @@ void Animation::Save(FILE* pFile)
 		fwrite(&clip->eType, 4, 1, pFile);
 		fwrite(&clip->eOption, 4, 1, pFile);
 
-		iCount = clip->vecTexture.size();
+		iCount = int(clip->vecTexture.size());
 		fwrite(&iCount, 4, 1, pFile);
 		for (int i = 0; i < iCount; i++)
 		{

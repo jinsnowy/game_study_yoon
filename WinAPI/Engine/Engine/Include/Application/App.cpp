@@ -7,6 +7,7 @@
 #include "../Collider/CollisionManager.h"
 #include "../Scene/SceneManager.h"
 #include "../Resources/ResourceManager.h"
+#include "../Resources/PrototypeManager.h"
 #include "../Resources/Texture.h"
 #include "../Sound/SoundManager.h"
 #include "../Object/Mouse.h"
@@ -32,6 +33,7 @@ App::~App()
 	COLLISION_MANAGER->Release();
 	RESOURCE_MANAGER->Release();
 	SOUND_MANAGER->Release();
+	PROTOTYPE_MANAGER->Release();
 	PATH_MANAGER->Release();
 	TIMER->Release();
 	WINDOW->Release();
@@ -77,6 +79,11 @@ void App::Init()
 	if (!PATH_MANAGER->Init())
 	{
 		throw APP_EXCEPT(L"Path Manager init failed.\n");
+	}
+	
+	if (!PROTOTYPE_MANAGER->Init())
+	{
+		throw APP_EXCEPT(L"Prototype Manager init failed.\n");
 	}
 
 	if (!RESOURCE_MANAGER->Init(WINDOW->m_hInst, WINDOW->m_hDC))

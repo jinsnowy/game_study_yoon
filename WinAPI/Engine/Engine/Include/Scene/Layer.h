@@ -32,7 +32,7 @@ public:
 	void SetZOrder(int zOrder) { m_zOrder = zOrder; }
 	void SetTag(const string& tag) { m_tag = tag; }
 	void SetScene(class Scene* pScene) { m_pScene = pScene; }
-
+	static bool ObjectYAxisSort(const Object* pObjA, const Object* pObjB);
 public:
 	void Input(float dt);
 	void Update(float dt);

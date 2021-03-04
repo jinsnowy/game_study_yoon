@@ -234,6 +234,12 @@
     <ClInclude Include="Scene\InHouseScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Object\StaticObj\TileObject.h">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\PrototypeManager.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\Window.cpp">
@@ -364,6 +370,12 @@
     </ClCompile>
     <ClCompile Include="Scene\InHouseScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\TileObject.cpp">
+      <Filter>Object\02. StaticObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\PrototypeManager.cpp">
+      <Filter>Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -38,6 +38,7 @@
 #define TIMER FrameTimer::Instance()
 #define SCENE_MANAGER SceneManager::Instance()
 #define PATH_MANAGER PathManager::Instance()
+#define PROTOTYPE_MANAGER PrototypeManager::Instance()
 #define RESOURCE_MANAGER ResourceManager::Instance()
 #define CAMERA Camera::Instance()
 #define INPUT Input::Instance()

@@ -81,6 +81,7 @@ void Tile::Draw(HDC hDC, float dt)
     Pos tPos = m_tPos - tSize * m_tPivot;
     tPos -= CAMERA->GetTopLeft();
     tPos.y += TILESIZE;
+
     // 카메라 컬링
     RESOLUTION tClientRS = CAMERA->GetClientRS();
     if (tPos.x + tSize.x < 0 || tPos.x > tClientRS.x

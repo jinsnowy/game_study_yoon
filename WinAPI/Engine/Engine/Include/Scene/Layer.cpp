@@ -50,6 +50,11 @@ void Layer::AddObject(Object* pObj)
     m_LayerObjList.push_back(pObj);
 }
 
+bool Layer::ObjectYAxisSort(const Object* pObjA, const Object* pObjB)
+{
+    return pObjA->GetPos().y < pObjB->GetPos().y;
+}
+
 void Layer::Input(float dt)
 {
     auto iterEnd = m_LayerObjList.end();

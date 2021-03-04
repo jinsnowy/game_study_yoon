@@ -192,6 +192,7 @@
     <ClInclude Include="Object\StaticObj\Stage.h" />
     <ClInclude Include="Object\StaticObj\StaticObject.h" />
     <ClInclude Include="Object\StaticObj\Tile.h" />
+    <ClInclude Include="Object\StaticObj\TileObject.h" />
     <ClInclude Include="Object\StaticObj\UI.h" />
     <ClInclude Include="Object\StaticObj\UIButton.h" />
     <ClInclude Include="Object\StaticObj\UIPanel.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="Other\UserException.h" />
     <ClInclude Include="Other\WindowsMessageMap.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Resources\PrototypeManager.h" />
     <ClInclude Include="Resources\ResourceManager.h" />
     <ClInclude Include="Resources\Texture.h" />
     <ClInclude Include="Scene\GameScene.h" />
@@ -243,12 +245,14 @@
     <ClCompile Include="Object\StaticObj\Stage.cpp" />
     <ClCompile Include="Object\StaticObj\StaticObject.cpp" />
     <ClCompile Include="Object\StaticObj\Tile.cpp" />
+    <ClCompile Include="Object\StaticObj\TileObject.cpp" />
     <ClCompile Include="Object\StaticObj\UI.cpp" />
     <ClCompile Include="Object\StaticObj\UIButton.cpp" />
     <ClCompile Include="Object\StaticObj\UIPanel.cpp" />
     <ClCompile Include="Object\StaticObj\UITileSelect.cpp" />
     <ClCompile Include="Other\UserException.cpp" />
     <ClCompile Include="Other\WindowsMessageMap.cpp" />
+    <ClCompile Include="Resources\PrototypeManager.cpp" />
     <ClCompile Include="Resources\ResourceManager.cpp" />
     <ClCompile Include="Resources\Texture.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />

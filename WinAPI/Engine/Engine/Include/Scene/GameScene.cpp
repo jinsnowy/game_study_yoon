@@ -6,8 +6,6 @@
 #include "Layer.h"
 
 /*
-
-
     Object* pMinion = Object::CreateObject<Minion>("Minion", pLayer);
 
     SAFE_RELEASE(pMinion);
@@ -97,7 +95,6 @@ void GameScene::LoadDefaultStages(const char* fileName)
     FILE* pFile = PATH_MANAGER->FileOpen(fileName, DATA_PATH, "rb");
 
     LoadStage(ST_GROUND, "Ground", pFile);
-    LoadStage(ST_OBJECT, "Object", pFile);
     LoadStage(ST_STATIC, "Static", pFile);
 
     if (pFile)
