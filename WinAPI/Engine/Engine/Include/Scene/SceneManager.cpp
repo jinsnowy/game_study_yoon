@@ -84,6 +84,6 @@ void SceneManager::ChangeShowMode()
 	}
 	if (GetAsyncKeyState(VK_F4) & 0x8000)
 	{
-		m_eCurShowMode = SHOW_ONAIR;
+		m_eCurShowMode = SHOW_STATIC;
 	}
 }

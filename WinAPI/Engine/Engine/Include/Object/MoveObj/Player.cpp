@@ -4,6 +4,8 @@
 #include "../../Math.h"
 #include "../../Scene/Scene.h"
 #include "../../Core/Input.h"
+#include "../../Resources/ResourceManager.h"
+#include "../../Resources/Texture.h"
 #include "../../Collider/ColliderRect.h"
 #include "../../Collider/ColliderPixel.h"
 #include "../../Core/Camera.h"
@@ -21,75 +23,162 @@ Player::~Player()
 {
 }
 
-void Player::InitRightAnimation()
+void Player::InitTexture()
 {
-	assert(m_pAnimation != nullptr);
-	wstring basePath = L"Player/AmongUs/WalkRight/";
+	Texture* pTex;
+	pTex = RESOURCE_MANAGER->LoadTexture("IdleRight", L"Player/SV/IdleRight.bmp");
+	pTex->SetColorKey(255, 255, 255);
+	SAFE_RELEASE(pTex);
+	pTex = RESOURCE_MANAGER->LoadTexture("IdleLeft", L"Player/SV/IdleLeft.bmp");
+	pTex->SetColorKey(255, 255, 255);
+	SAFE_RELEASE(pTex);
+	pTex = RESOURCE_MANAGER->LoadTexture("IdleDown", L"Player/SV/IdleDown.bmp");
+	pTex->SetColorKey(255, 255, 255);
+	SAFE_RELEASE(pTex);
+	pTex = RESOURCE_MANAGER->LoadTexture("IdleUp", L"Player/SV/IdleUp.bmp");
+	pTex->SetColorKey(255, 255, 255);
+	SAFE_RELEASE(pTex);
+}
+
+void Player::InitAnimation()
+{
+	SetEnableAnimation(true);
+	Animation* pAnim = CreateAnimation("PlayerAnimation");
+	SAFE_RELEASE(pAnim);
+	wstring basePath = L"Player/SV/WalkRight/";
 	vector<wstring> vecFileName;
+	wstringstream ss;
+
+	vecFileName.clear();
 	for (int i = 1; i <= 6; ++i)
 	{
-		wstringstream ss;
-		ss << basePath << L"WalkRight_" << setfill(L'0') << setw(4) << i << "_80x100.bmp";
+		ss << basePath << L"WalkRight" << i << ".bmp";
 		vecFileName.push_back(ss.str());
-	}
-	for (int i = 12; i >= 7; --i)
-	{
-		wstringstream ss;
-		ss << basePath << L"WalkRight_" << setfill(L'0') << setw(4) << i << "_80x100.bmp";
-		vecFileName.push_back(ss.str());
-	}
-	for (int i = 7; i <= 12; ++i)
-	{
-		wstringstream ss;
-		ss << basePath << L"WalkRight_" << setfill(L'0') << setw(4) << i << "_80x100.bmp";
-		vecFileName.push_back(ss.str());
-	}
-	for (int i = 6; i >= 1; --i)
-	{
-		wstringstream ss;
-		ss << basePath << L"WalkRight_" << setfill(L'0') << setw(4) << i << "_80x100.bmp";
-		vecFileName.push_back(ss.str());
+		ss.clear();
+		ss.str(L"");
 	}
 	AddAnimationClip("WalkRight",
 		AT_FRAME, AO_LOOP,
-		0.0f, 0.8f,
-		24, 1,
+		0.0f, 0.55f,
+		6, 1,
 		0, 0,
-		24, 1,
+		6, 1,
 		0.f, "WalkRight_Anim", vecFileName);
 	SetClipColorKey("WalkRight", 255, 255, 255);
+
+	basePath = L"Player/SV/WalkLeft/";
+	vecFileName.clear();
+	for (int i = 1; i <= 6; ++i)
+	{
+		ss << basePath << L"WalkLeft" << i << ".bmp";
+		vecFileName.push_back(ss.str());
+		ss.clear();
+		ss.str(L"");
+	}
+	AddAnimationClip("WalkLeft",
+		AT_FRAME, AO_LOOP,
+		0.0f, 0.55f,
+		6, 1,
+		0, 0,
+		6, 1,
+		0.f, "WalkLeft_Anim", vecFileName);
+	SetClipColorKey("WalkLeft", 255, 255, 255);
+
+	basePath = L"Player/SV/WalkDown/";
+	vecFileName.clear();
+	for (int i = 1; i <= 9; ++i)
+	{
+		ss << basePath << L"WalkDown" << i << ".bmp";
+		vecFileName.push_back(ss.str());
+		ss.clear();
+		ss.str(L"");
+	}
+	AddAnimationClip("WalkDown",
+		AT_FRAME, AO_LOOP,
+		0.0f, 0.55f,
+		9, 1,
+		0, 0,
+		9, 1,
+		0.f, "WalkDown_Anim", vecFileName);
+	SetClipColorKey("WalkDown", 255, 255, 255);
+
+	basePath = L"Player/SV/WalkUp/";
+	vecFileName.clear();
+	for (int i = 1; i <= 9; ++i)
+	{
+		ss << basePath << L"WalkUp" << i << ".bmp";
+		vecFileName.push_back(ss.str());
+		ss.clear();
+		ss.str(L"");
+	}
+	AddAnimationClip("WalkUp",
+		AT_FRAME, AO_LOOP,
+		0.0f, 0.55f,
+		9, 1,
+		0, 0,
+		9, 1,
+		0.f, "WalkUp_Anim", vecFileName);
+	SetClipColorKey("WalkUp", 255, 255, 255);
 }
 
 void Player::SetState(PlayerState state)
 {
 	m_eState = state;
-	if (!m_pAnimation) return;
-	switch (state)
+	switch (m_eState)
 	{
-	case PlayerState::IDLE_LEFT:
-		m_pAnimation->ChangeClip("IdleLeft");
+	case IDLE_LEFT:
+	case IDLE_RIGHT:
+	case IDLE_UP:
+	case IDLE_DOWN:
+		m_bEnableAnimation = false;
 		break;
-	case PlayerState::IDLE_RIGHT:
-		m_pAnimation->ChangeClip("IdleRight");
+	case WALK_LEFT:
+	case WALK_RIGHT:
+	case WALK_DOWN:
+	case WALK_UP:
+		m_bEnableAnimation = true;
 		break;
-	case PlayerState::WALK_LEFT:
+	}
+	switch (m_eState)
+	{
+	case IDLE_LEFT:
+		SetTexture("IdleLeft");
+		break;
+	case IDLE_RIGHT:
+		SetTexture("IdleRight");
+		break;
+	case IDLE_UP:
+		SetTexture("IdleUp");
+		break;
+	case IDLE_DOWN:
+		SetTexture("IdleDown");
+		break;
+	case WALK_LEFT:
 		m_pAnimation->ChangeClip("WalkLeft");
 		break;
-	case PlayerState::WALK_RIGHT:
+	case WALK_RIGHT:
 		m_pAnimation->ChangeClip("WalkRight");
+		break;
+	case WALK_DOWN:
+		m_pAnimation->ChangeClip("WalkDown");
+		break;
+	case WALK_UP:
+		m_pAnimation->ChangeClip("WalkUp");
 		break;
 	}
 }
 
 bool Player::Init()
 {
-	SetPos(40.0f, 50.0f);
-	SetSize(80.0f, 100.0f);
+	SetPos(400.0f, 500.0f);
+	SetSize(64.0f, 128.0f);
 	SetPivot(0.5f, 0.5f);
-	SetSpeed(400.0f);
+	SetSpeed(300.0f);
 
-	SetTexture("PlayerIdle", L"Player/AmongUs/IdleRight.bmp");
-	SetColorKey(255, 255, 255);
+	InitTexture();
+	InitAnimation();
+
+	SetState(IDLE_RIGHT);
 	m_iHP = 1000;
 
 	// 중력을 적용한다.
@@ -97,38 +186,6 @@ bool Player::Init()
 
 	// 점프할 힘을 설정한다.
 	SetForce(500.f);
-
-	SetEnableAnimation(true);
-	Animation *pAnim = CreateAnimation("PlayerAnimation");
-	AddAnimationClip("WalkLeft", 
-						AT_ATLAS, AO_LOOP,
-						0.0f, 0.8f,
-						6, 4,
-						0, 0,
-						6, 4,
-						0.f, "WalkLeft_Anim",
-						L"Player/AmongUs/WalkLeft/WalkLeft_Anim.bmp");
-	SetClipColorKey("WalkLeft", 255, 255, 255);
-	InitRightAnimation();
-	AddAnimationClip("IdleLeft",
-					AT_FRAME, AO_LOOP,
-					0.0f, 100.0f,
-					1, 0,
-					0, 0,
-					1, 0,
-					0.f, "IdleLeft_Anim",
-					L"Player/AmongUs/IdleLeft.bmp");
-	SetClipColorKey("IdleLeft", 255, 255, 255);
-	AddAnimationClip("IdleRight",
-					AT_FRAME, AO_LOOP,
-					0.0f, 100.0f,
-					1, 0,
-					0, 0,
-					1, 0,
-					0.f, "IdleRight_Anim",
-					L"Player/AmongUs/IdleRight.bmp");
-	SetClipColorKey("IdleRight", 255, 255, 255);
-	SAFE_RELEASE(pAnim);
 
 	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
 	pRC->SetRect(-40.f, -50.f, 40.f, 50.f);
@@ -149,38 +206,43 @@ bool Player::Init()
 void Player::Input(float dt)
 {
 	MovableObject::Input(dt);
-	if (KEYPRESS("MoveBack"))
+	if (KEYPRESS("MoveUp"))
+	{
+		MoveYFromSpeed(dt, MD_BACK);
+		SetState(WALK_UP);
+	}
+	else if (KEYPRESS("MoveDown"))
 	{
 		MoveYFromSpeed(dt, MD_FRONT);
+		SetState(WALK_DOWN);
 	}
-	if (KEYPRESS("MoveFront"))
-	{
-		// Jump();
-		 MoveYFromSpeed(dt, MD_BACK);
-	}
-	if (KEYPRESS("MoveLeft"))
+	else if (KEYPRESS("MoveLeft"))
 	{
 		MoveXFromSpeed(dt, MD_BACK);
-		SetState(PlayerState::WALK_LEFT);
+		SetState(WALK_LEFT);
 	}
-	if (KEYPRESS("MoveRight"))
+	else if (KEYPRESS("MoveRight"))
 	{
 		MoveXFromSpeed(dt, MD_FRONT);
-		SetState(PlayerState::WALK_RIGHT);
+		SetState(WALK_RIGHT);
 	}
-	//if (KEYDOWN("Fire"))
-	//{
-	//	Fire();
-	//}
-	//if (KEYDOWN("Skill1"))
-	//{
-	//	MessageBox(NULL, L"Skill1", L"Skill1", MB_OK);
-	//}
-	if (!KEYPRESS("MoveRight") && !KEYPRESS("MoveLeft"))
+	else
 	{
-		auto curState = GetState();
-		if(curState == PlayerState::WALK_LEFT) SetState(PlayerState::IDLE_LEFT);
-		else if(curState == PlayerState::WALK_RIGHT) SetState(PlayerState::IDLE_RIGHT);
+		switch (m_eState)
+		{
+		case WALK_RIGHT:
+			SetState(IDLE_RIGHT);
+			break;
+		case WALK_LEFT:
+			SetState(IDLE_LEFT);
+			break;
+		case WALK_UP:
+			SetState(IDLE_UP);
+			break;
+		case WALK_DOWN:
+			SetState(IDLE_DOWN);
+			break;
+		}
 	}
 }
 

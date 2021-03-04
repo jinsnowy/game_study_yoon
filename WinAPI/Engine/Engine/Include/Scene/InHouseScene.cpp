@@ -11,7 +11,7 @@ InHouseScene::~InHouseScene()
 
 bool InHouseScene::Init()
 {
-	Layer* pLayer = FindLayer("Player");
+	Layer* pLayer = FindLayer("Object");
 
 	Object* pPlayer = Object::CreateObject<Player>("Player", pLayer);
 

@@ -16,9 +16,8 @@
 #include "../Object/StaticObj/UIPanel.h"
 #include "../Object/StaticObj/UITileSelect.h"
 
-
-
-wchar_t MapEditScene::m_strText[MAX_PATH] = {};
+wchar_t MapEditScene::m_strText1[MAX_PATH] = {};
+wchar_t MapEditScene::m_strText2[MAX_PATH] = {};
 
 MapEditScene::MapEditScene()
 {
@@ -29,7 +28,11 @@ MapEditScene::MapEditScene()
 
 MapEditScene::~MapEditScene()
 {
+    INPUT->DeleteKey("SetTexmode");
+    INPUT->DeleteKey("SetOptionMode");
     INPUT->DeleteKey("ChangeOption");
+    INPUT->DeleteKey("ChangeStage");
+    INPUT->DeleteKey("ResetStage");
     INPUT->DeleteKey("Save");
     INPUT->DeleteKey("Load");
 
@@ -39,7 +42,7 @@ MapEditScene::~MapEditScene()
     
     SAFE_RELEASE(m_pSelUI);
     SAFE_RELEASE(m_pSelTexture);
-    SAFE_RELEASE(m_pSelButton);
+    Safe_Release_VecList(m_btn);
 }
 
 bool MapEditScene::Init()
@@ -59,7 +62,11 @@ bool MapEditScene::Init()
 
     LoadOptionTiles(L"SV/Option/");
 
+    INPUT->AddKey("SetTexmode", '1');
+    INPUT->AddKey("SetOptionMode", '2');
     INPUT->AddKey("ChangeOption", 'B');
+    INPUT->AddKey("ChangeStage", VK_TAB);
+    INPUT->AddKey("ResetStage", VK_CONTROL, 'R');
     INPUT->AddKey("Save", VK_CONTROL, 'S');
     INPUT->AddKey("Load", VK_CONTROL, 'O');
 
@@ -87,15 +94,17 @@ void MapEditScene::Input(float dt)
         CAMERA->Scroll(300.f * dt, 0.f);
     }
 
-    if (GetAsyncKeyState('1'))
+    if (KEYDOWN("SetTexMode"))
     {
         m_eTem = TEM_TEXTURE;
         SetSelectTexture(nullptr);
     }
-    if (GetAsyncKeyState('2'))
+    if (KEYDOWN("SetOptionMode"))
     {
         m_eTem = TEM_OPTION;
-        SetSelectTexture(nullptr);
+        m_eEditOption = static_cast<TILE_OPTION>(TO_NOMOVE);
+        Texture* selTex = RESOURCE_MANAGER->FindTexture(m_optTexKey[m_eEditOption]);
+        SetSelectTexture(selTex);
     }
 
     if (KEYDOWN("ChangeOption") && m_eTem == TEM_OPTION)
@@ -103,29 +112,36 @@ void MapEditScene::Input(float dt)
         m_eEditOption = static_cast<TILE_OPTION>((m_eEditOption + 1) % TO_END);
         Texture* selTex = RESOURCE_MANAGER->FindTexture(m_optTexKey[m_eEditOption]);
         SetSelectTexture(selTex);
-        SAFE_RELEASE(selTex);
     }
 
     if (KEYPRESS("MouseLButton"))
     {
         Pos tMouseClientPos = MOUSECLIENTPOS;
         Pos tMouseWorldPos = MOUSEWORLDPOS;
-        Texture* pTex = m_pSelUI->SelectTile(tMouseClientPos);
-        if (pTex) 
-            SetSelectTexture(pTex);
 
-        else if (!m_pSelUI->SelectUITag(tMouseClientPos))
+        if (m_eTem == TEM_TEXTURE)
+        {
+            Texture* pTex = m_pSelUI->SelectTile(tMouseClientPos);
+            if (pTex)
+                SetSelectTexture(pTex);
+        }
+        if (!m_pSelUI->SelectUITag(tMouseClientPos))
         {
             switch (m_eTem)
             {
             case TEM_TEXTURE:
-                    m_vecStage[m_eCurStage]->ChangeTileTexture(tMouseWorldPos, m_pSelTexture);
+                 m_vecStage[m_eCurStage]->ChangeTileTexture(tMouseWorldPos, m_pSelTexture);
                 break;
             case TEM_OPTION:
                  m_vecStage[m_eCurStage]->ChangeTileOption(tMouseWorldPos, m_eEditOption);
                 break;
             }
         }
+    }
+
+    if (KEYDOWN("ChangeStage"))
+    {
+        ChangeStage();
     }
 
     if (KEYPRESS("MouseRButton"))
@@ -143,15 +159,35 @@ void MapEditScene::Input(float dt)
         }
     }
 
+
+    if (KEYDOWN("ResetStage"))
+    {
+        ShowCursor(TRUE);
+        DialogBox(WINDOWINSTANCE, MAKEINTRESOURCE(IDD_DIALOG2), WINDOWHANDLE, MapEditScene::DlgProc2);
+        ShowCursor(FALSE);
+
+        char strX[10], strY[10];
+        WideCharToMultiByte(CP_ACP, 0, m_strText1, -1, strX, 10, 0, 0);
+        WideCharToMultiByte(CP_ACP, 0, m_strText2, -1, strY, 10, 0, 0);
+        if (strlen(strX) && strlen(strY))
+        {
+            int sizeX = stoi(string(strX)); int sizeY = stoi(string(strY));
+            if (sizeX > 0 && sizeY > 0)
+            {
+                SetUpDefaultStages(sizeX, sizeY);
+            }
+        }
+    }
+
     if (KEYDOWN("Save"))
     {
         ShowCursor(TRUE);
-        DialogBox(WINDOWINSTANCE, MAKEINTRESOURCE(IDD_DIALOG1), WINDOWHANDLE, MapEditScene::DlgProc);
+        DialogBox(WINDOWINSTANCE, MAKEINTRESOURCE(IDD_DIALOG1), WINDOWHANDLE, MapEditScene::DlgProc1);
         ShowCursor(FALSE);
 
         // 파일명을 이용하여 저장한다.
         char strFileName[MAX_PATH] = {};
-        WideCharToMultiByte(CP_ACP, 0, m_strText, -1, strFileName, lstrlen(m_strText), 0, 0);
+        WideCharToMultiByte(CP_ACP, 0, m_strText1, -1, strFileName, lstrlen(m_strText1), 0, 0);
 
         SaveDefaultStages(strFileName);
     }
@@ -159,17 +195,17 @@ void MapEditScene::Input(float dt)
     if (KEYDOWN("Load"))
     {
         ShowCursor(TRUE);
-        DialogBox(WINDOWINSTANCE, MAKEINTRESOURCE(IDD_DIALOG1), WINDOWHANDLE, MapEditScene::DlgProc);
+        DialogBox(WINDOWINSTANCE, MAKEINTRESOURCE(IDD_DIALOG1), WINDOWHANDLE, MapEditScene::DlgProc1);
         ShowCursor(FALSE);
 
         // 파일명을 이용하여 읽어온다.
         char strFileName[MAX_PATH] = {};
-        WideCharToMultiByte(CP_ACP, 0, m_strText, -1, strFileName, lstrlen(m_strText), 0, 0);
+        WideCharToMultiByte(CP_ACP, 0, m_strText1, -1, strFileName, lstrlen(m_strText1), 0, 0);
         LoadDefaultStages(strFileName);
     }
 }
 
-INT_PTR MapEditScene::DlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+INT_PTR MapEditScene::DlgProc1(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
@@ -180,10 +216,36 @@ INT_PTR MapEditScene::DlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
         case IDOK:
             // Edit Box에서 문자열을 얻어온다.
-            memset(m_strText, 0, sizeof(wchar_t) * MAX_PATH);
-            GetDlgItemText(hWnd, IDC_EDIT1, m_strText, MAX_PATH);
+            memset(m_strText1, 0, sizeof(wchar_t) * MAX_PATH);
+            GetDlgItemText(hWnd, IDC_EDIT1, m_strText1, MAX_PATH);
         case IDCANCEL:
             EndDialog(hWnd, IDOK);
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    return FALSE;
+}
+
+INT_PTR MapEditScene::DlgProc2(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    switch (msg)
+    {
+    case WM_INITDIALOG:
+        return TRUE;
+    case WM_COMMAND:
+        memset(m_strText1, 0, sizeof(wchar_t) * MAX_PATH);
+        memset(m_strText2, 0, sizeof(wchar_t) * MAX_PATH);
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+            GetDlgItemText(hWnd, IDC_SIZEX, m_strText1, MAX_PATH);
+            GetDlgItemText(hWnd, IDC_SIZEY, m_strText2, MAX_PATH);
+            EndDialog(hWnd, IDOK);
+            return TRUE;
+        case IDCANCEL:
+            EndDialog(hWnd, IDNO);
             return TRUE;
         }
         return FALSE;
@@ -272,7 +334,7 @@ void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& strlayerTag
     StageClear(eStageTag, strlayerTag);
     Layer* pStageLayer = FindLayer(strlayerTag);
     m_vecStage[eStageTag] = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
-    m_vecStage[eStageTag]->CreateTile(numX, numY, TILESIZE, TILESIZE, Pos(0.f,0.f));
+    m_vecStage[eStageTag]->CreateTile(numX, numY, TILESIZE, TILESIZE);
 }
 
 void MapEditScene::LoadDefaultStages(const char* fileName)
@@ -333,31 +395,22 @@ void MapEditScene::SetUpUIButton()
     SAFE_RELEASE(pBackBtn);
 
     //// Stage 번호
+    m_btn.resize(m_btnFileName.size(), nullptr);
     wstringstream path;
     for (int i = 0; i < m_btnFileName.size(); ++i)
     {
-
         path << L"SV/Numbers/Tag/" << m_btnFileName[i] << L".bmp";
         string strKey(GetChar(m_btnFileName[i].c_str()));
-        UIButton* pBtn = Object::CreateObject<UIButton>(strKey, pLayer);
-        pBtn->SetTexture(strKey, path.str().c_str());
-        pBtn->SetSize(120, 60);
-        pBtn->SetColorKey(255, 255, 255);
+        m_btn[i] = Object::CreateObject<UIButton>(strKey, pLayer);
+        m_btn[i]->SetTexture(strKey, path.str().c_str());
+        m_btn[i]->SetSize(120, 60);
+        m_btn[i]->SetColorKey(255, 255, 255);
         if (i == 0)
         {
-            m_pSelButton = pBtn;
-            m_pSelButton->AddRef();
-            pBtn->SetImageOffset(120, 0);
+            m_btn[i]->SetImageOffset(120, 0);
         }
-        Size tSize = pBtn->GetSize();
-        pBtn->SetPos(20+i * tSize.x, 20);
-        ColliderRect* pRC = static_cast<ColliderRect*>(pBtn->GetCollider("ButtonBody"));
-        
-        pRC->SetRect(0.f, 0.f, tSize.x, tSize.y);
-        SAFE_RELEASE(pRC);
-        pBtn->SetCallbackByType(this, pBtn, i, &MapEditScene::StageButtonCallback);
-        SAFE_RELEASE(pBtn);
-
+        Size tSize = m_btn[i]->GetSize();
+        m_btn[i]->SetPos(20+i * tSize.x, 20);
         path.clear();
         path.str(L"");
     }
@@ -376,7 +429,8 @@ void MapEditScene::SetUpTileSelectUI()
     SAFE_RELEASE(pTex);
 
     m_pSelUI->LoadTiles(SEL_GROUND, L"SV/TileGround/");
-    m_pSelUI->LoadTiles(SEL_OBJECT, L"SV/TileObject/");
+    m_pSelUI->LoadTiles(SEL_OBJECT1, L"SV/TileObject/");
+    m_pSelUI->LoadTiles(SEL_OBJECT2, L"SV/Object/");
     m_pSelUI->LoadTiles(SEL_STATIC, L"SV/TileStatic/");
     m_pSelUI->LoadTiles(SEL_NUMBER, L"SV/Numbers/Select/");
 }
@@ -387,38 +441,38 @@ void MapEditScene::BackButtonCallback(float dt)
     SCENE_MANAGER->CreateScene<StartScene>(SC_NEXT);
 }
 
-void MapEditScene::StageButtonCallback(UIButton* btn, int type, float dt)
+void MapEditScene::ChangeStage()
 {
-    STAGE_TAG eTag = static_cast<STAGE_TAG>(type);
-    if (m_eCurStage == eTag) return;
-    m_eCurStage = eTag;
+    m_btn[m_iCurStage]->SetImageOffset(0, 0);
+    m_iCurStage = (m_iCurStage + 1) % (ST_END+1);
+    m_btn[m_iCurStage]->SetImageOffset(120, 0);
 
-    switch (eTag)
+    if (m_iCurStage == 0)
     {
-    case ST_GROUND:
+        m_eCurStage = ST_GROUND;
+    }
+    else if (m_iCurStage == 1 || m_iCurStage == 2)
+    {
+        m_eCurStage = ST_OBJECT;
+    }
+    else {
+        m_eCurStage = ST_STATIC;
+    }
+ 
+    switch (m_iCurStage)
+    {
+    case 0:
         m_pSelUI->SetCurSelect(SEL_GROUND);
         break;
-    case ST_OBJECT:
-        m_pSelUI->SetCurSelect(SEL_OBJECT);
+    case 1:
+        m_pSelUI->SetCurSelect(SEL_OBJECT1);
         break;
-    case ST_STATIC:
+    case 2:
+        m_pSelUI->SetCurSelect(SEL_OBJECT2);
+        break;
+    case 3:
         m_pSelUI->SetCurSelect(SEL_STATIC);
         break;
-    }
-
-    if (m_pSelButton != btn)
-    {
-        if (m_pSelButton)
-        {
-            m_pSelButton->SetImageOffset(0, 0);
-        }
-        SAFE_RELEASE(m_pSelButton);
-        if (btn)
-        {
-            m_pSelButton = btn;
-            m_pSelButton->SetImageOffset(120, 0);
-            m_pSelButton->AddRef();
-        }
     }
 }
 

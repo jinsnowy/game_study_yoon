@@ -7,12 +7,16 @@ class Player : public MovableObject
 	friend class Object;
 	friend class Scene;
 private:
-	enum class PlayerState
+	enum PlayerState
 	{
 		IDLE_LEFT,
 		IDLE_RIGHT,
+		IDLE_DOWN,
+		IDLE_UP,
 		WALK_LEFT,
 		WALK_RIGHT,
+		WALK_DOWN,
+		WALK_UP,
 	};
 	PlayerState m_eState = PlayerState::IDLE_RIGHT;
 	Player();
@@ -21,7 +25,8 @@ private:
 private:
 	int m_iHP = 0;
 public:
-	void InitRightAnimation();
+	void InitTexture();
+	void InitAnimation();
 	PlayerState GetState() const { return m_eState; }
 	void SetState(PlayerState state);
 	virtual bool Init();

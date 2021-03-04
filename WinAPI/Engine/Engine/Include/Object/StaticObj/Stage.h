@@ -18,7 +18,7 @@ private:
 	int m_iTileSizeY;
 	vector<class Tile*> m_baseTile;
 public:
-	void CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, Pos tPivot);
+	void CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, Pos tPivot = Pos(0.f, 1.0f));
 public:
 	int GetStageWidth() const { return m_iTileNumX * m_iTileSizeX; }
 	int GetStageHeight() const { return m_iTileNumY * m_iTileSizeY; }

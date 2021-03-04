@@ -25,12 +25,11 @@ bool Input::Init(HWND hWnd)
 {
 	m_hWnd = hWnd;
 
-	AddKey('W', "MoveFront");
-	AddKey('S', "MoveBack");
+	AddKey("MoveUp", 'W');
+	AddKey("MoveDown", 'S');
 	AddKey("MoveLeft", 'A');
 	AddKey("MoveRight", 'D');
-	AddKey("Fire", VK_SPACE);
-	AddKey(VK_CONTROL, "Skill1", '1');
+
 	AddKey(VK_LBUTTON, "MouseLButton");
 	AddKey(VK_RBUTTON, "MouseRButton");
 
@@ -140,7 +139,7 @@ void Input::DeleteKey(const string& strKey)
 {
 	if (FindKey(strKey))
 	{
-		delete m_mapKey[strKey];
+		SAFE_DELETE(m_mapKey[strKey]);
 		m_mapKey.erase(strKey);
 	}
 }

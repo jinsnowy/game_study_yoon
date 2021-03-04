@@ -12,7 +12,8 @@ typedef struct _tagPixel
 enum UISEL_TYPE
 {
 	SEL_GROUND = 0,
-	SEL_OBJECT,
+	SEL_OBJECT1,
+	SEL_OBJECT2,
 	SEL_STATIC,
 	SEL_NUMBER,
 	SEL_END
@@ -68,7 +69,7 @@ enum TILE_OPTION
 {
 	TO_NONE,
 	TO_NOMOVE,
-	// TO_CROP_GROUND,
+	TO_CROP_GROUND,
 	TO_END
 };
 

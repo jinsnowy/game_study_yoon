@@ -6,7 +6,8 @@ class MapEditScene :
 {
 private:
     friend class SceneManager;
-    const vector<wstring> m_btnFileName = { L"GroundSelTag", L"ObjectSelTag", L"StaticTag"};
+    const vector<wstring> m_btnFileName = { L"GroundSelTag", L"ObjectSelTag1", L"ObjectSelTag2", L"StaticTag"};
+    vector<class UIButton*> m_btn;
 private:
     MapEditScene();
     ~MapEditScene();
@@ -19,21 +20,24 @@ private:
 
     class Texture* m_pSelTexture = nullptr;
     class UITileSelect* m_pSelUI = nullptr;
-    class UIButton* m_pSelButton = nullptr;
+
+    int m_iCurStage = 0;
     STAGE_TAG m_eCurStage = ST_GROUND;
 
     vector<class Stage*> m_vecStage;
     vector<string> m_optTexKey;
-    static wchar_t m_strText[MAX_PATH];
+    static wchar_t m_strText1[MAX_PATH];
+    static wchar_t m_strText2[MAX_PATH];
 private:
-    static INT_PTR CALLBACK DlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    static INT_PTR CALLBACK DlgProc1(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    static INT_PTR CALLBACK DlgProc2(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     void BackButtonCallback(float dt);
-    void StageButtonCallback(class UIButton* btn, int type, float dt);
     void LoadOptionTiles(const wchar_t* pBaseFolderName, const string& strPathKey = TEXTURE_PATH);
     void SetSelectTexture(class Texture* tex);
 public:
     virtual void Draw(HDC hDC, float dt);
 private:
+    void ChangeStage();
     void SetUpCamera();
     void SetUpUIButton();
     void SetUpTileSelectUI();

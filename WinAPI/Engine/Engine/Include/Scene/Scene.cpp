@@ -30,7 +30,6 @@ void Scene::ErasePrototype(const string& strPrototypeKey, SCENE_CREATE sc)
 		return;
 
 	SAFE_RELEASE(it->second);
-	m_mapProtoType[sc].erase(it);
 }
 
 void Scene::EraseAllPrototypes(SCENE_CREATE sc)
@@ -89,7 +88,6 @@ bool Scene::Init()
 
 void Scene::Input(float dt)
 {
-
 	auto iterEnd = m_LayerList.end();
 	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{
