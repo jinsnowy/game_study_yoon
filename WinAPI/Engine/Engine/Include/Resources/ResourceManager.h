@@ -9,6 +9,7 @@ private:
 	class Texture* m_pBackBuffer;
 public:
 	class Texture* GetBackBuffer() const;
+
 public:
 	bool Init(HINSTANCE hInst, HDC hDC);
 	// strkey = 텍스쳐 명칭, pFileName = 파일 이름, strPathKey = 텍스쳐 base 경로 
@@ -18,4 +19,5 @@ public:
 	class Texture* LoadTexture(FILE* pFile);
 	class Texture* FindTexture(const string& strKey);
 	void AddTexture(const string& strKey, Texture* pTexture);
+
 };

@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
 #include "Texture.h"
+#include "../Object/Object.h"
 
 DEFINITION_SINGLE(ResourceManager)
 
@@ -115,3 +116,4 @@ void ResourceManager::AddTexture(const string& strKey, Texture* pTexture)
 		m_mapTexture.insert(make_pair(strKey, pTexture));
 	}
 }
+
