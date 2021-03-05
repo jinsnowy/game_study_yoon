@@ -31,9 +31,9 @@ App::~App()
 	CAMERA->Release();
 	INPUT->Release();
 	COLLISION_MANAGER->Release();
+	PROTOTYPE_MANAGER->Release();
 	RESOURCE_MANAGER->Release();
 	SOUND_MANAGER->Release();
-	PROTOTYPE_MANAGER->Release();
 	PATH_MANAGER->Release();
 	TIMER->Release();
 	WINDOW->Release();
@@ -80,15 +80,15 @@ void App::Init()
 	{
 		throw APP_EXCEPT(L"Path Manager init failed.\n");
 	}
-	
-	if (!PROTOTYPE_MANAGER->Init())
-	{
-		throw APP_EXCEPT(L"Prototype Manager init failed.\n");
-	}
 
 	if (!RESOURCE_MANAGER->Init(WINDOW->m_hInst, WINDOW->m_hDC))
 	{
 		throw APP_EXCEPT(L"ResourceManager init failed.\n");
+	}
+
+	if (!PROTOTYPE_MANAGER->Init())
+	{
+		throw APP_EXCEPT(L"Prototype Manager init failed.\n");
 	}
 
 	if (!SOUND_MANAGER->Init())

@@ -63,6 +63,7 @@
 #include <sstream>
 #include <typeinfo>
 #include <filesystem>
+#include <utility>
 
 // 자료구조
 #include <bitset>
@@ -84,6 +85,7 @@
 #include "Resource.h"
 #include "Macro.h"
 #include "utils.h"
+#include "Other/UserException.h"
 
 // 동적 링크 라이브러리
 #pragma comment(lib, "msimg32")

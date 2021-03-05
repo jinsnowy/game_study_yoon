@@ -1,6 +1,14 @@
 #include "UserException.h"
 #include <sstream>
 
+UserException::UserException(const wchar_t* msg, int codeLine, const char* fileName) noexcept
+	:
+	erCodeLine(codeLine),
+	erFileName(fileName)
+{
+	m_whatBuffer = msg;
+}
+
 UserException::UserException(int codeLine, const char* fileName) noexcept
 	:
 	erCodeLine(codeLine),

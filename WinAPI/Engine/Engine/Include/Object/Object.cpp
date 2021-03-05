@@ -3,6 +3,7 @@
 #include "../Scene/Layer.h"
 #include "../Scene/SceneManager.h"
 #include "../Scene/Scene.h"
+#include "../Resources/PrototypeManager.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
 #include "../Core/Camera.h"
@@ -25,6 +26,7 @@ Object::Object() :
     m_tPivot(0, 0),
     m_tSize(0, 0),
     m_tImageOffset(0, 0),
+    m_bHasPrototype(false),
     m_blsPhysics(false),
     m_bEnableAnimation(false),
     m_fGravityTime(0.f)
@@ -229,6 +231,13 @@ void Object::SetAsTextureSize()
 
     m_tSize.x = float(m_pTexture->GetWidth());
     m_tSize.y = float(m_pTexture->GetHeight());
+}
+
+void Object::SetPrototypeTag(const string& prototypeTag)
+{
+    assert(prototypeTag.size());
+    m_strPrototypeTag = prototypeTag;
+    m_bHasPrototype = true;
 }
 
 // ----------------------- Texture
@@ -471,28 +480,14 @@ void Object::SaveFromFullPath(const char* pFullPath)
 
 void Object::Save(FILE* pFile)
 {
-    // Tag 정보 저장
+    // 일반 오브젝트 정보
     int iLength = m_strTag.length();
-
-    // Tag 길이를 저장한다.
     fwrite(&iLength, 4, 1, pFile);
-
-    // Tag 문자열을 저장한다.
     fwrite(m_strTag.c_str(), 1, iLength, pFile);
-
-    // 물리 사용 여부 저장
     fwrite(&m_blsPhysics, 1, 1, pFile);
-
-    // 위치 저장
     fwrite(&m_tPos, sizeof(m_tPos), 1, pFile);
-
-    // 크기 저장
     fwrite(&m_tSize, sizeof(m_tSize), 1, pFile);
-
-    // ImageOffset
     fwrite(&m_tImageOffset, sizeof(m_tImageOffset), 1, pFile);
-
-    // Pivot
     fwrite(&m_tPivot, sizeof(m_tPivot), 1, pFile);
 
     // Texture 저장
@@ -577,19 +572,10 @@ void Object::Load(FILE* pFile)
     strText[iLength] = 0;
     m_strTag = strText;
 
-    // 물리 사용 여부 읽어온다
     fread(&m_blsPhysics, 1, 1, pFile);
-
-    // 위치 읽어온다
     fread(&m_tPos, sizeof(m_tPos), 1, pFile);
-
-    // 크기 읽어온다
     fread(&m_tSize, sizeof(m_tSize), 1, pFile);
-
-    // ImageOffset 읽어온다
     fread(&m_tImageOffset, sizeof(m_tImageOffset), 1, pFile);
-
-    // Pivot 읽어온다
     fread(&m_tPivot, sizeof(m_tPivot), 1, pFile);
 
     // Texture 읽어온다

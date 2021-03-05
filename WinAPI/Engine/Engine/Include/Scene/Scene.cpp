@@ -79,7 +79,6 @@ bool Scene::LayerSort(const Layer* pL1, const Layer* pL2)
 	return pL1->GetZOrder() < pL2->GetZOrder();
 }
 
-
 bool Scene::Init()
 {
 	return true;
@@ -184,6 +183,7 @@ void Scene::Draw(HDC hdc, float dt)
 	auto iterEnd = m_LayerList.end();
 	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{
+#ifdef _DEBUG
 		const string& layerTag = (*it)->GetTag();
 		if (layerTag == "Ground")
 		{
@@ -209,6 +209,7 @@ void Scene::Draw(HDC hdc, float dt)
 				continue;
 			}
 		}
+#endif
 
 		if (!(*it)->GetEnable())
 		{

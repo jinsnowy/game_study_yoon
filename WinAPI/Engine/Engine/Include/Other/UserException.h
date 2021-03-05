@@ -12,6 +12,7 @@ private:
 	int erCodeLine;
 	string erFileName;
 public:
+	UserException(const wchar_t* msg, int codeLine , const char* fileName) noexcept;
 	UserException(int codeLine, const char* fileName) noexcept;
 	// 예외 발생시 상세 내용 출력 인터페이스 
 	virtual const wchar_t* What() const noexcept final;

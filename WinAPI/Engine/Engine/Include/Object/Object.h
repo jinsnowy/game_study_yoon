@@ -5,6 +5,7 @@
 
 class Object : public Ref
 {
+	friend class PrototypeManager;
 private:
 	static list<Object*> m_ObjList;
 public:
@@ -115,10 +116,14 @@ public:
 		return m_blsPhysics;
 	}
 protected:
+	bool m_bHasPrototype;
 	Pos   m_tPos;
 	Pos   m_tPivot;
 	Size  m_tImageOffset;
 	Size  m_tSize;
+	mutable string m_strPrototypeTag;
+private:
+	void SetPrototypeTag(const string& prototypeTag);
 public:
 	Object();
 	Object(const Object& obj);
@@ -142,6 +147,8 @@ public:
 	Size GetImageSize() const;
 	Size GetImageOffset() const { return m_tImageOffset; }
 	Texture* AccessTexture() const { return m_pTexture; }
+	string GetPrototypeTag() const { return m_strPrototypeTag; }
+	bool HasPrototype() const { return m_bHasPrototype; }
 
 	void SetAsTextureSize();
 	void SetPos(float x, float y) { m_tPos.x = x; m_tPos.y = y; }

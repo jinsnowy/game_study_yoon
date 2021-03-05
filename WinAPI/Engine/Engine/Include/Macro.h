@@ -5,6 +5,7 @@
 #define SAFE_DELETE_ARRAY(p)	if(p)	{delete[] p; p = nullptr;}
 #define SAFE_RELEASE(p)			if(p)	{p->Release(); p = nullptr;}
 
+#define EXCEPT(MSG)		UserException(MSG, __LINE__, __FILE__)
 #define KEYDOWN(key)	Input::Instance()->KeyDown(key)
 #define KEYUP(key)		Input::Instance()->KeyUp(key)
 #define KEYPRESS(key)	Input::Instance()->KeyPress(key)

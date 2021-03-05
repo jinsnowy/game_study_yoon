@@ -7,6 +7,7 @@
 #include "../Collider/ColliderRect.h"
 #include "../Core/Camera.h"
 #include "../Core/Input.h"
+#include "../Resources/PrototypeManager.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
 #include "../Resource.h"
@@ -306,18 +307,31 @@ void MapEditScene::SetUpDefaultStages(int numX, int numY)
 
 void MapEditScene::SaveDefaultStages(const char* fileName)
 {
-
     FILE * pFile = PATH_MANAGER->FileOpen(fileName, DATA_PATH, "wb");
 
     m_vecStage[ST_GROUND]->SaveFromFile(pFile);
     m_vecStage[ST_STATIC]->SaveFromFile(pFile);
 
-    list<Object*>::const_iterator iter = m_objList.begin();
-    list<Object*>::const_iterator iterEnd = m_objList.end();
-
-    for (; iter != iterEnd; ++iter)
+    int objNum = m_objList.size();
+    if (objNum > 0)
     {
-        (*iter)->SaveFromFile(pFile);
+        fwrite(&objNum, 4, 1, pFile);
+
+        list<Object*>::const_iterator iter = m_objList.begin();
+        list<Object*>::const_iterator iterEnd = m_objList.end();
+        for (; iter != iterEnd; ++iter)
+        {
+            bool hasPrototype = (*iter)->HasPrototype();
+            if (hasPrototype)
+            {
+                string prototypeTag = (*iter)->GetPrototypeTag();
+                int length = prototypeTag.size();
+                fwrite(&hasPrototype, 1, 1, pFile);
+                fwrite(&length, 4, 1, pFile);
+                fwrite(prototypeTag.c_str(), 1, length, pFile);
+            }
+            (*iter)->SaveFromFile(pFile);
+        }
     }
 
     if (pFile)
@@ -345,6 +359,31 @@ void MapEditScene::LoadDefaultStages(const char* fileName)
 
     m_iTileNumX = m_vecStage[ST_GROUND]->GetTileSize().x;
     m_iTileNumY = m_vecStage[ST_GROUND]->GetTileSize().y;
+
+    int objNum;
+    fread(&objNum, 4, 1, pFile);
+    if (objNum > 0)
+    {
+        int length = 0;
+        char strTag[MAX_PATH] = { 0 };
+        bool hasPrototype = false;
+        Object* pObj = nullptr;
+        for (int i = 0; i < objNum; ++i)
+        {
+            fread(&hasPrototype, 1, 1, pFile);
+            if (hasPrototype)
+            {
+                fread(&length, 4, 1, pFile);
+                fread(strTag, 1, length, pFile);
+                strTag[length] = 0;
+                string prototypeKey = string(strTag);
+                pObj = PROTOTYPE_MANAGER->FindPrototype(prototypeKey)->Clone();
+                pObj->Load(pFile);
+                AddObject(pObj);
+            }
+        }
+    }
+
     if (pFile)
     {
         fclose(pFile);
@@ -387,7 +426,6 @@ void MapEditScene::StageClear(STAGE_TAG eStageTag, const string& layerTag)
         SAFE_RELEASE(m_vecStage[eStageTag]);
     }
 }
-
 
 void MapEditScene::SetUpUIButton()
 {
@@ -563,10 +601,10 @@ void MapEditScene::CameraScroll(float dt)
 void MapEditScene::AddObject(Object* pClone)
 {
     if (pClone == nullptr) return;
-    m_objList.push_back(pClone);
     Object::AddObject(pClone);
     Layer* objLayer = Scene::FindLayer("Object");
     objLayer->AddObject(pClone);
+    m_objList.push_back(pClone);
 }
 
 Object* MapEditScene::CloneObject(Object* pObj, const Pos& worldPos)

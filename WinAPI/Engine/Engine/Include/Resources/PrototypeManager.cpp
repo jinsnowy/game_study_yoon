@@ -72,14 +72,15 @@ void PrototypeManager::LoadTileObjectInFolder(OBJECT_TYPE eType, const wchar_t* 
     for (const auto& entry : fs::directory_iterator(strPath))
     {
         const wchar_t* path = entry.path().c_str();
-        string prototypeStrKey = extract_key(GetChar(path), lstrlen(path));
-        string strTag = prototypeStrKey + "_Prototype";
+        string strTag = extract_key(GetChar(path), lstrlen(path));
+        string prototypeStrKey = strTag + "_Prototype";
         TileObject* tObject = new TileObject;
-        pTex = RESOURCE_MANAGER->LoadTexture(prototypeStrKey, path, "");
+        pTex = RESOURCE_MANAGER->LoadTexture(strTag, path, "");
         pTex->SetColorKey(255, 255, 255);
 
         tObject->SetPivot(0.f, 1.0f);
         tObject->SetTexture(pTex);
+        tObject->SetPrototypeTag(prototypeStrKey);
         tObject->SetTag(strTag);
         tObject->SetAsTextureSize();
         SAFE_RELEASE(pTex);
@@ -89,6 +90,7 @@ void PrototypeManager::LoadTileObjectInFolder(OBJECT_TYPE eType, const wchar_t* 
 
 Object* PrototypeManager::CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer)
 {
+    assert(strPrototypeKey.ends_with("_Prototype"));
 	Object* pProto = FindPrototype(strPrototypeKey);
 
 	if (!pProto)

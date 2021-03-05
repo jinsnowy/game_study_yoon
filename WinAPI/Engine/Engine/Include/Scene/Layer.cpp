@@ -155,6 +155,10 @@ void Layer::Collision(float dt)
 
 void Layer::Draw(HDC hdc, float dt)
 {
+    if (GetTag() == "Object")
+    {
+        m_LayerObjList.sort(ObjectYAxisSort);
+    }
     auto iterEnd = m_LayerObjList.end();
     for (auto it = m_LayerObjList.begin(); it != iterEnd;)
     {
