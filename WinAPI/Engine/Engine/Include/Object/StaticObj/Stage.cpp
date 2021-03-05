@@ -162,11 +162,11 @@ void Stage::Load(FILE* pFile)
     }
 }
 
-int Stage::GetTileOption(const Pos& pos) const
+TILE_OPTION Stage::GetTileOption(const Pos& pos) const
 {
     int ind = GetTileIndex(pos);
     if (ind == -1)
-        return 0;
+        return TO_NONE;
     return m_baseTile[ind]->m_eOption;
 }
 string Stage::GetTileName(const Pos& pos) const
@@ -223,6 +223,20 @@ int Stage::GetTileIndex(float x, float y) const
         return -1;
 
     return idxY * m_iTileNumX + idxX;
+}
+
+INDEX Stage::GetTileRowColIndex(const Pos& tPos) const
+{
+    int index = GetTileIndex(tPos);
+    if (index == -1) return { -1,-1 };
+    return INDEX(index / m_iTileNumY, index % m_iTileNumY);
+}
+
+INDEX Stage::GetTileRowColIndex(float x, float y) const
+{
+    int index = GetTileIndex(x, y);
+    if (index == -1) return { -1,-1 };
+    return INDEX(index / m_iTileNumY, index % m_iTileNumY);
 }
 
 void Stage::ClearTile()

@@ -16,3 +16,14 @@ const char* util::GetChar(const wchar_t* c)
 	WideCharToMultiByte(CP_ACP, 0, c, -1, _char_buffer, lstrlen(c), 0, 0);
 	return _char_buffer;
 }
+
+void util::DrawRedRect(HDC hdc, RECT rc)
+{
+	HPEN myPen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+	HPEN OldPen = (HPEN)SelectObject(hdc, myPen);
+	HBRUSH OldBrush = (HBRUSH)SelectObject(hdc, GetStockObject(NULL_BRUSH));
+
+	Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
+	DeleteObject(SelectObject(hdc, OldPen));
+	DeleteObject(SelectObject(hdc, OldBrush));
+}

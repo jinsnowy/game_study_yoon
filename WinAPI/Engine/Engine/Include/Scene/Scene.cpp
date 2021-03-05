@@ -10,9 +10,8 @@ Scene::Scene()
 {
 	Layer* pLayer = CreateLayer("UI", INT_MAX);
 	pLayer = CreateLayer("HUD", INT_MAX - 1);
-	pLayer = CreateLayer("Static", 3);
-	pLayer = CreateLayer("OnAir", 2);
-	pLayer = CreateLayer("Object", 1);
+	pLayer = CreateLayer("Static", 4);
+	pLayer = CreateLayer("Object", 2);
 	pLayer = CreateLayer("Ground", 0);
 	m_eSceneType = SC_CURRENT;
 }
@@ -194,25 +193,17 @@ void Scene::Draw(HDC hdc, float dt)
 				continue;
 			}
 		}
-		else if (layerTag == "Object")
-		{
-			if (eShowMode != SHOW_ALL && eShowMode != SHOW_OBJECT)
-			{
-				++it;
-				continue;
-			}
-		}
-		else if (layerTag == "OnAir")
-		{
-			if (eShowMode != SHOW_ALL && eShowMode != SHOW_ONAIR)
-			{
-				++it;
-				continue;
-			}
-		}
 		else if (layerTag == "Static")
 		{
 			if (eShowMode != SHOW_ALL && eShowMode != SHOW_STATIC)
+			{
+				++it;
+				continue;
+			}
+		}
+		else if (layerTag == "Object")
+		{
+			if (eShowMode != SHOW_ALL && eShowMode != SHOW_OBJECT)
 			{
 				++it;
 				continue;

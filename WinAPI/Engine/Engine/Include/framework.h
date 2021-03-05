@@ -95,6 +95,7 @@ namespace fs = std::filesystem;
 typedef Vec2F Size;
 typedef Vec2F Pos;
 typedef Vec2I RESOLUTION;
+typedef Vec2I INDEX;
 typedef RectF Rect;
 typedef CircleF Sphere;
 

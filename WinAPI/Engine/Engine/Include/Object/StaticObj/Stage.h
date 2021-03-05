@@ -32,11 +32,13 @@ public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
 public:
-	int GetTileOption(const Pos& pos) const;
+	TILE_OPTION GetTileOption(const Pos& pos) const;
 	string GetTileName(const Pos& pos) const;
 	void SetTileNone(const Pos& tPos);
 	void ChangeTileTexture(const Pos& tPos, class Texture* pTexture);
 	void ChangeTileOption(const Pos& tPos, TILE_OPTION eOption);
+	INDEX GetTileRowColIndex(const Pos& tPos) const;
+	INDEX GetTileRowColIndex(float x, float y) const;
 	int GetTileIndex(const Pos& tPos) const;
 	int GetTileIndex(float x, float y) const;
 	RESOLUTION GetTileSize() const { return { m_iTileSizeX, m_iTileSizeY }; }

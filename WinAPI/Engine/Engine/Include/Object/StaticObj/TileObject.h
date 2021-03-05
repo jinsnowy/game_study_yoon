@@ -2,10 +2,11 @@
 #include "StaticObject.h"
 class TileObject : public StaticObject
 {
+	friend class PrototypeManager;
 protected:
 	TileObject();
 	TileObject(const TileObject& obj);
-	virtual ~TileObject() = 0;
+	virtual ~TileObject();
 public:
 	virtual bool Init();
 	virtual void Input(float dt);
@@ -13,7 +14,7 @@ public:
 	virtual int LateUpdate(float dt);
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
-	virtual TileObject* Clone() = 0;
+	virtual TileObject* Clone();
 public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
@@ -21,4 +22,5 @@ private:
 	int m_iTileIndex;
 public:
 	int GetTileIndex() const { return m_iTileIndex; }
+	void SetTileIndex(int index) { m_iTileIndex = index; }
 };

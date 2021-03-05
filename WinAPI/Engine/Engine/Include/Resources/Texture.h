@@ -14,15 +14,34 @@ public:
                      const string& strKey,
                      const wchar_t* pFileName,
                      const string& strPathKey = TEXTURE_PATH);
-    void TileDraw(HDC hdc, int px, int py, int size = TILESIZE)
+    void DrawImageAt(HDC hdc, const Pos& at)
     {
-        TransparentBlt(hdc, px, py, size, size,
-            GetDC(), 0, 0, size, size, GetColorKey());
+        DrawImageAt(hdc, int(at.x), int(at.y));
     }
-    void TileDraw(HDC hdc, int px, int py, int size_x ,int size_y)
+    void DrawImageAt(HDC hdc, int px, int py)
     {
-        TransparentBlt(hdc, px, py, size_x, size_y,
-            GetDC(), 0, 0, size_x, size_y, GetColorKey());
+        Size tSize = GetSize();
+        if (GetColorKeyEnable())
+        {
+            TransparentBlt(hdc, px, py, int(tSize.x), int(tSize.y),
+                GetDC(), 0, 0,
+                int(tSize.x), int(tSize.y),
+                GetColorKey());
+        }
+        else
+        {
+            BitBlt(hdc, px, py, int(tSize.x), int(tSize.y),
+                GetDC(), 0, 0, SRCCOPY);
+        }
+    }
+    void DrawImageAtFixedSize(HDC hdc, const Pos& at, int size)
+    {
+        DrawImageAtFixedSize(hdc, int(at.x), int(at.y), size);
+    }
+    void DrawImageAtFixedSize(HDC hdc, int px, int py, int size)
+    {
+        Size tSize = GetSize();
+        StretchBlt(hdc, px, py, size, size, GetDC(), 0, 0, int(tSize.x), int(tSize.y), SRCCOPY);
     }
     HDC GetDC() const { return m_hMemDC; }
 private:

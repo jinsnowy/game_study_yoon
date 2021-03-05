@@ -259,6 +259,39 @@ void Object::SetAnimationClipColorKey(const string& strClip, unsigned char r, un
         m_pAnimation->SetClipColorKey(strClip, r, g, b);
     }
 }
+
+void Object::DrawImageAt(HDC hdc, const Pos& at)
+{
+    DrawImageAt(hdc, int(at.x), int(at.y));
+}
+
+void Object::DrawImageAt(HDC hdc, int px, int py)
+{
+    if (m_pTexture)
+    {
+        Size tSize = GetImageSize();
+        int tx = px - m_tPivot.x * tSize.x;
+        int ty = py - m_tPivot.y * tSize.y;
+        m_pTexture->DrawImageAt(hdc, tx, ty);
+    }
+}
+
+void Object::DrawImageAtFixedSize(HDC hdc, const Pos& at, int size)
+{
+    DrawImageAtFixedSize(hdc, int(at.x), int(at.y), size);
+}
+
+void Object::DrawImageAtFixedSize(HDC hdc, int px, int py, int size)
+{
+    if (m_pTexture)
+    {
+        Size tSize = GetImageSize();
+        int tx = px - m_tPivot.x * tSize.x;
+        int ty = py - m_tPivot.y * tSize.y;
+        m_pTexture->DrawImageAtFixedSize(hdc, tx, ty, size);
+    }
+}
+
 // ------------------------
 
 bool Object::Init()

@@ -134,7 +134,6 @@ void App::Process()
 		return;
 	}
 		
-
 	Collision(dt);
 	Draw(dt);
 }
