@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
 #include "Texture.h"
 #include "../Object/Object.h"
+#include "../Application/Window.h"
 
 DEFINITION_SINGLE(ResourceManager)
 
@@ -13,6 +14,7 @@ ResourceManager::ResourceManager()
 ResourceManager::~ResourceManager()
 {
 	SAFE_RELEASE(m_pBackBuffer);
+	SAFE_RELEASE(m_pEmptyBuffer);
 	Safe_Release_Map(m_mapTexture);
 }
 
@@ -20,6 +22,12 @@ Texture* ResourceManager::GetBackBuffer() const
 {
 	m_pBackBuffer->AddRef();
 	return m_pBackBuffer;
+}
+
+Texture* ResourceManager::GetEmptyBuffer() const
+{
+	m_pEmptyBuffer->AddRef();
+	return m_pEmptyBuffer;
 }
 
 bool ResourceManager::Init(HINSTANCE hInst, HDC hDC)
@@ -30,6 +38,13 @@ bool ResourceManager::Init(HINSTANCE hInst, HDC hDC)
 	// 백버퍼를 불러온다.
 	m_pBackBuffer = LoadTexture("BackBuffer", L"BackBuffer.bmp");
 
+	// 빈버퍼
+	m_pEmptyBuffer = Texture::CreateEmptyTexture(hDC, GETRESOLUTION.x, GETRESOLUTION.y);
+
+	m_tBlenFunc.BlendOp = AC_SRC_OVER;
+	m_tBlenFunc.BlendFlags = 0;
+	m_tBlenFunc.SourceConstantAlpha = 0;
+	m_tBlenFunc.AlphaFormat = 0;
 	return true;
 }
 

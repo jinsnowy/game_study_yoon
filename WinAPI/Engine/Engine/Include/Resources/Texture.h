@@ -44,6 +44,8 @@ public:
         StretchBlt(hdc, px, py, size, size, GetDC(), 0, 0, int(tSize.x), int(tSize.y), SRCCOPY);
     }
     HDC GetDC() const { return m_hMemDC; }
+    static Texture* CreateEmptyTexture(HDC hDC, int w, int h, COLORREF color = RGB(0,0,0));
+    static Texture* CreateCopyTexture(HDC hDC, int w, int h);
 private:
     HDC         m_hMemDC;
     HBITMAP     m_hBitmap;

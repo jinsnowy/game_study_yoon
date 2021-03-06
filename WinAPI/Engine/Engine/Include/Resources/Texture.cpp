@@ -56,6 +56,30 @@ bool Texture::LoadTexture(HINSTANCE hInst, HDC hDC,
     return true;
 }
 
+Texture* Texture::CreateEmptyTexture(HDC hDC, int w, int h, COLORREF color)
+{
+    Texture* pTexture = new Texture;
+
+    pTexture->m_hMemDC = CreateCompatibleDC(hDC);
+    pTexture->m_hBitmap = CreateCompatibleBitmap(hDC, w, h);
+    pTexture->m_hOldBitmap = (HBITMAP)SelectObject(pTexture->m_hMemDC, pTexture->m_hBitmap);
+    DrawHDCWithColor(pTexture->m_hMemDC, w, h, color);
+
+    return pTexture;
+}
+
+Texture* Texture::CreateCopyTexture(HDC hDC, int w, int h)
+{
+    Texture* pTexture = new Texture;
+
+    pTexture->m_hMemDC = CreateCompatibleDC(hDC);
+    pTexture->m_hBitmap = CreateCompatibleBitmap(hDC, w, h);
+    pTexture->m_hOldBitmap = (HBITMAP)SelectObject(pTexture->m_hMemDC, pTexture->m_hBitmap);
+    BitBlt(pTexture->m_hMemDC, 0, 0, w, h, hDC, 0, 0, SRCCOPY);
+
+    return pTexture;
+}
+
 
 void Texture::SaveFromPath(const char* pFileName, const string& strPathKey)
 {

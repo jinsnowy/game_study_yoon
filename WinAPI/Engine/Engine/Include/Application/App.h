@@ -27,5 +27,11 @@ private:
 	int LateUpdate(float dt);
 	void Collision(float dt);
 	void Draw(float dt);
+
+private:
+	static constexpr float m_fSceneDelay = 1.0f;
+	static constexpr float m_fSceneDrawPeriod = 0.04f;
+	float m_fDelay = 0.f;
+	void DrawSceneChange();
 };
 

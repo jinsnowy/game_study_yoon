@@ -2,6 +2,7 @@
 #include "Layer.h"
 #include "../Object/Object.h"
 #include "../Scene/SceneManager.h"
+#include "../Application/Window.h"
 #include "../Core/Camera.h"
 
 unordered_map<string, Object*> Scene::m_mapProtoType[SC_END];
@@ -34,17 +35,6 @@ void Scene::ErasePrototype(const string& strPrototypeKey, SCENE_CREATE sc)
 void Scene::EraseAllPrototypes(SCENE_CREATE sc)
 {
 	Safe_Release_Map(m_mapProtoType[sc]);
-}
-
-void Scene::DrawBackGround(HDC hdc, COLORREF color)
-{
-	RESOLUTION tPos = CAMERA->GetWorldRS();
-
-	HBRUSH OldBrush = (HBRUSH)SelectObject(hdc, CreateSolidBrush(color));
-
-	Rectangle(hdc, 0, 0, tPos.x, tPos.y);
-
-	DeleteObject(SelectObject(hdc, OldBrush));
 }
 
 Layer* Scene::FindLayer(const string& tag)
@@ -178,8 +168,10 @@ void Scene::Collision(float dt)
 
 void Scene::Draw(HDC hdc, float dt)
 {
-	DrawBackGround(hdc, RGB(0, 0, 0));
+	DrawHDCWithColor(hdc, GETRESOLUTION.x, GETRESOLUTION.y, RGB(0, 0, 0));
+
 	STAGE_SHOW eShowMode = SCENE_MANAGER->GetShowMode();
+
 	auto iterEnd = m_LayerList.end();
 	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{

@@ -78,7 +78,7 @@ void App::Init()
 
 	if (!PATH_MANAGER->Init())
 	{
-		throw APP_EXCEPT(L"Path Manager init failed.\n");
+		throw APP_EXCEPT(L"PathManager init failed.\n");
 	}
 
 	if (!RESOURCE_MANAGER->Init(WINDOW->m_hInst, WINDOW->m_hDC))
@@ -88,7 +88,7 @@ void App::Init()
 
 	if (!PROTOTYPE_MANAGER->Init())
 	{
-		throw APP_EXCEPT(L"Prototype Manager init failed.\n");
+		throw APP_EXCEPT(L"PrototypeManager init failed.\n");
 	}
 
 	if (!SOUND_MANAGER->Init())
@@ -126,11 +126,13 @@ void App::Process()
 
 	if (Update(dt) == SC_CHANGE)
 	{
+		DrawSceneChange();
 		return;
 	}
 		
 	if (LateUpdate(dt) == SC_CHANGE)
 	{
+		DrawSceneChange();
 		return;
 	}
 		
@@ -181,6 +183,36 @@ void App::Draw(float dt)
 	Mouse* pMouse = INPUT->GetMouse();
 
 	pMouse->Draw(WINDOW->m_hDC, dt);
+}
+
+void App::DrawSceneChange()
+{
+	const int RSW = GETRESOLUTION.x;
+	const int RSH = GETRESOLUTION.y;
+	
+	Texture* pBackBuffer = RESOURCE_MANAGER->GetBackBuffer();
+	Texture* pEmptyTex = Texture::CreateEmptyTexture(WINDOW->m_hDC, RSW, RSH);
+
+	m_fDelay = 0.f;
+	RESOURCE_MANAGER->SetAlphaChannel(0);
+	float th = m_fSceneDrawPeriod;
+	while (m_fDelay < m_fSceneDelay)
+	{
+		const float dt = TIMER->Tick();
+		// 장면 전환 효과
+		m_fDelay += dt;
+		if (m_fDelay > th)
+		{
+			th += m_fSceneDrawPeriod;
+			int alpha = int(255.f * (m_fDelay / m_fSceneDelay));
+			RESOURCE_MANAGER->SetAlphaChannel(alpha);
+			AlphaBlend(WINDOW->m_hDC, 0, 0, RSW, RSH,
+				pEmptyTex->GetDC(), 0, 0, RSW, RSH, RESOURCE_MANAGER->GetBlendFunc());
+		}
+	}
+
+	SAFE_RELEASE(pBackBuffer);
+	SAFE_RELEASE(pEmptyTex);
 }
 
 // Error handling

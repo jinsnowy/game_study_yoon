@@ -10,7 +10,6 @@ class Scene
 private:
 	static unordered_map<string, class Object*> m_mapProtoType[SC_END];
 private:
-	void DrawBackGround(HDC hdc, COLORREF color);
 	void SetSceneType(SCENE_CREATE eType) { m_eSceneType = eType; }
 	static Object* FindPrototype(const string& strkey, SCENE_CREATE sc);
 	static void ChangeProtoType();
