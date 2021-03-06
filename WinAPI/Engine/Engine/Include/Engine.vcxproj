@@ -182,8 +182,6 @@
     <ClInclude Include="Macro.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Object\Mouse.h" />
-    <ClInclude Include="Object\MoveObj\Bullet.h" />
-    <ClInclude Include="Object\MoveObj\Minion.h" />
     <ClInclude Include="Object\MoveObj\MovableObject.h" />
     <ClInclude Include="Object\MoveObj\Player.h" />
     <ClInclude Include="Object\Object.h" />
@@ -193,6 +191,7 @@
     <ClInclude Include="Object\StaticObj\StaticObject.h" />
     <ClInclude Include="Object\StaticObj\Tile.h" />
     <ClInclude Include="Object\StaticObj\TileObject.h" />
+    <ClInclude Include="Object\StaticObj\Tree.h" />
     <ClInclude Include="Object\StaticObj\UI.h" />
     <ClInclude Include="Object\StaticObj\UIButton.h" />
     <ClInclude Include="Object\StaticObj\UIPanel.h" />
@@ -235,8 +234,6 @@
     <ClCompile Include="Core\PathManager.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Object\Mouse.cpp" />
-    <ClCompile Include="Object\MoveObj\Bullet.cpp" />
-    <ClCompile Include="Object\MoveObj\Minion.cpp" />
     <ClCompile Include="Object\MoveObj\MovableObject.cpp" />
     <ClCompile Include="Object\MoveObj\Player.cpp" />
     <ClCompile Include="Object\Object.cpp" />
@@ -246,6 +243,7 @@
     <ClCompile Include="Object\StaticObj\StaticObject.cpp" />
     <ClCompile Include="Object\StaticObj\Tile.cpp" />
     <ClCompile Include="Object\StaticObj\TileObject.cpp" />
+    <ClCompile Include="Object\StaticObj\Tree.cpp" />
     <ClCompile Include="Object\StaticObj\UI.cpp" />
     <ClCompile Include="Object\StaticObj\UIButton.cpp" />
     <ClCompile Include="Object\StaticObj\UIPanel.cpp" />

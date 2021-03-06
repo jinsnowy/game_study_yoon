@@ -11,8 +11,9 @@ typedef struct _tagPixel
 
 enum OBJECT_TYPE
 {
+	OBJ_BUILDING,
 	OBJ_TILE_INNER,
-	OBJ_FREE,
+	OBJ_PLANT,
 	OBJ_END
 };
 

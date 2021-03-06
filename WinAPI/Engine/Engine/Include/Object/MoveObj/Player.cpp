@@ -1,6 +1,5 @@
 #include <cassert>
 #include "Player.h"
-#include "Bullet.h"
 #include "../../Math.h"
 #include "../../Scene/Scene.h"
 #include "../../Core/Input.h"
@@ -187,12 +186,6 @@ bool Player::Init()
 	// 점프할 힘을 설정한다.
 	SetForce(500.f);
 
-	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
-	pRC->SetRect(-40.f, -50.f, 40.f, 50.f);
-	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
-	
-	SAFE_RELEASE(pRC);
-
 	ColliderRect* pRC_bot = AddCollider<ColliderRect>("PlayerBottom");
 	pRC_bot->SetRect(-5.f, 49.f, 5.f, 51.f);
 	pRC_bot->AddCollisionFunction(CS_ENTER, this, &Player::HitPixel);
@@ -306,17 +299,17 @@ void Player::HitPixel(Collider* pSrc, Collider* pDst, float dt)
 	}
 }
 
-void Player::Fire()
-{
-	Object* pBullet = Object::CreateCloneObject("Bullet", "PlayerBullet",m_pScene->GetSceneType(), m_pLayer);
-
-	pBullet->AddCollisionFunction("BulletBody", CS_ENTER, (Bullet*) pBullet, &Bullet::Hit);
-
-	Pos tPos;
-	tPos.x = GetRight() + pBullet->GetPivot().x * pBullet->GetSize().x;
-	tPos.y = GetCenter().y;
-
-	pBullet->SetPos(tPos.x, tPos.y - pBullet->GetSize().y / 2.f);
-
-	SAFE_RELEASE(pBullet);
-}
+//void Player::Fire()
+//{
+//	Object* pBullet = Object::CreateCloneObject("Bullet", "PlayerBullet",m_pScene->GetSceneType(), m_pLayer);
+//
+//	pBullet->AddCollisionFunction("BulletBody", CS_ENTER, (Bullet*) pBullet, &Bullet::Hit);
+//
+//	Pos tPos;
+//	tPos.x = GetRight() + pBullet->GetPivot().x * pBullet->GetSize().x;
+//	tPos.y = GetCenter().y;
+//
+//	pBullet->SetPos(tPos.x, tPos.y - pBullet->GetSize().y / 2.f);
+//
+//	SAFE_RELEASE(pBullet);
+//}

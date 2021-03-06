@@ -37,9 +37,6 @@
     <Filter Include="Object\02. StaticObj">
       <UniqueIdentifier>{1e4bdc5a-a931-478e-aaf6-a41498e42789}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Object\03. Bullet">
-      <UniqueIdentifier>{59278991-4b16-4422-9d78-aefb846e36a6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{5cd27b56-32dd-4c51-bf95-6010308a62e7}</UniqueIdentifier>
     </Filter>
@@ -48,9 +45,6 @@
     </Filter>
     <Filter Include="Object\02. StaticObj\01. Stage">
       <UniqueIdentifier>{816b7ac5-6f28-4def-abf9-c64f10810444}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Textures">
-      <UniqueIdentifier>{b3cb4ae2-1145-45e3-8a2b-c7a4c2168dc5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\01. FrameTimer">
       <UniqueIdentifier>{ae5db66a-679a-47d4-9619-e623c51773b6}</UniqueIdentifier>
@@ -78,6 +72,12 @@
     </Filter>
     <Filter Include="Sound">
       <UniqueIdentifier>{074a5fba-2e37-4bd1-a852-be30f4a0b839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="이미지 파일">
+      <UniqueIdentifier>{b3cb4ae2-1145-45e3-8a2b-c7a4c2168dc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\05. Plant">
+      <UniqueIdentifier>{8c5088e5-8ba3-4bdc-9df5-4af2aa1346d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -186,17 +186,11 @@
     <ClInclude Include="Object\MoveObj\MovableObject.h">
       <Filter>Object\01. MoveObj</Filter>
     </ClInclude>
-    <ClInclude Include="Object\MoveObj\Minion.h">
-      <Filter>Object\01. MoveObj</Filter>
-    </ClInclude>
     <ClInclude Include="Object\StaticObj\StaticObject.h">
       <Filter>Object\02. StaticObj</Filter>
     </ClInclude>
     <ClInclude Include="Object\StaticObj\Stage.h">
       <Filter>Object\02. StaticObj\01. Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\MoveObj\Bullet.h">
-      <Filter>Object\03. Bullet</Filter>
     </ClInclude>
     <ClInclude Include="Sound\SoundManager.h">
       <Filter>Sound</Filter>
@@ -239,6 +233,9 @@
     </ClInclude>
     <ClInclude Include="Resources\PrototypeManager.h">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\StaticObj\Tree.h">
+      <Filter>Object\05. Plant</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -326,17 +323,11 @@
     <ClCompile Include="Object\MoveObj\MovableObject.cpp">
       <Filter>Object\01. MoveObj</Filter>
     </ClCompile>
-    <ClCompile Include="Object\MoveObj\Minion.cpp">
-      <Filter>Object\01. MoveObj</Filter>
-    </ClCompile>
     <ClCompile Include="Object\StaticObj\StaticObject.cpp">
       <Filter>Object\02. StaticObj</Filter>
     </ClCompile>
     <ClCompile Include="Object\StaticObj\Stage.cpp">
       <Filter>Object\02. StaticObj\01. Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\MoveObj\Bullet.cpp">
-      <Filter>Object\03. Bullet</Filter>
     </ClCompile>
     <ClCompile Include="Object\Object.cpp">
       <Filter>Object</Filter>
@@ -377,6 +368,9 @@
     <ClCompile Include="Resources\PrototypeManager.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Object\StaticObj\Tree.cpp">
+      <Filter>Object\05. Plant</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc">
@@ -391,37 +385,37 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\BackBuffer.bmp">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\bullet.bmp">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\hos.bmp">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\Stage1.bmp">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\Stage1.jpg">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\Stage2.bmp">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\Stage2.jpg">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\minion.bmp">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\MaskStage2.bmp">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\Player\Spritesheet.png">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
     <Image Include="..\Bin\Texture\StardewValley_TitleScreen_SpriteSheet.bmp">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -429,7 +423,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Bin\Texture\Player\readme.txt">
-      <Filter>Textures</Filter>
+      <Filter>이미지 파일</Filter>
     </Text>
   </ItemGroup>
 </Project>

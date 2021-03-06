@@ -26,7 +26,6 @@ App::~App()
 #ifdef _DEBUG
 	FreeConsole();
 #endif
-
 	SCENE_MANAGER->Release();
 	CAMERA->Release();
 	INPUT->Release();
@@ -37,7 +36,6 @@ App::~App()
 	PATH_MANAGER->Release();
 	TIMER->Release();
 	WINDOW->Release();
-
 }
 
 int App::Go()

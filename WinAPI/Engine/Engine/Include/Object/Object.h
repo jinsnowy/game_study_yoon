@@ -151,6 +151,8 @@ public:
 	bool HasPrototype() const { return m_bHasPrototype; }
 
 	void SetAsTextureSize();
+	void AddOffset(float x, float y) { m_tPos.x += x; m_tPos.y += y; }
+	void AddOffset(const Pos& offset) { m_tPos += offset; }
 	void SetPos(float x, float y) { m_tPos.x = x; m_tPos.y = y; }
 	void SetSize(float x, float y) { m_tSize.x = x; m_tSize.y = y; }
 	void SetPivot(float x, float y) { m_tPivot.x = x; m_tPivot.y = y; }

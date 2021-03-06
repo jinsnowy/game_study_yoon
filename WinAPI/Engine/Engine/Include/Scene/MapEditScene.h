@@ -51,13 +51,12 @@ private:
     void LoadDefaultStages(const char* fileName);
     void StageClear(STAGE_TAG eStageTag, const string& layerTag);
     void CameraScroll(float dt);
-
 private:
     vector<class Stage*> m_vecStage;
     // 게임상에 object layer에 추가될 오브젝트 입니다.
     list<class Object*> m_objList;
 public:
-    Object* CloneObject(Object* pObj, const Pos& worldPos);
+    Object* CloneObject(Object* const pObj, const Pos& worldPos);
 
     void AddObject(Object* pClone);
     void DeleteTileObject(const Pos& worldPos);

@@ -8,16 +8,16 @@ private:
 	friend class Object;
 	friend class Scene;
 	friend class MapEditScene;
-	int m_iDrawMaxitemNumX;
-	int m_iDrawMaxitemNumY;
-	int m_iValidWidth;
-	int m_iValidHeight;
-	int m_iTotalSizeX;
-	int m_iTotalSizeY;
+	int m_iDrawMaxitemNumX = 0;
+	int m_iDrawMaxitemNumY = 0;
+	int m_iValidWidth = 0;
+	int m_iValidHeight = 0;
+	int m_iTotalSizeX = 0;
+	int m_iTotalSizeY = 0;
 private:
 	int m_iCurPageNum = 0;
 	UISEL_TYPE m_eCurSelTile = SEL_GROUND;
-	OBJECT_TYPE m_eCurSelObject = OBJ_TILE_INNER;
+	OBJECT_TYPE m_eCurSelObject = OBJ_PLANT;
 
 	int m_iMarginWidth = 10;
 	int m_iMarginHeight = 10;

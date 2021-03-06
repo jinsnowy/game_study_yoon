@@ -14,25 +14,28 @@ private:
 public:
 	void LoadTileObjectInFolder(OBJECT_TYPE eType, const wchar_t* pBaseFolderName, const string& strPathKey = TEXTURE_PATH);
 	template<typename T>
+	static T* LoadObject()
+	{
+		T* pObj = new T;
+		if (!pObj->Init())
+		{
+			SAFE_RELEASE(pObj);
+			return nullptr;
+		}
+		return pObj;
+	}
+	template<typename T>
 	static void RegisterProtoType(OBJECT_TYPE eType, const string& strPrototypeKey)
 	{
 		if (FindPrototype(eType, strPrototypeKey))
 			throw EXCEPT(L"[PrototyeManager] Prototype string already exists");
-		T* pObj = new T;
-		if (!pObj->Init())
+		T* pObj = LoadObject<T>();
+		if (pObj)
 		{
-			SAFE_DELETE(pObj);
-			return;
+			RegisterProtoType(eType, strPrototypeKey, pObj);
 		}
-		m_mapProtoType[eType].insert(make_pair(strPrototypeKey, pObj));
 	}
-	static void RegisterProtoType(OBJECT_TYPE eType, const string& strPrototypeKey, Object* pObj)
-	{
-		if (FindPrototype(eType, strPrototypeKey))
-			throw EXCEPT(L"[PrototyeManager] Prototype string already exists");
-
-		m_mapProtoType[eType].insert(make_pair(strPrototypeKey, pObj));
-	}
+	static void RegisterProtoType(OBJECT_TYPE eType, const string& strPrototypeKey, Object* pObj);
 	static Object* FindPrototype(const string& strPrototypeKey);
 	static Object* FindPrototype(OBJECT_TYPE eType, const string& strPrototypeKey);
 	static Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, Layer* pLayer);

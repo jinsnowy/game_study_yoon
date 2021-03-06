@@ -51,7 +51,7 @@ bool UITileSelect::IsObjectTileMode() const
 {
     switch (m_eCurSelObject)
     {
-    case OBJ_FREE:
+    case OBJ_PLANT:
         return false;
     }
     return true;
@@ -304,7 +304,7 @@ void UITileSelect::DrawObjectPanel(HDC hdc, float dt)
     }
 
     // 페이지 번호
-    const int pageNum = prototypes.size() / (m_iDrawMaxitemNumY * m_iDrawMaxitemNumX) + 1;
+    const int pageNum = int(prototypes.size()) / (m_iDrawMaxitemNumY * m_iDrawMaxitemNumX) + 1;
 
     px = tPos.x; py = tPos.y;
     for (int i = 0; i < pageNum; i++)

@@ -5,6 +5,7 @@
 #include "../Scene/Layer.h"
 #include "../Core/PathManager.h"
 #include "../Object/StaticObj/TileObject.h"
+#include "../Object/StaticObj/Tree.h"
 
 DEFINITION_SINGLE(PrototypeManager);
 
@@ -25,7 +26,36 @@ PrototypeManager::~PrototypeManager()
 bool PrototypeManager::Init()
 {
     LoadTileObjectInFolder(OBJ_TILE_INNER, L"SV/TileObject/Inner/");
+    LoadTileObjectInFolder(OBJ_BUILDING, L"SV/TileObject/Building/");
+
+    Tree* pTree = LoadObject<Tree>();
+  
+    RegisterProtoType(OBJ_PLANT, "Tree1_Prototype", pTree);
+    pTree = pTree->Clone();
+    pTree->ChangeTreeTexture(1);
+    RegisterProtoType(OBJ_PLANT, "Tree2_Prototype", pTree);
+    pTree = pTree->Clone();
+    pTree->ChangeTreeTexture(2);
+    RegisterProtoType(OBJ_PLANT, "Tree3_Prototype", pTree);
+
+
+
+
+
+
+
 	return true;
+}
+
+void PrototypeManager::RegisterProtoType(OBJECT_TYPE eType, const string& strPrototypeKey, Object* pObj)
+{
+    if (FindPrototype(eType, strPrototypeKey))
+        throw EXCEPT(L"[PrototyeManager] Prototype string already exists");
+
+    assert(pObj != nullptr);
+
+    pObj->SetPrototypeTag(strPrototypeKey);
+    m_mapProtoType[eType].insert(make_pair(strPrototypeKey, pObj));
 }
 
 Object* PrototypeManager::FindPrototype(const string& strPrototypeKey)

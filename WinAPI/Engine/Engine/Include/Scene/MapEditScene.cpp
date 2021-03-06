@@ -112,7 +112,8 @@ void MapEditScene::Input(float dt)
                 if (pObj) SetSelectObject(pObj);
                 else if (!m_pSelUI->SelectUITag(tMouseClientPos))
                 {
-                    AddObject(CloneObject(m_pSelObject, tMouseWorldPos));
+                    Object* pClone = CloneObject(m_pSelObject, tMouseWorldPos);
+                    AddObject(pClone);
                 }
             }
         }
@@ -280,7 +281,12 @@ void MapEditScene::Draw(HDC hDC, float dt)
         const string& tileName = m_vecStage[i]->GetTileName(MOUSEWORLDPOS);
         const string& stageName = m_vecStage[i]->GetTag();
         const string& objName = GetNearObjectName(MOUSEWORLDPOS);
-        ss << "[" << stageName << "]: " << tileName << ", " << tileOption << " Object: " << objName << "\n";
+        ss << "[" << stageName << "]: " << tileName << ", " << tileOption;
+        if (objName.size())
+        {
+            ss << " Object: " << objName;
+        }
+        ss << "\n";
         int length = ss.str().size();
         TextOut(hDC, MOUSECLIENTPOS.x, MOUSECLIENTPOS.y - 100 + 20 * i, GetWChar(ss.str().c_str()), length);
         ss.clear();
@@ -487,6 +493,8 @@ void MapEditScene::SetUpTileSelectUI()
     m_pSelUI->LoadTiles(SEL_NUMBER, L"SV/Numbers/Select/");
 
     m_pSelUI->LoadPrototypes(OBJ_TILE_INNER);
+    m_pSelUI->LoadPrototypes(OBJ_BUILDING);
+    m_pSelUI->LoadPrototypes(OBJ_PLANT);
 
     m_pSelUI->InitUI();
 }
@@ -550,15 +558,18 @@ string MapEditScene::ConvertToNameOption(TILE_OPTION eOpt) const
     }
 }
 
-string MapEditScene::GetNearObjectName(const Pos& worldPos)
+string MapEditScene::GetNearObjectName(const Pos &worldPos)
 {
+  
     float minDist = FLT_MAX;
     Object* pObj = nullptr;
+    Pos tPos = worldPos - Pos(TILESIZE / 2, -TILESIZE/2);
+
     auto iterEnd = m_objList.end();
     for (auto iter = m_objList.begin(); iter != iterEnd; ++iter)
     {
-        float dist = Math::Distance( (*iter)->GetPos(), worldPos);
-        if (dist < TILESIZE && dist < minDist)
+        float dist = Math::Distance( (*iter)->GetPos(), tPos);
+        if (dist < TILESIZE/2 && dist < minDist)
         {
             pObj = (*iter);
             minDist = dist;
@@ -566,7 +577,9 @@ string MapEditScene::GetNearObjectName(const Pos& worldPos)
     }
     if (pObj)
     {
-        return pObj->GetTag();
+        char buffer[30] = { 0 };
+        sprintf(buffer, "Pos (%.1f,%.1f)", pObj->GetPos().x, pObj->GetPos().y);
+        return pObj->GetPrototypeTag() + string(buffer);
     }
     return "";
 }
@@ -607,22 +620,26 @@ void MapEditScene::AddObject(Object* pClone)
     m_objList.push_back(pClone);
 }
 
-Object* MapEditScene::CloneObject(Object* pObj, const Pos& worldPos)
+Object* MapEditScene::CloneObject(Object* const pObj, const Pos& worldPos)
 {
     if (!pObj) return nullptr;
+
     int clickIndex = m_vecStage[ST_GROUND]->GetTileIndex(worldPos);
     if (clickIndex == -1) return nullptr;
 
-    TileObject* tClone = dynamic_cast<TileObject*>(pObj->Clone());
+    Object* pClone = pObj->Clone();
+    TileObject* tClone = dynamic_cast<TileObject*>(pClone);
+    int row = clickIndex / m_iTileNumY + 1;
+    int col = clickIndex % m_iTileNumY;
+    Pos offset(col * TILESIZE, row * TILESIZE);
     if (tClone)
     {
         tClone->SetTileIndex(clickIndex);
-        int row = clickIndex / m_iTileNumY + 1;
-        int col = clickIndex % m_iTileNumY;
-        tClone->SetPos(col * TILESIZE, row * TILESIZE);
+        tClone->SetPos(offset);
         return tClone;
     }
-    return pObj->Clone();
+    pClone->AddOffset(offset);
+    return pClone;
 }
 
 void MapEditScene::DeleteTileObject(const Pos& worldPos)
@@ -657,13 +674,12 @@ void MapEditScene::DeleteTileFreeObject(const Pos& worldPos)
     auto iterEnd = m_objList.end();
     for (auto iter = m_objList.begin(); iter != iterEnd; ++iter)
     {
-        MovableObject* pMoveObj = dynamic_cast<MovableObject*>(*iter);
-        if (pMoveObj)
+        if ((*iter))
         {
-            float dist = Math::Distance(pMoveObj->GetPos(), worldPos);
-            if (dist < 100.f && dist < minDist)
+            float dist = Math::Distance((*iter)->GetPos(), worldPos);
+            if (dist < TILESIZE && dist < minDist)
             {
-                pObj = pMoveObj;
+                pObj = (*iter);
                 minDist = dist;
                 iterTarget = iter;
             }
