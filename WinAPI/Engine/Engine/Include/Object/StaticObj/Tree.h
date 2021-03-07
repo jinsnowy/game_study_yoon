@@ -1,7 +1,7 @@
 #pragma once
-#include "StaticObject.h"
-class Tree :
-    public StaticObject
+#include "Tile.h"
+
+class Tree : public Tile
 {
 	friend class PrototypeManager;
 private:

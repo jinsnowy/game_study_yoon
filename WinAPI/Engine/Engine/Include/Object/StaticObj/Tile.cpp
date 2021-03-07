@@ -26,14 +26,6 @@ Tile::~Tile()
 }
 
 
-
-void Tile::ReleaseTexture()
-{
-	SAFE_RELEASE(m_pTexture);
-    SAFE_RELEASE(m_pOptionTex);
-    m_eOption = TO_NONE;
-}
-
 void Tile::SetTileOption(TILE_OPTION eOption)
 {
 	m_eOption = eOption;

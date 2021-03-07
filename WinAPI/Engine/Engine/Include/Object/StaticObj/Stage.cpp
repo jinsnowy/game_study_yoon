@@ -28,25 +28,13 @@ Stage::~Stage()
     ClearTile();
 }
 
-void Stage::DrawBackGround(HDC hdc, COLORREF color)
-{
-    RESOLUTION tPos = CAMERA->GetWorldRS();
-
-    HBRUSH OldBrush = (HBRUSH)SelectObject(hdc, CreateSolidBrush(color));
-
-    Rectangle(hdc, 0, 0, tPos.x, tPos.y);
-
-    DeleteObject(SelectObject(hdc, OldBrush));
-}
-
-void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, Pos tPivot)
+void Stage::CreateTile(int iNumX, int iNumY)
 {
     Safe_Release_VecList(m_baseTile);
 
     m_iTileNumX = iNumX;
     m_iTileNumY = iNumY;
-    m_iTileSizeX = iSizeX;
-    m_iTileSizeY = iSizeY;
+
     Pos offset;
     for (int i = 0; i < iNumY; ++i)
     {
@@ -54,12 +42,12 @@ void Stage::CreateTile(int iNumX, int iNumY, int iSizeX, int iSizeY, Pos tPivot)
         {
             Tile* pTile = Object::CreateObject<Tile>("Tile", nullptr);
             
-            offset.x = j * iSizeX;
-            offset.y = i * iSizeY;
+            offset.x = j * TILESIZE;
+            offset.y = i * TILESIZE;
 
-            pTile->SetSize(iSizeX, iSizeY);
+            pTile->SetSize(TILESIZE, TILESIZE);
             pTile->SetPos(offset.x, offset.y);
-            pTile->SetPivot(tPivot);
+            pTile->SetPivot(0.f, 1.0f);
             m_baseTile.push_back(pTile);
         }
     }
@@ -105,15 +93,15 @@ void Stage::Draw(HDC hDC, float dt)
     for (int i = 1; i <= m_iTileNumY; ++i)
     {
         // 가로줄을 그린다.
-        MoveToEx(hDC, 0, i * m_iTileSizeY - tCamPos.y, NULL);
-        LineTo(hDC, m_iTileNumX * m_iTileSizeX - tCamPos.x, i * m_iTileSizeY - tCamPos.y);
+        MoveToEx(hDC, 0, i * TILESIZE - tCamPos.y, NULL);
+        LineTo(hDC, m_iTileNumX * TILESIZE - tCamPos.x, i * TILESIZE - tCamPos.y);
     }
 
     // 세로줄을 그린다.
     for (int i = 1; i <= m_iTileNumX; ++i)
     {
-        MoveToEx(hDC, i * m_iTileSizeX - tCamPos.x, 0, NULL);
-        LineTo(hDC, i * m_iTileSizeX - tCamPos.x, m_iTileNumY * m_iTileSizeY - tCamPos.y);
+        MoveToEx(hDC, i * TILESIZE - tCamPos.x, 0, NULL);
+        LineTo(hDC, i * TILESIZE - tCamPos.x, m_iTileNumY * TILESIZE - tCamPos.y);
     }
 #endif
 }
@@ -131,8 +119,6 @@ void Stage::Save(FILE* pFile)
     // 스테이지 정보 저장
     fwrite(&m_iTileNumX, 4, 1, pFile);
     fwrite(&m_iTileNumY, 4, 1, pFile);
-    fwrite(&m_iTileSizeX, 4, 1, pFile);
-    fwrite(&m_iTileSizeY, 4, 1, pFile);
 
     for (size_t i = 0; i < m_baseTile.size(); ++i)
     {
@@ -147,9 +133,7 @@ void Stage::Load(FILE* pFile)
     // 스테이지 정보 저장
     fread(&m_iTileNumX, 4, 1, pFile);
     fread(&m_iTileNumY, 4, 1, pFile);
-    fread(&m_iTileSizeX, 4, 1, pFile);
-    fread(&m_iTileSizeY, 4, 1, pFile);
-    
+
     ClearTile();
 
     for (int i = 0; i < m_iTileNumX * m_iTileNumY; ++i)
@@ -169,6 +153,7 @@ TILE_OPTION Stage::GetTileOption(const Pos& pos) const
         return TO_NONE;
     return m_baseTile[ind]->m_eOption;
 }
+
 string Stage::GetTileName(const Pos& pos) const
 {
     int ind = GetTileIndex(pos);
@@ -186,17 +171,30 @@ void Stage::SetTileNone(const Pos& tPos)
 
     if (ind == -1)
         return;
-    m_baseTile[ind]->ReleaseTexture();
+
+    Object::EraseObject(m_baseTile[ind]);
+    SAFE_RELEASE(m_baseTile[ind]);
+
+    m_baseTile[ind] = Object::CreateObject<Tile>("Tile", nullptr);
+    INDEX index = GetTileRowColIndex(tPos);
+    Pos offset (index.x * TILESIZE, index.y*TILESIZE);
+
+    m_baseTile[ind]->SetSize(TILESIZE, TILESIZE);
+    m_baseTile[ind]->SetPos(offset.x, offset.y);
+    m_baseTile[ind]->SetPivot(0.f, 1.0f);
 }
 
-void Stage::ChangeTileTexture(const Pos& tPos, Texture* pTexture)
+void Stage::ChangeTileByCloneTile(const Pos& tPos, Tile* pClone)
 {
     int ind = GetTileIndex(tPos);
 
     if (ind == -1)
         return;
 
-    m_baseTile[ind]->SetTexture(pTexture);
+    Object::EraseObject(m_baseTile[ind]);
+    SAFE_RELEASE(m_baseTile[ind]);
+
+    m_baseTile[ind] = pClone;
 }
 
 void Stage::ChangeTileOption(const Pos& tPos, TILE_OPTION eOption)
@@ -216,27 +214,22 @@ int Stage::GetTileIndex(const Pos& tPos) const
 
 int Stage::GetTileIndex(float x, float y) const
 {
-    int idxX = (int)x / m_iTileSizeX;
-    int idxY = (int)y / m_iTileSizeY;
+    INDEX index = GetTileRowColIndex(x, y);
 
-    if (idxX < 0 || idxX >= m_iTileNumX || idxY < 0 || idxY >= m_iTileNumY)
+    if (index.x < 0 || index.x >= m_iTileNumX || index.y < 0 || index.y >= m_iTileNumY)
         return -1;
 
-    return idxY * m_iTileNumX + idxX;
+    return index.y * m_iTileNumX + index.x;
 }
 
 INDEX Stage::GetTileRowColIndex(const Pos& tPos) const
 {
-    int index = GetTileIndex(tPos);
-    if (index == -1) return { -1,-1 };
-    return INDEX(index / m_iTileNumY, index % m_iTileNumY);
+    return GetTileRowColIndex(tPos.x, tPos.y);
 }
 
 INDEX Stage::GetTileRowColIndex(float x, float y) const
 {
-    int index = GetTileIndex(x, y);
-    if (index == -1) return { -1,-1 };
-    return INDEX(index / m_iTileNumY, index % m_iTileNumY);
+    return INDEX(int(x) / TILESIZE, int(y) /TILESIZE);
 }
 
 void Stage::ClearTile()
@@ -246,4 +239,20 @@ void Stage::ClearTile()
         Object::EraseObject(m_baseTile[i]);
     }
     Safe_Release_VecList(m_baseTile);
+}
+
+void Stage::AddAllTilesInLayer(class Layer* pLayer)
+{
+    for (Tile* tile : m_baseTile)
+    {
+        pLayer->AddObject(static_cast<Object*>(tile));
+    }
+}
+
+void Stage::DeleteAllTilesInLayer(class Layer* pLayer)
+{
+    for (Tile* tile : m_baseTile)
+    {
+        pLayer->EraseObject(static_cast<Object*>(tile));
+    }
 }

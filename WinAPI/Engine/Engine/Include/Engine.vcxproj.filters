@@ -213,9 +213,6 @@
     <ClInclude Include="Object\Mouse.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="Object\StaticObj\TargetRect.h">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClInclude>
     <ClInclude Include="Object\StaticObj\UITileSelect.h">
       <Filter>Object\04. UI</Filter>
     </ClInclude>
@@ -227,9 +224,6 @@
     </ClInclude>
     <ClInclude Include="Scene\InHouseScene.h">
       <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\StaticObj\TileObject.h">
-      <Filter>Object\02. StaticObj</Filter>
     </ClInclude>
     <ClInclude Include="Resources\PrototypeManager.h">
       <Filter>Resources</Filter>
@@ -347,9 +341,6 @@
     <ClCompile Include="Object\Mouse.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="Object\StaticObj\TargetRect.cpp">
-      <Filter>Object\02. StaticObj</Filter>
-    </ClCompile>
     <ClCompile Include="Object\StaticObj\UITileSelect.cpp">
       <Filter>Object\04. UI</Filter>
     </ClCompile>
@@ -361,9 +352,6 @@
     </ClCompile>
     <ClCompile Include="Scene\InHouseScene.cpp">
       <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\StaticObj\TileObject.cpp">
-      <Filter>Object\02. StaticObj</Filter>
     </ClCompile>
     <ClCompile Include="Resources\PrototypeManager.cpp">
       <Filter>Resources</Filter>

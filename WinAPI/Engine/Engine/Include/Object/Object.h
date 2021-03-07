@@ -166,10 +166,10 @@ public:
 	void SetTexture(const string& strKey, const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);
 	void SetColorKey(unsigned char r, unsigned char g, unsigned char b);
 	void SetAnimationClipColorKey(const string& strClip, unsigned char r, unsigned char g, unsigned char b);
-	void DrawImageAt(HDC hdc, const Pos& at);
-	void DrawImageAt(HDC hdc, int px, int py);
-	void DrawImageAtFixedSize(HDC hdc, const Pos& at, int size);
-	void DrawImageAtFixedSize(HDC hdc, int px, int py, int size);
+	void DrawImageAt(HDC hdc, const Pos& at, bool ignorePivot = false);
+	void DrawImageAt(HDC hdc, int px, int py, bool ignorePivot = false);
+	void DrawImageAtFixedSize(HDC hdc, const Pos& at, int size, bool ignorePivot = false);
+	void DrawImageAtFixedSize(HDC hdc, int px, int py, int size, bool ignorePivot = false);
 public:
 	virtual bool Init();
 	virtual void Input(float dt);

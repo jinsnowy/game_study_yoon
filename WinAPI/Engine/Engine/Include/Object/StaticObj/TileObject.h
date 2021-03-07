@@ -1,6 +1,6 @@
 #pragma once
-#include "StaticObject.h"
-class TileObject : public StaticObject
+#include "Tile.h"
+class TileObject : public Tile
 {
 	friend class PrototypeManager;
 protected:

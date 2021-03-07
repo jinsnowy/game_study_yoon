@@ -8,7 +8,7 @@ Tree::Tree()
 }
 
 Tree::Tree(const Tree& obj)
-	: StaticObject(obj)
+	: Tile(obj)
 {
 }
 
@@ -47,29 +47,29 @@ void Tree::ChangeTreeTexture(int id)
 
 void Tree::Input(float dt)
 {
-	StaticObject::Input(dt);
+	Tile::Input(dt);
 }
 
 int Tree::Update(float dt)
 {
-	StaticObject::Update(dt);
+	Tile::Update(dt);
 	return 0;
 }
 
 int Tree::LateUpdate(float dt)
 {
-	StaticObject::LateUpdate(dt);
+	Tile::LateUpdate(dt);
 	return 0;
 }
 
 void Tree::Collision(float dt)
 {
-	StaticObject::Collision(dt);
+	Tile::Collision(dt);
 }
 
 void Tree::Draw(HDC hDC, float dt)
 {
-	StaticObject::Draw(hDC, dt);
+	Tile::Draw(hDC, dt);
 }
 
 Tree* Tree::Clone()
@@ -79,10 +79,10 @@ Tree* Tree::Clone()
 
 void Tree::Save(FILE* pFile)
 {
-	StaticObject::Save(pFile);
+	Tile::Save(pFile);
 }
 
 void Tree::Load(FILE* pFile)
 {
-	StaticObject::Load(pFile);
+	Tile::Load(pFile);
 }

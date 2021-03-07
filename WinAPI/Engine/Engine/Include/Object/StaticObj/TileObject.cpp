@@ -7,7 +7,7 @@ TileObject::TileObject()
 }
 
 TileObject::TileObject(const TileObject& obj)
-    :StaticObject(obj)
+    :Tile(obj)
 {
     m_iTileIndex = obj.m_iTileIndex;
 }
@@ -23,29 +23,29 @@ bool TileObject::Init()
 
 void TileObject::Input(float dt)
 {
-    StaticObject::Input(dt);
+    Tile::Input(dt);
 }
 
 int TileObject::Update(float dt)
 {
-    StaticObject::Update(dt);
+    Tile::Update(dt);
     return 0;
 }
 
 int TileObject::LateUpdate(float dt)
 {
-    StaticObject::LateUpdate(dt);
+    Tile::LateUpdate(dt);
     return 0;
 }
 
 void TileObject::Collision(float dt)
 {
-    StaticObject::Collision(dt);
+    Tile::Collision(dt);
 }
 
 void TileObject::Draw(HDC hDC, float dt)
 {
-    StaticObject::Draw(hDC, dt);
+    Tile::Draw(hDC, dt);
 }
 
 TileObject* TileObject::Clone()
@@ -55,14 +55,14 @@ TileObject* TileObject::Clone()
 
 void TileObject::Save(FILE* pFile)
 {
-    StaticObject::Save(pFile);
+    Tile::Save(pFile);
 
     fwrite(&m_iTileIndex, 4, 1, pFile);
 }
 
 void TileObject::Load(FILE* pFile)
 {
-    StaticObject::Load(pFile);
+    Tile::Load(pFile);
 
     fread(&m_iTileIndex, 4, 1, pFile);
 }
