@@ -16,6 +16,8 @@ private:
 	Scene* m_pScene;
 	list<Object*> m_LayerObjList;
 public:
+	const list<Object*>* GetObjectList() const { return &m_LayerObjList; }
+public:
 	~Layer();
 
 	void EraseObject(Object* pObj);

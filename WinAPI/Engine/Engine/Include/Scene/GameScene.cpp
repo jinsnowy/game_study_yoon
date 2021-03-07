@@ -5,36 +5,13 @@
 #include "../Core/Camera.h"
 #include "Layer.h"
 
-/*
-    Object* pMinion = Object::CreateObject<Minion>("Minion", pLayer);
-
-    SAFE_RELEASE(pMinion);
-
-    Bullet* pBullet = Scene::CreatePrototype<Bullet>("Bullet", m_eSceneType);
-    pBullet->SetSize(50.f, 50.f);
-
-    SAFE_RELEASE(pBullet);
-
-    Layer* pStageLayer = FindLayer("Stage");
-
-    Stage* pStage = Object::CreateObject<Stage>("Stage", pStageLayer);
-
-    ColliderPixel* pPixel = pStage->AddCollider<ColliderPixel>("StageColl");
-
-    pPixel->SetPixelInfo("MaskStage2.bmp");
-
-    SAFE_RELEASE(pPixel);
-
-    SAFE_RELEASE(pStage);
-*/
-
 GameScene::GameScene()
 {
 }
 
 GameScene::~GameScene()
 {
-
+    
 }
 
 
@@ -106,4 +83,5 @@ void GameScene::LoadDefaultStages(const char* fileName)
 
     Stage* pStage = static_cast<Stage*>(Object::FindObject("ObjectStage"));
     pStage->AddAllTilesInLayer(FindLayer("Object"));
+    Object::EraseObject(Object::FindObject("ObjectStage"));
 }

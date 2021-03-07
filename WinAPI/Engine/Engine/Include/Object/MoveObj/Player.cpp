@@ -41,7 +41,6 @@ void Player::InitTexture()
 
 void Player::InitAnimation()
 {
-	SetEnableAnimation(true);
 	Animation* pAnim = CreateAnimation("PlayerAnimation");
 	SAFE_RELEASE(pAnim);
 	wstring basePath = L"Player/SV/WalkRight/";
@@ -186,12 +185,11 @@ bool Player::Init()
 	// 점프할 힘을 설정한다.
 	SetForce(500.f);
 
-	ColliderRect* pRC_bot = AddCollider<ColliderRect>("PlayerBottom");
-	pRC_bot->SetRect(-5.f, 49.f, 5.f, 51.f);
-	pRC_bot->AddCollisionFunction(CS_ENTER, this, &Player::HitPixel);
-	pRC_bot->AddCollisionFunction(CS_STAY, this, &Player::HitPixel);
-
-	SAFE_RELEASE(pRC_bot);
+	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
+	pRC->SetRect(-30.f, -62.f, 30.f, 64.f);
+	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
+	pRC->AddCollisionFunction(CS_STAY, this, &Player::Hit);
+	SAFE_RELEASE(pRC);
 
 	return true;
 }
@@ -273,8 +271,7 @@ Player* Player::Clone()
 
 void Player::Hit(Collider* pSrc, Collider* pDst, float dt)
 {
-	if(pDst->GetObj()->GetTag() == "MinionBullet")
-		m_iHP -= 5;
+
 }
 
 
@@ -299,17 +296,14 @@ void Player::HitPixel(Collider* pSrc, Collider* pDst, float dt)
 	}
 }
 
-//void Player::Fire()
-//{
-//	Object* pBullet = Object::CreateCloneObject("Bullet", "PlayerBullet",m_pScene->GetSceneType(), m_pLayer);
-//
-//	pBullet->AddCollisionFunction("BulletBody", CS_ENTER, (Bullet*) pBullet, &Bullet::Hit);
-//
-//	Pos tPos;
-//	tPos.x = GetRight() + pBullet->GetPivot().x * pBullet->GetSize().x;
-//	tPos.y = GetCenter().y;
-//
-//	pBullet->SetPos(tPos.x, tPos.y - pBullet->GetSize().y / 2.f);
-//
-//	SAFE_RELEASE(pBullet);
-//}
+void Player::Save(FILE* pFile)
+{
+}
+
+void Player::Load(FILE* pFile)
+{
+}
+
+void Player::LateInit()
+{
+}

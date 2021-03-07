@@ -16,14 +16,14 @@ public:
 	static void EraseAllObjects();
 protected:
 	// 씬, 레이어, 텍스쳐, 콜라이더
-	bool m_bEnableAnimation;
+	bool m_bEnableAnimation = true;
 	class Scene* m_pScene;
 	class Layer* m_pLayer;
 	class Texture* m_pTexture;
 	list<Collider*> m_ColliderList;
 	class Animation* m_pAnimation;
 public:
-	void SetEnableAnimation(bool enabled) { m_bEnableAnimation = enabled; }
+	void SetAnimationVisibility(bool enabled) { m_bEnableAnimation = enabled; }
 	void SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b);
 	class Animation* CreateAnimation(const string& strTag);
 	bool AddAnimationClip(const string& strName,
@@ -181,6 +181,7 @@ public:
 public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
+	virtual void LateInit();
 public:
 	void SaveFromFile(FILE* pFile);
 	void LoadFromFile(FILE* pFile);

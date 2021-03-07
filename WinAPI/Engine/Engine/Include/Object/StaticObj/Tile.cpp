@@ -40,6 +40,7 @@ void Tile::SetTileOption(TILE_OPTION eOption)
 		break;
 	}
 }
+
 bool Tile::Init()
 {
 	return true;
@@ -58,7 +59,7 @@ int Tile::Update(float dt)
 
 int Tile::LateUpdate(float dt)
 {
-	StaticObject::Update(dt);
+	StaticObject::LateUpdate(dt);
 	return 0;
 }
 
@@ -79,9 +80,7 @@ void Tile::Draw(HDC hDC, float dt)
     if (tPos.x + tSize.x < 0 || tPos.x > tClientRS.x
         || tPos.y + tSize.y < 0 || tPos.y > tClientRS.y)
     {
-#ifdef _DEBUG
         DrawRemains(hDC, dt);
-#endif
         return;
     }
 
@@ -104,18 +103,8 @@ void Tile::Draw(HDC hDC, float dt)
             }
         }
     
-        if (m_pTexture->GetColorKeyEnable())
-        {
-            TransparentBlt(hDC, int(tPos.x), int(tPos.y), int(tSize.x), int(tSize.y),
-                m_pTexture->GetDC(), int(tImagePos.x), int(tImagePos.y),
-                int(tSize.x), int(tSize.y),
-                m_pTexture->GetColorKey());
-        }
-        else
-        {
-            BitBlt(hDC, int(tPos.x), int(tPos.y), int(tSize.x), int(tSize.y),
-                m_pTexture->GetDC(), int(tImagePos.x), int(tImagePos.y), SRCCOPY);
-        }
+        m_pTexture->DrawImage(hDC, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
+            int(tImagePos.x), int(tImagePos.y));
     }
 
     list<Collider*>::iterator iter;
@@ -170,8 +159,6 @@ void Tile::DrawRemains(HDC hDC, float dt)
                 m_pOptionTex->GetDC(), 0, 0, SRCCOPY);
         }
     }
-
-
 }
 
 Tile* Tile::Clone()
@@ -193,4 +180,11 @@ void Tile::Load(FILE* pFile)
 	fread(&m_eOption, 4, 1, pFile);
 
 	SetTileOption(m_eOption);
+
+    LateInit();
+}
+
+void Tile::LateInit()
+{
+    StaticObject::LateInit();
 }

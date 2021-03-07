@@ -10,11 +10,13 @@ private:
 private:
 	class Texture* m_pEmptyBuffer;
 	BLENDFUNCTION m_tBlenFunc;
+	BLENDFUNCTION m_tTransparent;
 public:
 	class Texture* GetBackBuffer() const;
 	class Texture* GetEmptyBuffer() const;
 	void SetAlphaChannel(int alpha) { m_tBlenFunc.SourceConstantAlpha = alpha; }
 	BLENDFUNCTION GetBlendFunc() const { return m_tBlenFunc; }
+	const BLENDFUNCTION& GetTransparentFunc() const { return m_tTransparent; }
 public:
 	bool Init(HINSTANCE hInst, HDC hDC);
 	// strkey = 텍스쳐 명칭, pFileName = 파일 이름, strPathKey = 텍스쳐 base 경로 

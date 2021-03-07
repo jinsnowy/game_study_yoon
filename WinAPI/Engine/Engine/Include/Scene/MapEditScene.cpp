@@ -16,9 +16,9 @@
 #include "../Object/StaticObj/UIButton.h"
 #include "../Object/StaticObj/UIPanel.h"
 #include "../Object/StaticObj/UITileSelect.h"
-#include "../Object/StaticObj/TileObject.h"
 #include "../Object/MoveObj/MovableObject.h"
 #include "../Object/Object.h"
+#include "../Object/StaticObj/Tile.h"
 #include "../Math.h"
 
 wchar_t MapEditScene::m_strText1[MAX_PATH] = {};
@@ -37,11 +37,7 @@ MapEditScene::~MapEditScene()
     INPUT->DeleteKey("Save");
     INPUT->DeleteKey("Load");
 
-    DeleteAllEditObjects();
-
-    StageClear(ST_GROUND, "Ground");
-    StageClear(ST_OBJECT, "Object");
-    StageClear(ST_STATIC, "Static");
+    EmptyMapEditScene();
 
     SAFE_RELEASE(m_pSelUI);
     SAFE_RELEASE(m_pSelObject);
@@ -108,19 +104,23 @@ void MapEditScene::Input(float dt)
         }
         if (!touchUI && m_pSelObject)
         {
-            Object* pClone = CreateCloneObject(m_pSelObject, tMouseWorldPos);
-            const string& texTag = pClone->AccessTexture()->GetTag();
+            const string& texTag = m_pSelObject->AccessTexture()->GetTag();
             if (m_pSelUI->IsOpt(texTag))
             {
                 m_vecStage[ST_GROUND]->ChangeTileOption(tMouseWorldPos, m_pSelUI->GetOpt(texTag));
-                SAFE_RELEASE(pClone);
             }
-            else if (dynamic_cast<Tile*>(pClone))
+            else 
             {
-                m_vecStage[m_eCurStage]->ChangeTileByCloneTile(tMouseWorldPos, static_cast<Tile*>(pClone));
-            }
-            else {
-                AddObject(pClone);
+                Object* pClone = CreateCloneObject(m_pSelObject, tMouseWorldPos);
+                if (dynamic_cast<Tile*>(pClone))
+                {
+                    m_vecStage[m_eCurStage]->ChangeTileByCloneTile(tMouseWorldPos, static_cast<Tile*>(pClone));
+                }
+                else 
+                {
+                    AddObject(pClone);
+                }
+                SAFE_RELEASE(pClone);
             }
         }
     }
@@ -128,20 +128,25 @@ void MapEditScene::Input(float dt)
     if (KEYPRESS("MouseRButton"))
     {
         Pos tMouseWorldPos = MOUSEWORLDPOS;
-        SAFE_RELEASE(m_pSelObject);
-        switch (m_pSelUI->GetCurSelect())
+        if (m_pSelObject)
         {
-        case SEL_GROUND:
-        case SEL_STATIC:
-        case SEL_TILEOBJECT:
-            m_vecStage[m_eCurStage]->SetTileNone(tMouseWorldPos);
-            break;
-        case SEL_OPTION:
-            m_vecStage[ST_GROUND]->ChangeTileOption(tMouseWorldPos, TO_NONE);
-            break;
-        case SEL_OBJECT:
-            DeleteTileFreeObject(tMouseWorldPos);
-            break;
+            SAFE_RELEASE(m_pSelObject);
+        }
+        else {
+            switch (m_pSelUI->GetCurSelect())
+            {
+            case SEL_GROUND:
+            case SEL_STATIC:
+                m_vecStage[m_eCurStage]->SetTileNone(tMouseWorldPos);
+                break;
+            case SEL_OPTION:
+                m_vecStage[ST_GROUND]->ChangeTileOption(tMouseWorldPos, TO_NONE);
+                break;
+            case SEL_TILEOBJECT:
+            case SEL_OBJECT:
+                DeleteNearObject(tMouseWorldPos);
+                break;
+            }
         }
     }
 
@@ -167,25 +172,28 @@ void MapEditScene::Input(float dt)
     if (KEYDOWN("Save"))
     {
         ShowCursor(TRUE);
-        DialogBox(WINDOWINSTANCE, MAKEINTRESOURCE(IDD_DIALOG1), WINDOWHANDLE, MapEditScene::DlgProc1);
+        INT_PTR res = DialogBox(WINDOWINSTANCE, MAKEINTRESOURCE(IDD_DIALOG1), WINDOWHANDLE, MapEditScene::DlgProc1);
         ShowCursor(FALSE);
 
-        // 파일명을 이용하여 저장한다.
-        char strFileName[MAX_PATH] = {};
-        WideCharToMultiByte(CP_ACP, 0, m_strText1, -1, strFileName, lstrlen(m_strText1), 0, 0);
-
-        SaveDefaultStages(strFileName);
+        if (res == IDOK)
+        {
+            char strFileName[MAX_PATH] = {};
+            WideCharToMultiByte(CP_ACP, 0, m_strText1, -1, strFileName, lstrlen(m_strText1), 0, 0);
+            SaveDefaultStages(strFileName);
+        }
     }
     if (KEYDOWN("Load"))
     {
         ShowCursor(TRUE);
-        DialogBox(WINDOWINSTANCE, MAKEINTRESOURCE(IDD_DIALOG1), WINDOWHANDLE, MapEditScene::DlgProc1);
+        INT_PTR res = DialogBox(WINDOWINSTANCE, MAKEINTRESOURCE(IDD_DIALOG1), WINDOWHANDLE, MapEditScene::DlgProc1);
         ShowCursor(FALSE);
 
-        // 파일명을 이용하여 읽어온다.
-        char strFileName[MAX_PATH] = {};
-        WideCharToMultiByte(CP_ACP, 0, m_strText1, -1, strFileName, lstrlen(m_strText1), 0, 0);
-        LoadDefaultStages(strFileName);
+        if (res == IDOK)
+        {
+            char strFileName[MAX_PATH] = {};
+            WideCharToMultiByte(CP_ACP, 0, m_strText1, -1, strFileName, lstrlen(m_strText1), 0, 0);
+            LoadDefaultStages(strFileName);
+        }
     }
 }
 
@@ -202,8 +210,10 @@ INT_PTR MapEditScene::DlgProc1(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
             // Edit Box에서 문자열을 얻어온다.
             memset(m_strText1, 0, sizeof(wchar_t) * MAX_PATH);
             GetDlgItemText(hWnd, IDC_EDIT1, m_strText1, MAX_PATH);
-        case IDCANCEL:
             EndDialog(hWnd, IDOK);
+            return TRUE;
+        case IDCANCEL:
+            EndDialog(hWnd, IDNO);
             return TRUE;
         }
         return FALSE;
@@ -286,11 +296,18 @@ void MapEditScene::SetUpCamera()
 
 void MapEditScene::SetUpDefaultStages(int numX, int numY)
 {
+    EmptyMapEditScene();
+
     m_iTileNumX = numX;
     m_iTileNumY = numY;
+
     SetUpBaseStage(ST_GROUND, "GroundStage", "Ground", numX, numY);
     SetUpBaseStage(ST_OBJECT, "ObjectStage", "Object", numX, numY);
     SetUpBaseStage(ST_STATIC, "StaticStage", "Static", numX, numY);
+
+    Stage* pStage = static_cast<Stage*>(Object::FindObject("ObjectStage"));
+    if(pStage)
+        pStage->AddAllTilesInLayer(FindLayer("Object"));
 }
 
 void MapEditScene::SaveDefaultStages(const char* fileName)
@@ -331,6 +348,8 @@ void MapEditScene::SaveDefaultStages(const char* fileName)
 
 void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& objTag, const string& strlayerTag, int numX, int numY)
 {
+ 
+
     StageClear(eStageTag, strlayerTag);
     Layer* pStageLayer = FindLayer(strlayerTag);
     m_vecStage[eStageTag] = Object::CreateObject<Stage>(objTag, pStageLayer);
@@ -339,7 +358,7 @@ void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& objTag, con
 
 void MapEditScene::LoadDefaultStages(const char* fileName)
 {
-    DeleteAllEditObjects();
+    EmptyMapEditScene();
 
     FILE* pFile = PATH_MANAGER->FileOpen(fileName, DATA_PATH, "rb");
 
@@ -378,6 +397,10 @@ void MapEditScene::LoadDefaultStages(const char* fileName)
     {
         fclose(pFile);
     }
+
+    Stage* pStage = static_cast<Stage*>(Object::FindObject("ObjectStage"));
+    if (pStage)
+        pStage->AddAllTilesInLayer(FindLayer("Object"));
 }
 
 void MapEditScene::LoadStage(STAGE_TAG eStageTag, const string& objTag, const string& strlayerTag, FILE* pFile)
@@ -447,6 +470,10 @@ void MapEditScene::SetUpTileSelectUI()
     m_pSelUI->LoadTiles(SEL_TILEOBJECT, L"SV/TileObject/Outdoor/");
     m_pSelUI->LoadTiles(SEL_TILEOBJECT, L"SV/TileObject/Plant/");
     m_pSelUI->LoadTiles(SEL_TILEOBJECT, L"SV/TileObject/Wall/");
+
+    // object prototype
+    m_pSelUI->LoadPrototypes(OBJ_PLANT);
+
     m_pSelUI->SetUpTagButton(pLayer);
 }
 
@@ -529,6 +556,8 @@ void MapEditScene::AddObject(Object* pClone)
     Object::AddObject(pClone);
     Layer* objLayer = Scene::FindLayer("Object");
     objLayer->AddObject(pClone);
+
+    pClone->AddRef();
     m_objList.push_back(pClone);
 }
 
@@ -540,13 +569,14 @@ Object* MapEditScene::CreateCloneObject(Object* const pObj, const Pos& worldPos)
     if (clickIndex == -1) return nullptr;
 
     Object* pClone = pObj->Clone();
-    TileObject* tClone = dynamic_cast<TileObject*>(pClone);
+    Object::AddObject(pClone);
+
+    Tile* tClone = dynamic_cast<Tile*>(pClone);
     int row = clickIndex / m_iTileNumY;
     int col = clickIndex % m_iTileNumY;
     Pos offset(col * TILESIZE, row * TILESIZE);
     if (tClone)
     {
-        tClone->SetTileIndex(clickIndex);
         tClone->SetPos(offset);
         return tClone;
     }
@@ -554,37 +584,16 @@ Object* MapEditScene::CreateCloneObject(Object* const pObj, const Pos& worldPos)
     return pClone;
 }
 
-void MapEditScene::DeleteTileObject(const Pos& worldPos)
-{
-    int targetIndex = m_vecStage[ST_GROUND]->GetTileIndex(worldPos);
-    if (targetIndex == -1) return;
-    int index = -1;
-    auto iterEnd = m_objList.end();
-    for (auto iter = m_objList.begin(); iter != iterEnd; ++iter)
-    {
-        TileObject* pTileObj = dynamic_cast<TileObject*>(*iter);
-        if (pTileObj)
-        {
-            index = pTileObj->GetTileIndex();
-        }
-        if (index == targetIndex)
-        {
-            Object::EraseObject((*iter));
-            FindLayer("Object")->EraseObject((*iter));
-            SAFE_RELEASE((*iter));
-            m_objList.erase(iter);
-            return;
-        }
-    }
-}
-
-void MapEditScene::DeleteTileFreeObject(const Pos& worldPos)
+void MapEditScene::DeleteNearObject(const Pos& worldPos)
 {
     float minDist = FLT_MAX;
     Object* pObj = nullptr;
-    list<Object*>::iterator iterTarget;
-    auto iterEnd = m_objList.end();
-    for (auto iter = m_objList.begin(); iter != iterEnd; ++iter)
+
+    Layer* pLayer = FindLayer("Object");
+    const auto& objList = pLayer->GetObjectList();
+    auto iterEnd = objList->end();
+
+    for (auto iter = objList->begin(); iter != iterEnd; ++iter)
     {
         if ((*iter))
         {
@@ -593,22 +602,49 @@ void MapEditScene::DeleteTileFreeObject(const Pos& worldPos)
             {
                 pObj = (*iter);
                 minDist = dist;
-                iterTarget = iter;
             }
         }
     }
+
     if (pObj)
     {
-        Object::EraseObject(pObj);
-        FindLayer("Object")->EraseObject(pObj);
-        SAFE_RELEASE(pObj);
-        m_objList.erase(iterTarget);
+        if (dynamic_cast<Tile*>(pObj))
+        {
+            m_vecStage[ST_OBJECT]->SetTileNone(worldPos);
+        }
+        else 
+        {
+            DeleteObject(pObj);
+            SAFE_RELEASE(pObj);
+        }
         return;
     }
 }
 
-void MapEditScene::DeleteAllEditObjects()
+void MapEditScene::DeleteObject(Object *pObj)
 {
+    auto iter = m_objList.begin();
+    const auto iterEnd = m_objList.end();
+    Layer* pLayer = FindLayer("Object");
+
+    for (; iter != iterEnd; ++iter)
+    {
+        if ((*iter) == pObj)
+        {
+            Object::EraseObject(pObj);
+            pLayer->EraseObject(pObj);
+            m_objList.erase(iter);
+            return;
+        }
+    }
+}
+
+void MapEditScene::EmptyMapEditScene()
+{
+    StageClear(ST_GROUND, "Ground");
+    StageClear(ST_OBJECT, "Object");
+    StageClear(ST_STATIC, "Static");
+
     list<Object*>::iterator iter;
     list<Object*>::iterator iterEnd = m_objList.end();
 
@@ -616,8 +652,12 @@ void MapEditScene::DeleteAllEditObjects()
     for (iter = m_objList.begin(); iter != iterEnd; ++iter)
     {
         Object::EraseObject((*iter));
-        FindLayer("Object")->EraseObject((*iter));
+        pLayer->EraseObject((*iter));
         SAFE_RELEASE((*iter));
     }
     m_objList.clear();
+
+    Stage* pStage = static_cast<Stage*>(Object::FindObject("ObjectStage"));
+    if(pStage)
+        pStage->AddAllTilesInLayer(FindLayer("Object"));
 }

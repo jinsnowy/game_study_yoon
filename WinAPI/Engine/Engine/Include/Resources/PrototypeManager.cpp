@@ -24,11 +24,7 @@ PrototypeManager::~PrototypeManager()
 
 bool PrototypeManager::Init()
 {
-    LoadTileObjectInFolder(OBJ_TILE_INNER, L"SV/TileObject/Inner/");
-    LoadTileObjectInFolder(OBJ_BUILDING, L"SV/TileObject/Building/");
-
     Tree* pTree = LoadObject<Tree>();
-  
     RegisterProtoType(OBJ_PLANT, "Tree1_Prototype", pTree);
     pTree = pTree->Clone();
     pTree->ChangeTreeTexture(1);
@@ -36,7 +32,6 @@ bool PrototypeManager::Init()
     pTree = pTree->Clone();
     pTree->ChangeTreeTexture(2);
     RegisterProtoType(OBJ_PLANT, "Tree3_Prototype", pTree);
-
 
 	return true;
 }

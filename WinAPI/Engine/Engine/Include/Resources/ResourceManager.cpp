@@ -45,6 +45,11 @@ bool ResourceManager::Init(HINSTANCE hInst, HDC hDC)
 	m_tBlenFunc.BlendFlags = 0;
 	m_tBlenFunc.SourceConstantAlpha = 0;
 	m_tBlenFunc.AlphaFormat = 0;
+
+	m_tTransparent.BlendOp = AC_SRC_OVER;
+	m_tTransparent.BlendFlags = 0;
+	m_tTransparent.SourceConstantAlpha = 0;
+	m_tTransparent.AlphaFormat = 100;
 	return true;
 }
 

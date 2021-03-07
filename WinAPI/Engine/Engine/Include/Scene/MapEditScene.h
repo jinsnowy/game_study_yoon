@@ -51,7 +51,7 @@ public:
     Object* CreateCloneObject(Object* const pObj, const Pos& worldPos);
 
     void AddObject(Object* pClone);
-    void DeleteTileObject(const Pos& worldPos);
-    void DeleteTileFreeObject(const Pos& worldPos);
-    void DeleteAllEditObjects();
+    void DeleteObject(Object* pObj);
+    void DeleteNearObject(const Pos& worldPos);
+    void EmptyMapEditScene();
 };

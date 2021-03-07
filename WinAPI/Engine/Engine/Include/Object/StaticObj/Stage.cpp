@@ -4,6 +4,8 @@
 #include "../../Resources/ResourceManager.h"
 #include "../../framework.h"
 #include "../../Core/Camera.h"
+#include "../../Scene//Layer.h"
+#include "../../Scene/Scene.h"
 #include "../../Application/Window.h"
 #include "../../Core/PathManager.h"
 
@@ -173,6 +175,10 @@ void Stage::SetTileNone(const Pos& tPos)
         return;
 
     Object::EraseObject(m_baseTile[ind]);
+    if (m_pLayer->GetTag() == "Object")
+    {
+        m_pLayer->EraseObject(m_baseTile[ind]);
+    }
     SAFE_RELEASE(m_baseTile[ind]);
 
     m_baseTile[ind] = Object::CreateObject<Tile>("Tile", nullptr);
@@ -182,6 +188,11 @@ void Stage::SetTileNone(const Pos& tPos)
     m_baseTile[ind]->SetSize(TILESIZE, TILESIZE);
     m_baseTile[ind]->SetPos(offset.x, offset.y);
     m_baseTile[ind]->SetPivot(0.f, 1.0f);
+
+    if (m_pLayer->GetTag() == "Object")
+    {
+        m_pLayer->AddObject(m_baseTile[ind]);
+    }
 }
 
 void Stage::ChangeTileByCloneTile(const Pos& tPos, Tile* pClone)
@@ -192,10 +203,20 @@ void Stage::ChangeTileByCloneTile(const Pos& tPos, Tile* pClone)
         return;
 
     Object::EraseObject(m_baseTile[ind]);
+    if (m_pLayer->GetTag() == "Object")
+    {
+        m_pLayer->EraseObject(m_baseTile[ind]);
+    }
     SAFE_RELEASE(m_baseTile[ind]);
 
     m_baseTile[ind] = pClone;
+    m_baseTile[ind]->AddRef();
+    if (m_pLayer->GetTag() == "Object")
+    {
+        m_pLayer->AddObject(m_baseTile[ind]);
+    }
 }
+
 
 void Stage::ChangeTileOption(const Pos& tPos, TILE_OPTION eOption)
 {

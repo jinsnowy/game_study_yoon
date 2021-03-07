@@ -56,6 +56,28 @@ bool Texture::LoadTexture(HINSTANCE hInst, HDC hDC,
     return true;
 }
 
+void Texture::DrawImage(HDC hdc, int px, int py, int sx, int sy, int u, int v)
+{
+    if (m_bEnableTransparent)
+    {
+        AlphaBlend(hdc, px, py, sx, sy, m_hMemDC, u, v, sx, sy, RESOURCE_MANAGER->GetTransparentFunc());
+    }
+    else {
+        if (GetColorKeyEnable())
+        {
+            TransparentBlt(hdc, px, py, sx, sy,
+                            m_hMemDC, u, v,
+                            sx, sy,
+                            m_ColorKey);
+        }
+        else
+        {
+            BitBlt(hdc, px, py, sx, sy, m_hMemDC, px, py, SRCCOPY);
+        }
+    }
+
+}
+
 Texture* Texture::CreateEmptyTexture(HDC hDC, int w, int h, COLORREF color)
 {
     Texture* pTexture = new Texture;
