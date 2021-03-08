@@ -17,6 +17,10 @@ private:
 		WALK_RIGHT,
 		WALK_DOWN,
 		WALK_UP,
+		TOOL_LEFT,
+		TOOL_RIGHT,
+		TOOL_DOWN,
+		TOOL_UP,
 	};
 	PlayerState m_eState = PlayerState::IDLE_RIGHT;
 	Player();
@@ -28,7 +32,8 @@ public:
 	void InitTexture();
 	void InitAnimation();
 	PlayerState GetState() const { return m_eState; }
-	void SetState(PlayerState state);
+public:
+	virtual void StateTransit(int iNext);
 	virtual bool Init();
 	virtual void Input(float dt);
 	virtual int Update(float dt);

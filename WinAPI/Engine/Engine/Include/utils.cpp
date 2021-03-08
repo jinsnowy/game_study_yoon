@@ -36,3 +36,12 @@ void util::DrawHDCWithColor(HDC hdc, int w, int h, COLORREF color)
 
 	DeleteObject(SelectObject(hdc, OldBrush));
 }
+
+void util::DrawHDCWithColor(HDC hdc, int px, int py, int w, int h, COLORREF color)
+{
+	HBRUSH OldBrush = (HBRUSH)SelectObject(hdc, CreateSolidBrush(color));
+
+	Rectangle(hdc, px-5, py-5, px + w + 5, py + h + 5);
+
+	DeleteObject(SelectObject(hdc, OldBrush));
+}

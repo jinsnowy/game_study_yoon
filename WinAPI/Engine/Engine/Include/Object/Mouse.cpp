@@ -58,7 +58,7 @@ int Mouse::Update(float dt)
     m_tPos.x = pt.x;
     m_tPos.y = pt.y;
 
-    m_tWorldPos = m_tPos + CAMERA->GetPos();
+    m_tWorldPos = m_tPos + CAMERA->GetTopLeft();
     return 0;
 }
 
@@ -76,6 +76,12 @@ void Mouse::Collision(float dt)
 void Mouse::Draw(HDC hdc, float dt)
 {
     UI::Draw(hdc, dt);
+#ifdef _DEBUG
+    Pos tPos = GetPos();
+    wchar_t mousePos[32] = {};
+    swprintf_s(mousePos, L"Mouse: %.1f, %.1f", GetWorldPos().x, GetWorldPos().y);
+    TextOut(hdc, tPos.x, tPos.y, mousePos, lstrlen(mousePos));
+#endif
 }
 
 Mouse* Mouse::Clone()

@@ -49,7 +49,6 @@ Animation::~Animation()
 		}
 		SAFE_DELETE(iter->second)
 	}
-
 	m_mapClip.clear();
 }
 
@@ -88,6 +87,7 @@ bool Animation::AddClip(const string& strName,
 	pClip->iFrameX = iStartX;
 	pClip->iFrameY = iStartY;
 	pClip->fOptionTime = 0.f;
+	pClip->iNextState = -1;
 
 	pClip->tFrameSize.x = (float) pTex->GetWidth();
 	pClip->tFrameSize.y = (float) pTex->GetHeight();
@@ -146,6 +146,7 @@ bool Animation::AddClip(const string& strName,
 	pClip->iFrameX = iStartX;
 	pClip->iFrameY = iStartY;
 	pClip->fOptionTime = 0.f;
+	pClip->iNextState = -1;
 
 	m_mapClip.insert(make_pair(strName, pClip));
 
@@ -157,6 +158,17 @@ bool Animation::AddClip(const string& strName,
 
 	return true;
 }
+
+void Animation::SetClipNextState(const string& strName, int iState)
+{
+	AnimationClip* pClip = FindClip(strName);
+
+	if (!pClip)
+		return;
+
+	pClip->iNextState = iState;
+}
+
 
 void Animation::SetClipColorKey(const string& strClip, unsigned char r, unsigned char g, unsigned char b)
 {
@@ -170,7 +182,6 @@ void Animation::SetClipColorKey(const string& strClip, unsigned char r, unsigned
 		pClip->vecTexture[i]->SetColorKey(r, g, b);
 	}
 }
-
 
 void Animation::SetCurrentClip(const string& strCurClip)
 {
@@ -244,7 +255,7 @@ void Animation::Update(float fTime)
 				switch (m_pCurClip->eOption)
 				{
 				case AO_ONCE_RETURN:
-					ChangeClip(m_strDefaultClip);
+					m_pObj->StateTransit(m_pCurClip->iNextState);
 					break;
 				case AO_ONCE_DESTROY:
 					m_pObj->Die();

@@ -9,6 +9,7 @@
 #include "../../Collider/ColliderPixel.h"
 #include "../../Core/Camera.h"
 #include "../../Animation/Animation.h"
+#include "../../Scene/GameScene.h"
 
 Player::Player()
 {
@@ -43,85 +44,172 @@ void Player::InitAnimation()
 {
 	Animation* pAnim = CreateAnimation("PlayerAnimation");
 	SAFE_RELEASE(pAnim);
-	wstring basePath = L"Player/SV/WalkRight/";
+	wstring basePath;
 	vector<wstring> vecFileName;
 	wstringstream ss;
 
-	vecFileName.clear();
-	for (int i = 1; i <= 6; ++i)
+	// Walk 애니메이션
 	{
-		ss << basePath << L"WalkRight" << i << ".bmp";
-		vecFileName.push_back(ss.str());
-		ss.clear();
-		ss.str(L"");
-	}
-	AddAnimationClip("WalkRight",
-		AT_FRAME, AO_LOOP,
-		0.0f, 0.55f,
-		6, 1,
-		0, 0,
-		6, 1,
-		0.f, "WalkRight_Anim", vecFileName);
-	SetClipColorKey("WalkRight", 255, 255, 255);
+		basePath = L"Player/SV/WalkRight/";
+		vecFileName.clear();
+		for (int i = 1; i <= 6; ++i)
+		{
+			ss << basePath << L"WalkRight" << i << ".bmp";
+			vecFileName.push_back(ss.str());
+			ss.clear();
+			ss.str(L"");
+		}
+		AddAnimationClip("WalkRight",
+			AT_FRAME, AO_LOOP,
+			0.0f, 0.55f,
+			6, 1,
+			0, 0,
+			6, 1,
+			0.f, "WalkRight_Anim", vecFileName);
+		SetClipColorKey("WalkRight", 255, 255, 255);
 
-	basePath = L"Player/SV/WalkLeft/";
-	vecFileName.clear();
-	for (int i = 1; i <= 6; ++i)
-	{
-		ss << basePath << L"WalkLeft" << i << ".bmp";
-		vecFileName.push_back(ss.str());
-		ss.clear();
-		ss.str(L"");
-	}
-	AddAnimationClip("WalkLeft",
-		AT_FRAME, AO_LOOP,
-		0.0f, 0.55f,
-		6, 1,
-		0, 0,
-		6, 1,
-		0.f, "WalkLeft_Anim", vecFileName);
-	SetClipColorKey("WalkLeft", 255, 255, 255);
+		basePath = L"Player/SV/WalkLeft/";
+		vecFileName.clear();
+		for (int i = 1; i <= 6; ++i)
+		{
+			ss << basePath << L"WalkLeft" << i << ".bmp";
+			vecFileName.push_back(ss.str());
+			ss.clear();
+			ss.str(L"");
+		}
+		AddAnimationClip("WalkLeft",
+			AT_FRAME, AO_LOOP,
+			0.0f, 0.55f,
+			6, 1,
+			0, 0,
+			6, 1,
+			0.f, "WalkLeft_Anim", vecFileName);
+		SetClipColorKey("WalkLeft", 255, 255, 255);
 
-	basePath = L"Player/SV/WalkDown/";
-	vecFileName.clear();
-	for (int i = 1; i <= 9; ++i)
-	{
-		ss << basePath << L"WalkDown" << i << ".bmp";
-		vecFileName.push_back(ss.str());
-		ss.clear();
-		ss.str(L"");
-	}
-	AddAnimationClip("WalkDown",
-		AT_FRAME, AO_LOOP,
-		0.0f, 0.55f,
-		9, 1,
-		0, 0,
-		9, 1,
-		0.f, "WalkDown_Anim", vecFileName);
-	SetClipColorKey("WalkDown", 255, 255, 255);
+		basePath = L"Player/SV/WalkDown/";
+		vecFileName.clear();
+		for (int i = 1; i <= 9; ++i)
+		{
+			ss << basePath << L"WalkDown" << i << ".bmp";
+			vecFileName.push_back(ss.str());
+			ss.clear();
+			ss.str(L"");
+		}
+		AddAnimationClip("WalkDown",
+			AT_FRAME, AO_LOOP,
+			0.0f, 0.55f,
+			9, 1,
+			0, 0,
+			9, 1,
+			0.f, "WalkDown_Anim", vecFileName);
+		SetClipColorKey("WalkDown", 255, 255, 255);
 
-	basePath = L"Player/SV/WalkUp/";
-	vecFileName.clear();
-	for (int i = 1; i <= 9; ++i)
-	{
-		ss << basePath << L"WalkUp" << i << ".bmp";
-		vecFileName.push_back(ss.str());
-		ss.clear();
-		ss.str(L"");
+		basePath = L"Player/SV/WalkUp/";
+		vecFileName.clear();
+		for (int i = 1; i <= 9; ++i)
+		{
+			ss << basePath << L"WalkUp" << i << ".bmp";
+			vecFileName.push_back(ss.str());
+			ss.clear();
+			ss.str(L"");
+		}
+		AddAnimationClip("WalkUp",
+			AT_FRAME, AO_LOOP,
+			0.0f, 0.55f,
+			9, 1,
+			0, 0,
+			9, 1,
+			0.f, "WalkUp_Anim", vecFileName);
+		SetClipColorKey("WalkUp", 255, 255, 255);
+
+
+
 	}
-	AddAnimationClip("WalkUp",
-		AT_FRAME, AO_LOOP,
-		0.0f, 0.55f,
-		9, 1,
-		0, 0,
-		9, 1,
-		0.f, "WalkUp_Anim", vecFileName);
-	SetClipColorKey("WalkUp", 255, 255, 255);
+	
+	// Tool 애니메이션
+	{
+		basePath = L"Player/SV/ToolDown/";
+		vecFileName.clear();
+		for (int i = 1; i <= 3; ++i)
+		{
+			ss << basePath << L"ToolDown" << i << ".bmp";
+			vecFileName.push_back(ss.str());
+			ss.clear();
+			ss.str(L"");
+		}
+		AddAnimationClip("ToolDown",
+			AT_FRAME, AO_ONCE_RETURN,
+			0.0f, 0.4f,
+			3, 1,
+			0, 0,
+			3, 1,
+			0.f, "ToolDown_Anim", vecFileName);
+		SetClipColorKey("ToolDown", 255, 255, 255);
+		SetClipNextState("ToolDown", IDLE_DOWN);
+
+		basePath = L"Player/SV/ToolUp/";
+		vecFileName.clear();
+		for (int i = 1; i <= 3; ++i)
+		{
+			ss << basePath << L"ToolUp" << i << ".bmp";
+			vecFileName.push_back(ss.str());
+			ss.clear();
+			ss.str(L"");
+		}
+		AddAnimationClip("ToolUp",
+			AT_FRAME, AO_ONCE_RETURN,
+			0.0f, 0.4f,
+			3, 1,
+			0, 0,
+			3, 1,
+			0.f, "ToolUp_Anim", vecFileName);
+		SetClipColorKey("ToolUp", 255, 255, 255);
+		SetClipNextState("ToolUp", IDLE_UP);
+
+		basePath = L"Player/SV/ToolLeft/";
+		vecFileName.clear();
+		for (int i = 1; i <= 3; ++i)
+		{
+			ss << basePath << L"ToolLeft" << i << ".bmp";
+			vecFileName.push_back(ss.str());
+			ss.clear();
+			ss.str(L"");
+		}
+		AddAnimationClip("ToolLeft",
+			AT_FRAME, AO_ONCE_RETURN,
+			0.0f, 0.4f,
+			3, 1,
+			0, 0,
+			3, 1,
+			0.f, "ToolLeft_Anim", vecFileName);
+		SetClipColorKey("ToolLeft", 255, 255, 255);
+		SetClipNextState("ToolLeft", IDLE_LEFT);
+
+		basePath = L"Player/SV/ToolRight/";
+		vecFileName.clear();
+		for (int i = 1; i <= 3; ++i)
+		{
+			ss << basePath << L"ToolRight" << i << ".bmp";
+			vecFileName.push_back(ss.str());
+			ss.clear();
+			ss.str(L"");
+		}
+		AddAnimationClip("ToolRight",
+			AT_FRAME, AO_ONCE_RETURN,
+			0.0f, 0.4f,
+			3, 1,
+			0, 0,
+			3, 1,
+			0.f, "ToolRight_Anim", vecFileName);
+		SetClipColorKey("ToolRight", 255, 255, 255);
+		SetClipNextState("ToolRight", IDLE_RIGHT);
+	}
+	
 }
 
-void Player::SetState(PlayerState state)
+void Player::StateTransit(int iNext)
 {
-	m_eState = state;
+	m_eState = static_cast<PlayerState>(iNext);
 	switch (m_eState)
 	{
 	case IDLE_LEFT:
@@ -130,10 +218,7 @@ void Player::SetState(PlayerState state)
 	case IDLE_DOWN:
 		m_bEnableAnimation = false;
 		break;
-	case WALK_LEFT:
-	case WALK_RIGHT:
-	case WALK_DOWN:
-	case WALK_UP:
+	default:
 		m_bEnableAnimation = true;
 		break;
 	}
@@ -163,6 +248,18 @@ void Player::SetState(PlayerState state)
 	case WALK_UP:
 		m_pAnimation->ChangeClip("WalkUp");
 		break;
+	case TOOL_LEFT:
+		m_pAnimation->ChangeClip("ToolLeft");
+		break;
+	case TOOL_RIGHT:
+		m_pAnimation->ChangeClip("ToolRight");
+		break;
+	case TOOL_DOWN:
+		m_pAnimation->ChangeClip("ToolDown");
+		break;
+	case TOOL_UP:
+		m_pAnimation->ChangeClip("ToolUp");
+		break;
 	}
 }
 
@@ -170,23 +267,17 @@ bool Player::Init()
 {
 	SetPos(400.0f, 500.0f);
 	SetSize(64.0f, 128.0f);
-	SetPivot(0.5f, 0.5f);
+	SetPivot(0.0f, 1.0f);
 	SetSpeed(300.0f);
 
 	InitTexture();
 	InitAnimation();
 
-	SetState(IDLE_RIGHT);
+	StateTransit(IDLE_RIGHT);
 	m_iHP = 1000;
 
-	// 중력을 적용한다.
-	SetPhysics(false);
-
-	// 점프할 힘을 설정한다.
-	SetForce(500.f);
-
 	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
-	pRC->SetRect(-30.f, -62.f, 30.f, 64.f);
+	pRC->SetRect(0, 0.f, 60.f, -120.f);
 	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
 	pRC->AddCollisionFunction(CS_STAY, this, &Player::Hit);
 	SAFE_RELEASE(pRC);
@@ -197,42 +288,66 @@ bool Player::Init()
 void Player::Input(float dt)
 {
 	MovableObject::Input(dt);
+
 	if (KEYPRESS("MoveUp"))
 	{
 		MoveYFromSpeed(dt, MD_BACK);
-		SetState(WALK_UP);
+		StateTransit(WALK_UP);
 	}
 	else if (KEYPRESS("MoveDown"))
 	{
 		MoveYFromSpeed(dt, MD_FRONT);
-		SetState(WALK_DOWN);
+		StateTransit(WALK_DOWN);
 	}
 	else if (KEYPRESS("MoveLeft"))
 	{
 		MoveXFromSpeed(dt, MD_BACK);
-		SetState(WALK_LEFT);
+		StateTransit(WALK_LEFT);
 	}
 	else if (KEYPRESS("MoveRight"))
 	{
 		MoveXFromSpeed(dt, MD_FRONT);
-		SetState(WALK_RIGHT);
+		StateTransit(WALK_RIGHT);
 	}
 	else
 	{
 		switch (m_eState)
 		{
 		case WALK_RIGHT:
-			SetState(IDLE_RIGHT);
+			StateTransit(IDLE_RIGHT);
 			break;
 		case WALK_LEFT:
-			SetState(IDLE_LEFT);
+			StateTransit(IDLE_LEFT);
 			break;
 		case WALK_UP:
-			SetState(IDLE_UP);
+			StateTransit(IDLE_UP);
 			break;
 		case WALK_DOWN:
-			SetState(IDLE_DOWN);
+			StateTransit(IDLE_DOWN);
 			break;
+		}
+	}
+
+	if (KEYDOWN("MouseLButton"))
+	{
+		INDEX index = static_cast<GameScene*>(m_pScene)->IndexDiff(MOUSEWORLDPOS, GetPos());
+		if (max(abs(index.x), abs(index.y)) <= 1)
+		{
+			switch (m_eState)
+			{
+			case IDLE_RIGHT:
+				StateTransit(TOOL_RIGHT);
+				break;
+			case IDLE_LEFT:
+				StateTransit(TOOL_LEFT);
+				break;
+			case IDLE_UP:
+				StateTransit(TOOL_UP);
+				break;
+			case IDLE_DOWN:
+				StateTransit(TOOL_DOWN);
+				break;
+			}
 		}
 	}
 }
@@ -257,11 +372,13 @@ void Player::Collision(float dt)
 void Player::Draw(HDC hDC, float dt)
 {
   	MovableObject::Draw(hDC, dt);
-	wchar_t strHP[32] = {};
-	swprintf_s(strHP, L"HP: %d", m_iHP);
+#ifdef _DEBUG
+	wchar_t playerPos[32] = {};
+	swprintf_s(playerPos, L"Pos: %.1f, %.1f", GetPos().x, GetPos().y);
 	Pos tPos = m_tPos - m_tSize * m_tPivot;
 	tPos -= CAMERA->GetTopLeft();
-	TextOut(hDC, tPos.x, tPos.y, strHP, lstrlen(strHP));
+	TextOut(hDC, tPos.x, tPos.y, playerPos, lstrlen(playerPos));
+#endif
 }
 
 Player* Player::Clone()

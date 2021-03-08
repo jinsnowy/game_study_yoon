@@ -11,9 +11,23 @@ GameScene::GameScene()
 
 GameScene::~GameScene()
 {
-    
+    SAFE_RELEASE(m_pObjStage);
+    SAFE_RELEASE(m_pGroundStage);
 }
 
+int GameScene::GetTileIndex(const Pos& worldPos)
+{
+    return m_pObjStage->GetTileIndex(worldPos);
+}
+INDEX GameScene::GetTileRowColIndex(const Pos& worldPos)
+{
+    return m_pObjStage->GetTileRowColIndex(worldPos);
+}
+
+INDEX GameScene::IndexDiff(const Pos& pos, const Pos& from)
+{
+    return GetTileRowColIndex(pos) - GetTileRowColIndex(from);
+}
 
 bool GameScene::Init()
 {
@@ -81,7 +95,13 @@ void GameScene::LoadDefaultStages(const char* fileName)
         fclose(pFile);
     }
 
-    Stage* pStage = static_cast<Stage*>(Object::FindObject("ObjectStage"));
-    pStage->AddAllTilesInLayer(FindLayer("Object"));
+    m_pGroundStage = static_cast<Stage*>(Object::FindObject("GroundStage"));
+    m_pGroundStage->AddRef();
+    m_iTileNumX = m_pGroundStage->GetStageTileNumX();
+    m_iTileNumY = m_pGroundStage->GetStageTileNumY();
+
+    m_pObjStage = static_cast<Stage*>(Object::FindObject("ObjectStage"));
+    m_pObjStage->AddAllTilesInLayer(FindLayer("Object"));
+    m_pObjStage->AddRef();
     Object::EraseObject(Object::FindObject("ObjectStage"));
 }

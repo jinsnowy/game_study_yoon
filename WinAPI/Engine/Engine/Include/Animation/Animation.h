@@ -1,6 +1,30 @@
 #pragma once
 #include "../Object/Ref.h"
 #include "../framework.h"
+
+class AnimationClip
+{
+public:
+	ANIMATION_TYPE	   eType;
+	ANIMATION_OPTION   eOption;
+	int	    iNextState;
+	std::vector<class Texture*> vecTexture;
+	float	fAnimationTime;
+	float   fAnimationLimitTime;
+	float	fAnimationFrameTime;
+	int		iFrameX;
+	int		iFrameY;
+	int		iFrameMaxX;
+	int		iFrameMaxY;
+	int		iStartX;
+	int		iStartY;
+	int		iLengthX;
+	int		iLengthY;
+	float	fOptionTime;
+	float	fOptionLimitTime;
+	Vec2F	tFrameSize;
+};
+
 class Animation : public Ref
 {
 private:
@@ -50,7 +74,7 @@ public:
 				const string& strTexKey,
 				const vector<wstring>& vecFileName,
 				const string& strPathKey = TEXTURE_PATH);
-
+	void SetClipNextState(const string& strName, int iState);
 	void SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b);
 	void SetCurrentClip(const string& strCurClip);
 	void SetDefaultClip(const string& strDefaultClip);

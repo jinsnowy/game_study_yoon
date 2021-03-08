@@ -4,9 +4,17 @@ class GameScene : public Scene
 {
 private:
     friend class SceneManager;
+    class Stage* m_pGroundStage;
+    class Stage* m_pObjStage;
+    int m_iTileNumX;
+    int m_iTileNumY;
 protected:
     GameScene();
     ~GameScene() = 0;
+public:
+    int GetTileIndex(const Pos& worldPos);
+    INDEX GetTileRowColIndex(const Pos& worldPos);
+    INDEX IndexDiff(const Pos& pos, const Pos& from);
 public:
     virtual void SetUpScene(const char* fileName, Object* pPlayer, Pos camPivot);
     virtual bool Init();

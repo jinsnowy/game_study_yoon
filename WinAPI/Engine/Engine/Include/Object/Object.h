@@ -2,6 +2,7 @@
 #include "../framework.h"
 #include "../Scene/Layer.h"
 #include "../Collider/Collider.h"
+#include "../Animation/Animation.h"
 
 class Object : public Ref
 {
@@ -21,11 +22,29 @@ protected:
 	class Layer* m_pLayer;
 	class Texture* m_pTexture;
 	list<Collider*> m_ColliderList;
-	class Animation* m_pAnimation;
+	Animation* m_pAnimation;
 public:
 	void SetAnimationVisibility(bool enabled) { m_bEnableAnimation = enabled; }
 	void SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b);
-	class Animation* CreateAnimation(const string& strTag);
+	Animation* CreateAnimation(const string& strTag)
+	{
+		SAFE_RELEASE(m_pAnimation);
+
+		m_pAnimation = new Animation;
+
+		m_pAnimation->SetTag(strTag);
+		m_pAnimation->SetObj(this);
+
+		if (!m_pAnimation->Init())
+		{
+			SAFE_RELEASE(m_pAnimation);
+			return nullptr;
+		}
+
+		m_pAnimation->AddRef();
+
+		return m_pAnimation;
+	}
 	bool AddAnimationClip(const string& strName,
 							ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
 							float	fAnimationTime,
@@ -116,13 +135,16 @@ public:
 		return m_blsPhysics;
 	}
 protected:
+	bool m_bEnableTransparent = false;
 	bool m_bHasPrototype;
 	Pos   m_tPos;
 	Pos   m_tPivot;
 	Size  m_tImageOffset;
 	Size  m_tSize;
 	mutable string m_strPrototypeTag;
-private:
+public:
+	void EnableTransparentEffect() { m_bEnableTransparent = true; }
+	void DisableTransparentEffect() { m_bEnableTransparent = false; }
 	void SetPrototypeTag(const string& prototypeTag);
 public:
 	Object();
@@ -166,6 +188,7 @@ public:
 	void SetTexture(const string& strKey, const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);
 	void SetColorKey(unsigned char r, unsigned char g, unsigned char b);
 	void SetAnimationClipColorKey(const string& strClip, unsigned char r, unsigned char g, unsigned char b);
+	void SetClipNextState(const string& strName, int iState);
 	void DrawImageAt(HDC hdc, const Pos& at, bool ignorePivot = false);
 	void DrawImageAt(HDC hdc, int px, int py, bool ignorePivot = false);
 	void DrawImageAtFixedSize(HDC hdc, const Pos& at, int size, bool ignorePivot = false);
@@ -182,6 +205,7 @@ public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
 	virtual void LateInit();
+	virtual void StateTransit(int) {};
 public:
 	void SaveFromFile(FILE* pFile);
 	void LoadFromFile(FILE* pFile);

@@ -131,25 +131,6 @@ void Object::SetClipColorKey(const string& strName, unsigned char r, unsigned ch
     m_pAnimation->SetClipColorKey(strName, r, g, b);
 }
 
-Animation* Object::CreateAnimation(const string& strTag)
-{
-    SAFE_RELEASE(m_pAnimation);
-
-    m_pAnimation = new Animation;
-
-    m_pAnimation->SetTag(strTag);
-    m_pAnimation->SetObj(this);
-
-    if (!m_pAnimation->Init())
-    {
-        SAFE_RELEASE(m_pAnimation);
-        return nullptr;
-    }
-
-    m_pAnimation->AddRef();
-
-    return m_pAnimation;
-}
 bool Object::AddAnimationClip(const string& strName,
                                 ANIMATION_TYPE eType, ANIMATION_OPTION eOption,
                                 float fAnimationTime, float fAnimationLimitTime,
@@ -267,6 +248,11 @@ void Object::SetAnimationClipColorKey(const string& strClip, unsigned char r, un
     {
         m_pAnimation->SetClipColorKey(strClip, r, g, b);
     }
+}
+
+void Object::SetClipNextState(const string& strName, int iState)
+{
+    m_pAnimation->SetClipNextState(strName, iState);
 }
 
 void Object::DrawImageAt(HDC hdc, const Pos& at, bool ignorePivot)
@@ -409,8 +395,16 @@ void Object::Draw(HDC hdc, float dt)
             }
         }
 
-        m_pTexture->DrawImage(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
-            int(tImagePos.x), int(tImagePos.y));
+        if (m_bEnableTransparent)
+        {
+            m_pTexture->TransparentEffect(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
+                int(tImagePos.x), int(tImagePos.y));
+        }
+        else {
+            m_pTexture->DrawImage(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
+                int(tImagePos.x), int(tImagePos.y));
+        }
+
     }
 
     list<Collider*>::iterator iter;

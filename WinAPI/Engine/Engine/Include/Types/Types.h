@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Vec2.h"
+#include "../framework.h"
 
 typedef struct _tagPixel
 {
@@ -127,23 +128,4 @@ enum ANIMATION_OPTION
 	AO_TIME_DESTROY  // 타임 오버시 오브젝트 삭제
 };
 
-typedef struct _tagAnimationClip
-{
-	ANIMATION_TYPE	   eType;
-	ANIMATION_OPTION   eOption;
-	std::vector<class Texture*> vecTexture;
-	float	fAnimationTime;
-	float   fAnimationLimitTime;
-	float	fAnimationFrameTime;
-	int		iFrameX;
-	int		iFrameY;
-	int		iFrameMaxX;
-	int		iFrameMaxY;
-	int		iStartX;	
-	int		iStartY;
-	int		iLengthX;
-	int		iLengthY;
-	float	fOptionTime;
-	float	fOptionLimitTime;
-	Vec2F	tFrameSize;
-}AnimationClip;
+
