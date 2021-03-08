@@ -9,6 +9,12 @@ typedef struct _tagPixel
 	unsigned char b;
 }Pixel;
 
+enum TILE_TYPE 
+{
+	TL_NONE = 0,
+	TL_TREE,
+};
+
 enum OBJECT_TYPE
 {
 	OBJ_BUILDING,
