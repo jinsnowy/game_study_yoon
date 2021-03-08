@@ -121,6 +121,4 @@ void Tree::Save(FILE* pFile)
 void Tree::Load(FILE* pFile)
 {
 	Tile::Load(pFile);
-
-	LateInit();
 }
