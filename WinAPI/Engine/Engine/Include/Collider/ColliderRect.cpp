@@ -86,30 +86,28 @@ void ColliderRect::Draw(HDC hDC, float dt)
 	if (!m_bUIColl)
 		tPos = CAMERA->GetTopLeft();
 
-	int left = int(m_tWorldInfo.left - tPos.x);
-	int top = int(m_tWorldInfo.top - tPos.y);
-	int right = int(m_tWorldInfo.right - tPos.x);
-	int bottom = int(m_tWorldInfo.bottom - tPos.y);
+	RECT rc;
+	rc.top = int(m_tWorldInfo.top - tPos.y);
+	rc.left = int(m_tWorldInfo.left - tPos.x);
+	rc.bottom = int(m_tWorldInfo.bottom - tPos.y);
+	rc.right = int(m_tWorldInfo.right - tPos.x);
 
-	HPEN myPen = CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
-	HPEN OldPen = (HPEN)SelectObject(hDC, myPen);
-	HBRUSH OldBrush = (HBRUSH)SelectObject(hDC, GetStockObject(NULL_BRUSH));
-
-	Rectangle(hDC, left, top, right, bottom);
-	
-	DeleteObject(SelectObject(hDC, OldPen));
-	DeleteObject(SelectObject(hDC, OldBrush));
+	DrawRedRect(hDC, rc);
 #endif
 }
 
 void ColliderRect::Save(FILE* pFile)
 {
 	Collider::Save(pFile);
+
+	fwrite(&m_tInfo, sizeof(Rect), 1, pFile);
 }
 
 void ColliderRect::Load(FILE* pFile)
 {
 	Collider::Load(pFile);
+
+	fread(&m_tInfo, sizeof(Rect), 1, pFile);
 }
 
 ColliderRect* ColliderRect::Clone()

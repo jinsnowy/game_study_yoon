@@ -16,14 +16,14 @@ public:
 	static void EraseAllObjects();
 protected:
 	// 씬, 레이어, 텍스쳐, 콜라이더
-	bool m_bEnableAnimation;
+	bool m_bEnableAnimation = true;
 	class Scene* m_pScene;
 	class Layer* m_pLayer;
 	class Texture* m_pTexture;
 	list<Collider*> m_ColliderList;
 	class Animation* m_pAnimation;
 public:
-	void SetEnableAnimation(bool enabled) { m_bEnableAnimation = enabled; }
+	void SetAnimationVisibility(bool enabled) { m_bEnableAnimation = enabled; }
 	void SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b);
 	class Animation* CreateAnimation(const string& strTag);
 	bool AddAnimationClip(const string& strName,
@@ -166,10 +166,10 @@ public:
 	void SetTexture(const string& strKey, const wchar_t* pFileName = nullptr, const string& strPathKey = TEXTURE_PATH);
 	void SetColorKey(unsigned char r, unsigned char g, unsigned char b);
 	void SetAnimationClipColorKey(const string& strClip, unsigned char r, unsigned char g, unsigned char b);
-	void DrawImageAt(HDC hdc, const Pos& at);
-	void DrawImageAt(HDC hdc, int px, int py);
-	void DrawImageAtFixedSize(HDC hdc, const Pos& at, int size);
-	void DrawImageAtFixedSize(HDC hdc, int px, int py, int size);
+	void DrawImageAt(HDC hdc, const Pos& at, bool ignorePivot = false);
+	void DrawImageAt(HDC hdc, int px, int py, bool ignorePivot = false);
+	void DrawImageAtFixedSize(HDC hdc, const Pos& at, int size, bool ignorePivot = false);
+	void DrawImageAtFixedSize(HDC hdc, int px, int py, int size, bool ignorePivot = false);
 public:
 	virtual bool Init();
 	virtual void Input(float dt);
@@ -181,6 +181,7 @@ public:
 public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
+	virtual void LateInit();
 public:
 	void SaveFromFile(FILE* pFile);
 	void LoadFromFile(FILE* pFile);

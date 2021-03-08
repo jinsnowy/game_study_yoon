@@ -77,10 +77,10 @@ void ColliderPoint::Draw(HDC hdc, float dt)
 	if (!m_bUIColl)
 		tPos = CAMERA->GetTopLeft();
 
-	int left = m_tWorldPos.x - 3;
-	int right = m_tWorldPos.x + 3;
-	int top = m_tWorldPos.y - 3;
-	int bottom = m_tWorldPos.y + 3;
+	int left = int(m_tWorldPos.x) - 3;
+	int right = int(m_tWorldPos.x) + 3;
+	int top = int(m_tWorldPos.y) - 3;
+	int bottom = int(m_tWorldPos.y) + 3;
 
 	Ellipse(hdc, left, top, right, bottom);
 

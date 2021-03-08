@@ -40,6 +40,8 @@ public:
 	void Hit(class Collider* pSrc, class Collider* pDst, float dt);
 	void HitPixel(class Collider* pSrc, class Collider* pDst, float dt);
 private:
-	void Fire();
+	virtual void Save(FILE* pFile);
+	virtual void Load(FILE* pFile);
+	virtual void LateInit();
 };
 

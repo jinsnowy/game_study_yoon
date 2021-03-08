@@ -1,7 +1,7 @@
 #pragma once
-#include "StaticObject.h"
-class Tree :
-    public StaticObject
+#include "Tile.h"
+
+class Tree : public Tile
 {
 	friend class PrototypeManager;
 private:
@@ -14,6 +14,8 @@ protected:
 	virtual ~Tree();
 private:
 	void ChangeTreeTexture(int id);
+	void ShadeIn(Collider* pSrc, Collider* pDst, float dt);
+	void ShadeOut(Collider* pSrc, Collider* pDst, float dt);
 public:
 	virtual bool Init();
 	virtual void Input(float dt);
@@ -25,5 +27,6 @@ public:
 public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
+	virtual void LateInit();
 };
 

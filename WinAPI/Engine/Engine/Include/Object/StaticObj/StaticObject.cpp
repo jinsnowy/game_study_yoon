@@ -54,3 +54,8 @@ void StaticObject::Load(FILE* pFile)
 {
     Object::Load(pFile);
 }
+
+void StaticObject::LateInit()
+{
+    Object::LateInit();
+}

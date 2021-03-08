@@ -14,6 +14,7 @@ public:
                      const string& strKey,
                      const wchar_t* pFileName,
                      const string& strPathKey = TEXTURE_PATH);
+    void DrawImage(HDC hdc, int px, int py, int sx, int sy, int u, int v);
     void DrawImageAt(HDC hdc, const Pos& at)
     {
         DrawImageAt(hdc, int(at.x), int(at.y));
@@ -47,6 +48,7 @@ public:
     static Texture* CreateEmptyTexture(HDC hDC, int w, int h, COLORREF color = RGB(0,0,0));
     static Texture* CreateCopyTexture(HDC hDC, int w, int h);
 private:
+    bool m_bEnableTransparent = false;
     HDC         m_hMemDC;
     HBITMAP     m_hBitmap;
     HBITMAP     m_hOldBitmap;
@@ -57,6 +59,8 @@ private:
     string      m_strKey;
     string      m_strPathKey;
 public:
+    void EnableTransparentEffect() { m_bEnableTransparent = true; }
+    void DisableTransparentEffect() { m_bEnableTransparent = false; }
     string GetTag() const override
     {
         return m_strKey;

@@ -16,6 +16,6 @@ public:
     virtual void Collision(float dt);
     virtual void Draw(HDC hdc, float dt);
 private:
-    virtual void LoadStage(STAGE_TAG eStageTag, const string& strlayerTag, FILE* pFile) final;
+    virtual void LoadStage(const string& objectTag, const string& strlayerTag, FILE* pFile) final;
     virtual void LoadDefaultStages(const char* fileName) final;
 };

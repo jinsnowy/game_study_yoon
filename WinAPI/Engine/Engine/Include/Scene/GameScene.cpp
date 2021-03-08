@@ -5,35 +5,13 @@
 #include "../Core/Camera.h"
 #include "Layer.h"
 
-/*
-    Object* pMinion = Object::CreateObject<Minion>("Minion", pLayer);
-
-    SAFE_RELEASE(pMinion);
-
-    Bullet* pBullet = Scene::CreatePrototype<Bullet>("Bullet", m_eSceneType);
-    pBullet->SetSize(50.f, 50.f);
-
-    SAFE_RELEASE(pBullet);
-
-    Layer* pStageLayer = FindLayer("Stage");
-
-    Stage* pStage = Object::CreateObject<Stage>("Stage", pStageLayer);
-
-    ColliderPixel* pPixel = pStage->AddCollider<ColliderPixel>("StageColl");
-
-    pPixel->SetPixelInfo("MaskStage2.bmp");
-
-    SAFE_RELEASE(pPixel);
-
-    SAFE_RELEASE(pStage);
-*/
-
 GameScene::GameScene()
 {
 }
 
 GameScene::~GameScene()
 {
+    
 }
 
 
@@ -70,7 +48,7 @@ void GameScene::Draw(HDC hdc, float dt)
 void GameScene::SetUpScene(const char* fileName, Object* pPlayer, Pos camPivot)
 {
     LoadDefaultStages(fileName);
-    Stage* pStage = static_cast<Stage*>(Object::FindObject("Ground"));
+    Stage* pStage = static_cast<Stage*>(Object::FindObject("GroundStage"));
     Size imgSize = pStage->GetImageSize();
   
     int worldX = pStage->GetStageWidth() > imgSize.x ? pStage->GetStageWidth() : imgSize.x;
@@ -82,10 +60,10 @@ void GameScene::SetUpScene(const char* fileName, Object* pPlayer, Pos camPivot)
     CAMERA->SetTarget(pPlayer);
 }
 
-void GameScene::LoadStage(STAGE_TAG eStageTag, const string& strlayerTag, FILE* pFile)
+void GameScene::LoadStage(const string& objectTag, const string& strlayerTag,  FILE* pFile)
 {
     Layer* pStageLayer = FindLayer(strlayerTag);
-    Stage* pStage = Object::CreateObject<Stage>(strlayerTag, pStageLayer);
+    Stage* pStage = Object::CreateObject<Stage>(objectTag, pStageLayer);
     pStage->LoadFromFile(pFile);
     SAFE_RELEASE(pStage);
 }
@@ -94,11 +72,16 @@ void GameScene::LoadDefaultStages(const char* fileName)
 {
     FILE* pFile = PATH_MANAGER->FileOpen(fileName, DATA_PATH, "rb");
 
-    LoadStage(ST_GROUND, "Ground", pFile);
-    LoadStage(ST_STATIC, "Static", pFile);
+    LoadStage("GroundStage", "Ground", pFile);
+    LoadStage("ObjectStage", "", pFile);
+    LoadStage("StaticStage", "Static", pFile);
 
     if (pFile)
     {
         fclose(pFile);
     }
+
+    Stage* pStage = static_cast<Stage*>(Object::FindObject("ObjectStage"));
+    pStage->AddAllTilesInLayer(FindLayer("Object"));
+    Object::EraseObject(Object::FindObject("ObjectStage"));
 }

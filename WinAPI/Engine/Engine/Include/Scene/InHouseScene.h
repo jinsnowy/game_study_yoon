@@ -6,7 +6,7 @@ private:
     friend class SceneManager;
 
 private:
-    const char*  pGameDataFileName = "InHouse.map";
+    const char*  pGameDataFileName = "test.map";
 private:
     InHouseScene();
     ~InHouseScene();

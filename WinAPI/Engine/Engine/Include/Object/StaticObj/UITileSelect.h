@@ -6,8 +6,17 @@ class UITileSelect :
 {
 private:
 	friend class Object;
-	friend class Scene;
 	friend class MapEditScene;
+	const vector<wstring> m_btnFileName = { L"1.GroundSelTag",
+										L"2.StaticSelTag",
+										L"3.TileSelTag",
+										L"4.ObjectSelTag",
+										L"5.OptionSelTag", };
+	vector<class UIButton*> m_btn;
+	const wchar_t *m_strNumberPath = L"SV/Numbers/Select/";
+	const wchar_t* m_strUIImagePath = L"SV/UISelectBase2.bmp";
+	unordered_map<string, int> m_optNameMap;
+
 	int m_iDrawMaxitemNumX = 0;
 	int m_iDrawMaxitemNumY = 0;
 	int m_iValidWidth = 0;
@@ -16,8 +25,8 @@ private:
 	int m_iTotalSizeY = 0;
 private:
 	int m_iCurPageNum = 0;
-	UISEL_TYPE m_eCurSelTile = SEL_GROUND;
-	OBJECT_TYPE m_eCurSelObject = OBJ_PLANT;
+	int m_iCurSelObject = 0;
+	EDIT_MODE m_eCurSelTile = SEL_GROUND;
 
 	int m_iMarginWidth = 10;
 	int m_iMarginHeight = 10;
@@ -25,17 +34,17 @@ private:
 	static constexpr int m_iSelButtonSize = 40;
 	static constexpr int m_iStageTagWidth = 120;
 	static constexpr int m_iStageTagHeight = 80;
-	vector<vector<Texture*>> m_BaseTiles;
+	unordered_map<int, vector<class Tile*>> m_BaseTileMap;
+	vector<class Tile*> m_NumberTiles;
 	vector<unordered_map<string, Object*>*> m_PrototypeMapContainer;
 public:
-	bool IsObjectTileMode() const;
-	void SetCurSelect(UISEL_TYPE eSel);
-	Texture* SelectTile(const Pos& screenPos);
-	Object* SelectObject(const Pos& screenPos);
-	bool SelectUITag(const Pos& screenPos);
-	void InitUI();
-	void LoadTiles(UISEL_TYPE eSel, const wchar_t* pBaseFolderName, const string& strPathKey = TEXTURE_PATH);
+	bool IsOpt(const string& optName) const;
+	TILE_OPTION GetOpt(const string& optName) const;
+	EDIT_MODE GetCurSelect() const { return m_eCurSelTile; }
+	Object* GetClickObject(const Pos& screenPos, bool &UITouch);
+	void LoadTiles(EDIT_MODE eSel, const wchar_t* pBaseFolderName, const string& strPathKey = TEXTURE_PATH);
 	void LoadPrototypes(OBJECT_TYPE eType);
+	void ChangeState();
 protected:
 	UITileSelect();
 	UITileSelect(const UITileSelect& ui) = delete;
@@ -49,6 +58,10 @@ public:
 	virtual void Draw(HDC hdc, float dt);
 	virtual UITileSelect* Clone() { return nullptr; }
 private:
+	void SetUpTagButton(class Layer* uiLayer);
+	string ExtractKey(const char* str, int size);
+	Object* SelectObject(const Pos& screenPos, bool& UITouch);
+	Object* SelectTile(const Pos& screenPos, bool& UITouch);
 	void DrawTilePanel(HDC hdc, float dt);
 	void DrawObjectPanel(HDC hdc, float dt);
 };

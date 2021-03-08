@@ -93,6 +93,21 @@ void MovableObject::Draw(HDC hDC, float dt)
 	Object::Draw(hDC, dt);
 }
 
+void MovableObject::Save(FILE* pFile)
+{
+	Object::Save(pFile);
+}
+
+void MovableObject::Load(FILE* pFile)
+{
+	Object::Load(pFile);
+}
+
+void MovableObject::LateInit()
+{
+	Object::LateInit();
+}
+
 void MovableObject::Move(float x, float y)
 {
 	m_tPos.x += x;

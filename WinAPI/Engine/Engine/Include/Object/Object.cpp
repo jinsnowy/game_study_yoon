@@ -269,35 +269,41 @@ void Object::SetAnimationClipColorKey(const string& strClip, unsigned char r, un
     }
 }
 
-void Object::DrawImageAt(HDC hdc, const Pos& at)
+void Object::DrawImageAt(HDC hdc, const Pos& at, bool ignorePivot)
 {
-    DrawImageAt(hdc, int(at.x), int(at.y));
+    DrawImageAt(hdc, int(at.x), int(at.y), ignorePivot);
 }
 
-void Object::DrawImageAt(HDC hdc, int px, int py)
+void Object::DrawImageAt(HDC hdc, int px, int py, bool ignorePivot)
 {
     if (m_pTexture)
     {
         Size tSize = GetImageSize();
-        int tx = px - m_tPivot.x * tSize.x;
-        int ty = py - m_tPivot.y * tSize.y;
-        m_pTexture->DrawImageAt(hdc, tx, ty);
+        if (!ignorePivot)
+        {
+            px = px - m_tPivot.x * tSize.x;
+            py = py - m_tPivot.y * tSize.y;
+        }
+        m_pTexture->DrawImageAt(hdc, px, py);
     }
 }
 
-void Object::DrawImageAtFixedSize(HDC hdc, const Pos& at, int size)
+void Object::DrawImageAtFixedSize(HDC hdc, const Pos& at, int size, bool ignorePivot)
 {
-    DrawImageAtFixedSize(hdc, int(at.x), int(at.y), size);
+    DrawImageAtFixedSize(hdc, int(at.x), int(at.y), size, ignorePivot);
 }
 
-void Object::DrawImageAtFixedSize(HDC hdc, int px, int py, int size)
+void Object::DrawImageAtFixedSize(HDC hdc, int px, int py, int size, bool ignorePivot)
 {
     if (m_pTexture)
     {
         Size tSize = GetImageSize();
-        int tx = px - m_tPivot.x * tSize.x;
-        int ty = py - m_tPivot.y * tSize.y;
-        m_pTexture->DrawImageAtFixedSize(hdc, tx, ty, size);
+        if (!ignorePivot)
+        {
+            px = px - m_tPivot.x * tSize.x;
+            py = py - m_tPivot.y * tSize.y;
+        }
+        m_pTexture->DrawImageAtFixedSize(hdc, px, py, size);
     }
 }
 
@@ -403,18 +409,8 @@ void Object::Draw(HDC hdc, float dt)
             }
         }
 
-        if (m_pTexture->GetColorKeyEnable())
-        {
-            TransparentBlt(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
-                                m_pTexture->GetDC(), int(tImagePos.x), int(tImagePos.y),
-                                int(m_tSize.x), int(m_tSize.y),
-                                m_pTexture->GetColorKey());
-        }
-        else 
-        {
-            BitBlt(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
-                m_pTexture->GetDC(), int(tImagePos.x), int(tImagePos.y), SRCCOPY);
-        }
+        m_pTexture->DrawImage(hdc, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
+            int(tImagePos.x), int(tImagePos.y));
     }
 
     list<Collider*>::iterator iter;
@@ -621,7 +617,7 @@ void Object::Load(FILE* pFile)
 
         SAFE_RELEASE(pCollider);
     }
-
+    
     // 애니메이션 읽어온다.
     bool bAnimation;
     fread(&bAnimation, 1, 1, pFile);
@@ -634,6 +630,10 @@ void Object::Load(FILE* pFile)
         m_pAnimation->Init();
         m_pAnimation->Load(pFile);
     }
+}
+
+void Object::LateInit()
+{
 }
 
 Object* Object::CreateCloneObject(const string& strPrototypeKey, const string& strTag, SCENE_CREATE sc, class Layer* pLayer)

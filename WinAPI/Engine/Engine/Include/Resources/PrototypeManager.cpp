@@ -4,7 +4,6 @@
 #include "../Object/Object.h"
 #include "../Scene/Layer.h"
 #include "../Core/PathManager.h"
-#include "../Object/StaticObj/TileObject.h"
 #include "../Object/StaticObj/Tree.h"
 
 DEFINITION_SINGLE(PrototypeManager);
@@ -25,11 +24,7 @@ PrototypeManager::~PrototypeManager()
 
 bool PrototypeManager::Init()
 {
-    LoadTileObjectInFolder(OBJ_TILE_INNER, L"SV/TileObject/Inner/");
-    LoadTileObjectInFolder(OBJ_BUILDING, L"SV/TileObject/Building/");
-
     Tree* pTree = LoadObject<Tree>();
-  
     RegisterProtoType(OBJ_PLANT, "Tree1_Prototype", pTree);
     pTree = pTree->Clone();
     pTree->ChangeTreeTexture(1);
@@ -37,12 +32,6 @@ bool PrototypeManager::Init()
     pTree = pTree->Clone();
     pTree->ChangeTreeTexture(2);
     RegisterProtoType(OBJ_PLANT, "Tree3_Prototype", pTree);
-
-
-
-
-
-
 
 	return true;
 }
@@ -104,7 +93,7 @@ void PrototypeManager::LoadTileObjectInFolder(OBJECT_TYPE eType, const wchar_t* 
         const wchar_t* path = entry.path().c_str();
         string strTag = extract_key(GetChar(path), lstrlen(path));
         string prototypeStrKey = strTag + "_Prototype";
-        TileObject* tObject = new TileObject;
+        Tile* tObject = new Tile;
         pTex = RESOURCE_MANAGER->LoadTexture(strTag, path, "");
         pTex->SetColorKey(255, 255, 255);
 

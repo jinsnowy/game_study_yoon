@@ -72,6 +72,9 @@ void Collider::Save(FILE* pFile)
 	// Tag 문자열을 저장한다.
 	fwrite(m_strTag.c_str(), 1, iLength, pFile);
 
+	// UI 충돌체
+	fwrite(&m_bUIColl, 1, 1, pFile);
+
 	// 충돌체 타입을 저장한다.
 	fwrite(&m_eCollType, 4, 1, pFile);
 }
@@ -83,9 +86,8 @@ void Collider::Load(FILE* pFile)
 	
 	fread(&iLength, 4, 1, pFile);
 	fread(strTag, 1, iLength, pFile);
-
 	m_strTag = strTag;
-
+	fread(&m_bUIColl, 1, 1, pFile);
 	fread(&m_eCollType, 4, 1, pFile);
 }
 
