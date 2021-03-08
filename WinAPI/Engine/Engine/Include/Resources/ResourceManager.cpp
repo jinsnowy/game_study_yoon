@@ -14,6 +14,7 @@ ResourceManager::ResourceManager()
 ResourceManager::~ResourceManager()
 {
 	SAFE_RELEASE(m_pBackBuffer);
+	SAFE_RELEASE(m_pTempBuffer);
 	SAFE_RELEASE(m_pEmptyBuffer);
 	Safe_Release_Map(m_mapTexture);
 }
@@ -30,6 +31,17 @@ Texture* ResourceManager::GetEmptyBuffer() const
 	return m_pEmptyBuffer;
 }
 
+Texture* ResourceManager::GetTempBuffer() const
+{
+	m_pTempBuffer->AddRef();
+	return m_pTempBuffer;
+}
+
+void ResourceManager::ClearBuffer(Texture* pTex, int px, int py, int w, int h)
+{
+	pTex->ClearBuffer(px, py, w, h);
+}
+
 bool ResourceManager::Init(HINSTANCE hInst, HDC hDC)
 {
 	m_hInst = hInst;
@@ -41,6 +53,8 @@ bool ResourceManager::Init(HINSTANCE hInst, HDC hDC)
 	// ºó¹öÆÛ
 	m_pEmptyBuffer = Texture::CreateEmptyTexture(hDC, GETRESOLUTION.x, GETRESOLUTION.y);
 
+	m_pTempBuffer = Texture::CreateEmptyTexture(hDC, GETRESOLUTION.x, GETRESOLUTION.y);
+
 	m_tBlenFunc.BlendOp = AC_SRC_OVER;
 	m_tBlenFunc.BlendFlags = 0;
 	m_tBlenFunc.SourceConstantAlpha = 0;
@@ -48,8 +62,8 @@ bool ResourceManager::Init(HINSTANCE hInst, HDC hDC)
 
 	m_tTransparent.BlendOp = AC_SRC_OVER;
 	m_tTransparent.BlendFlags = 0;
-	m_tTransparent.SourceConstantAlpha = 0;
-	m_tTransparent.AlphaFormat = 100;
+	m_tTransparent.SourceConstantAlpha = 100;
+	m_tTransparent.AlphaFormat = 0;
 	return true;
 }
 

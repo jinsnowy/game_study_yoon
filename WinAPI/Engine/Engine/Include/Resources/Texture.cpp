@@ -1,5 +1,6 @@
 #include "Texture.h"
 #include "../Core/PathManager.h"
+#include "../Application/Window.h"
 #include "../Resources/ResourceManager.h"
 
 Texture::Texture()
@@ -8,17 +9,13 @@ Texture::Texture()
     m_bColorKeyEnable(false),
     m_ColorKey(RGB(255, 0, 255))
 {
+
 }
 
 Texture::~Texture()
 {
-    // 기존에 지정되어 있던 도구를 다시 지정해준다.
     SelectObject(m_hMemDC, m_hOldBitmap);
-
-    // Bitmap을 지워준다.
     DeleteObject(m_hBitmap);
-
-    // DC를 지워준다.
     DeleteDC(m_hMemDC);
 }
 
@@ -43,39 +40,53 @@ bool Texture::LoadTexture(HINSTANCE hInst, HDC hDC,
 
     strPath += pFileName;
 
-    // 전체 경로를 만들어준다.
     m_hBitmap = (HBITMAP)LoadImage(hInst, strPath.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-
-    // 위에서 만들어준 비트맵 도구를 DC에 지정한다.
-    // 지정할때 반환되는 값을 DC에 기본으로 지정되어 있던 도구가 반환된다.
     m_hOldBitmap = (HBITMAP)SelectObject(m_hMemDC, m_hBitmap);
-
-    // 비트맵 정보를 가져온다.
     GetObject(m_hBitmap, sizeof(m_tInfo), &m_tInfo);
 
     return true;
 }
 
+void Texture::DrawImageFrom(int px, int py, int sx, int sy, Texture* pTex, int u, int v)
+{
+    if (pTex->GetColorKeyEnable())
+    {
+        TransparentBlt(m_hMemDC, px, py, sx, sy,
+            pTex->GetDC(), u, v,
+            sx, sy,
+            pTex->GetColorKey());
+    }
+    else
+    {
+        BitBlt(m_hMemDC, px, py, sx, sy, pTex->GetDC(), u, v, SRCCOPY);
+    }
+}
+
+void Texture::TransparentEffect(HDC hdc, int px, int py, int sx, int sy, int u, int v)
+{
+    Texture* pBack = RESOURCE_MANAGER->GetBackBuffer();
+    Texture* pTemp = RESOURCE_MANAGER->GetTempBuffer();
+    pTemp->ClearBuffer(px, py, sx, sy);
+    pTemp->DrawImageFrom(px, py, sx, sy, pBack, px, py);
+    pTemp->DrawImageFrom(px, py, sx, sy, this, u, v);
+    AlphaBlend(hdc, px, py, sx, sy, pTemp->GetDC(), px, py, sx, sy, RESOURCE_MANAGER->GetTransparentFunc());
+    SAFE_RELEASE(pTemp);
+    SAFE_RELEASE(pBack);
+}
+
 void Texture::DrawImage(HDC hdc, int px, int py, int sx, int sy, int u, int v)
 {
-    if (m_bEnableTransparent)
+    if (GetColorKeyEnable())
     {
-        AlphaBlend(hdc, px, py, sx, sy, m_hMemDC, u, v, sx, sy, RESOURCE_MANAGER->GetTransparentFunc());
+        TransparentBlt(hdc, px, py, sx, sy,
+                        m_hMemDC, u, v,
+                        sx, sy,
+                        m_ColorKey);
     }
-    else {
-        if (GetColorKeyEnable())
-        {
-            TransparentBlt(hdc, px, py, sx, sy,
-                            m_hMemDC, u, v,
-                            sx, sy,
-                            m_ColorKey);
-        }
-        else
-        {
-            BitBlt(hdc, px, py, sx, sy, m_hMemDC, px, py, SRCCOPY);
-        }
+    else
+    {
+        BitBlt(hdc, px, py, sx, sy, m_hMemDC, u, v, SRCCOPY);
     }
-
 }
 
 Texture* Texture::CreateEmptyTexture(HDC hDC, int w, int h, COLORREF color)
@@ -97,6 +108,7 @@ Texture* Texture::CreateCopyTexture(HDC hDC, int w, int h)
     pTexture->m_hMemDC = CreateCompatibleDC(hDC);
     pTexture->m_hBitmap = CreateCompatibleBitmap(hDC, w, h);
     pTexture->m_hOldBitmap = (HBITMAP)SelectObject(pTexture->m_hMemDC, pTexture->m_hBitmap);
+
     BitBlt(pTexture->m_hMemDC, 0, 0, w, h, hDC, 0, 0, SRCCOPY);
 
     return pTexture;
