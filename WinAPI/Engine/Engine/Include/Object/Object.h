@@ -1,20 +1,11 @@
 #pragma once
 #include "../framework.h"
-#include "../Scene/Layer.h"
 #include "../Collider/Collider.h"
 #include "../Animation/Animation.h"
 
 class Object : public Ref
 {
 	friend class PrototypeManager;
-private:
-	static list<Object*> m_ObjList;
-public:
-	static void AddObject(Object* pObj);
-	static Object* FindObject(const string& tag);
-	static void EraseObject(Object* pObj);
-	static void EraseObject(const string& tag);
-	static void EraseAllObjects();
 protected:
 	// 씬, 레이어, 텍스쳐, 콜라이더
 	bool m_bEnableAnimation = true;
@@ -24,6 +15,18 @@ protected:
 	list<Collider*> m_ColliderList;
 	Animation* m_pAnimation;
 public:
+	template<typename T>
+	static T* CreateObject(const string& strTag)
+	{
+		T* pObj = new T;
+		pObj->SetTag(strTag);
+		if (!pObj->Init())
+		{
+			SAFE_RELEASE(pObj);
+			return nullptr;
+		}
+		return pObj;
+	}
 	void SetAnimationVisibility(bool enabled) { m_bEnableAnimation = enabled; }
 	void SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b);
 	Animation* CreateAnimation(const string& strTag)
@@ -213,27 +216,5 @@ public:
 	void SaveFromFullPath(const char* pFullPath);
 	void LoadFromPath(const char* pFileNmae, const string& strPathKey = DATA_PATH);
 	void LoadFromFullPath(const char* pFullPath);
-public:
-	template<typename T>
-	static T* CreateObject(const string& strTag, class Layer* pLayer = nullptr)
-	{
-		T* pObj = new T;
-		pObj->SetTag(strTag);
-
-		if (!pObj->Init())
-		{
-			SAFE_DELETE(pObj);
-			return nullptr;
-		}
-
-		if (pLayer)
-		{
-			pLayer->AddObject(pObj);
-		}
-
-		AddObject(pObj);
-		return pObj;
-	}
-	Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, SCENE_CREATE sc, class Layer* pLayer);
 };
 

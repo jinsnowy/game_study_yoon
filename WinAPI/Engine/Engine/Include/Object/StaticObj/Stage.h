@@ -44,9 +44,6 @@ public:
 	int GetStageHeight() const { return m_iTileNumY * TILESIZE; }
 	int GetStageTileNumX() const { return m_iTileNumX; }
 	int GetStageTileNumY() const { return m_iTileNumY; }
-
-	void AddAllTilesInLayer(class Layer* pLayer);
-	void DeleteAllTilesInLayer(class Layer* pLayer);
 private:
 	void ClearTile();
 };

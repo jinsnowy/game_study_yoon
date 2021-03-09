@@ -2,6 +2,7 @@
 #include "ResourceManager.h"
 #include "Texture.h"
 #include "../Object/Object.h"
+#include "../Scene/Scene.h"
 #include "../Scene/Layer.h"
 #include "../Core/PathManager.h"
 #include "../Object/StaticObj/Tree.h"
@@ -107,7 +108,7 @@ void PrototypeManager::LoadTileObjectInFolder(OBJECT_TYPE eType, const wchar_t* 
     }
 }
 
-Object* PrototypeManager::CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Layer* pLayer)
+Object* PrototypeManager::CreateCloneObject(const string& strPrototypeKey, const string& strTag, Scene* pScene, Layer* pLayer)
 {
     assert(strPrototypeKey.ends_with("_Prototype"));
 	Object* pProto = FindPrototype(strPrototypeKey);
@@ -119,12 +120,15 @@ Object* PrototypeManager::CreateCloneObject(const string& strPrototypeKey, const
 	Object* pObj = pProto->Clone();
 	pObj->SetTag(strTag);
 
+    if (pScene)
+    {
+        pScene->AddObject(pObj);
+    }
+
 	if (pLayer)
 	{
-		pLayer->AddObject(pObj);
+        pLayer->AddObject(pObj);
 	}
-
-	Object::AddObject(pObj);
 
 	return pObj;
 }

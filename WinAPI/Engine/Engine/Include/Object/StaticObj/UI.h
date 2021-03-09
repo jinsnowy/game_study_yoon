@@ -3,7 +3,7 @@
 class UI : public Object
 {
 private:
-	friend class Object;
+	friend class Layer;
 	friend class Scene;
 protected:
 	UI();

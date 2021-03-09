@@ -15,8 +15,6 @@
 #include "../Animation/Animation.h"
 #include "../Core/PathManager.h"
 
-list<Object*> Object::m_ObjList;
-
 Object::Object() :
     m_pTexture(nullptr),
     m_pAnimation(nullptr),
@@ -70,60 +68,7 @@ Object::~Object()
 
 
 // ----------- Add and Delete Object from Object List
-void Object::AddObject(Object* pObj)
-{
-    pObj->AddRef();
-    m_ObjList.push_back(pObj);
-}
 
-Object* Object::FindObject(const string& tag)
-{
-    auto iterEnd = m_ObjList.end();
-    for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
-    {
-        if ((*it)->GetTag() == tag)
-        {
-            return *it;
-        }
-    }
-    return nullptr;
-}
-
-void Object::EraseObject(Object* pObj)
-{
-    list<Object*>::iterator it;
-    list<Object*>::iterator iterEnd = m_ObjList.end();
-
-    const auto ptr = &m_ObjList;
-    for (it = m_ObjList.begin(); it != iterEnd; ++it)
-    {
-        if (*it == pObj)
-        {
-            SAFE_RELEASE((*it));
-            m_ObjList.erase(it);
-            return;
-        }
-    }
-}
-
-void Object::EraseObject(const string& tag)
-{
-    auto iterEnd = m_ObjList.end();
-    for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
-    {
-        if ((*it)->GetTag() == tag)
-        {
-            SAFE_RELEASE((*it));
-            it = m_ObjList.erase(it);
-            return;
-        }
-    }
-}
-
-void Object::EraseAllObjects()
-{
-    Safe_Release_VecList(m_ObjList);
-}
 
 void Object::SetClipColorKey(const string& strName, unsigned char r, unsigned char g, unsigned char b)
 {
@@ -471,7 +416,7 @@ void Object::SaveFromFullPath(const char* pFullPath)
 void Object::Save(FILE* pFile)
 {
     // 일반 오브젝트 정보
-    int iLength = m_strTag.length();
+    size_t iLength = m_strTag.length();
     fwrite(&iLength, 4, 1, pFile);
     fwrite(m_strTag.c_str(), 1, iLength, pFile);
     fwrite(&m_blsPhysics, 1, 1, pFile);
@@ -628,25 +573,4 @@ void Object::Load(FILE* pFile)
 
 void Object::LateInit()
 {
-}
-
-Object* Object::CreateCloneObject(const string& strPrototypeKey, const string& strTag, SCENE_CREATE sc, class Layer* pLayer)
-{
-    Object* pProto = Scene::FindPrototype(strPrototypeKey, sc);
-
-    if (!pProto)
-        return nullptr;
-
-    // 복제한 인스턴스
-    Object* pObj = pProto->Clone();
-    pObj->SetTag(strTag);
-
-    if (pLayer)
-    {
-        pLayer->AddObject(pObj);
-    }
-
-    AddObject(pObj);
-
-    return pObj;
 }

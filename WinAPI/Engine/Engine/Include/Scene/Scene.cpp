@@ -5,8 +5,6 @@
 #include "../Application/Window.h"
 #include "../Core/Camera.h"
 
-unordered_map<string, Object*> Scene::m_mapProtoType[SC_END];
-
 Scene::Scene()
 {
 	Layer* pLayer = CreateLayer("UI", INT_MAX);
@@ -15,27 +13,110 @@ Scene::Scene()
 	pLayer = CreateLayer("Effect", 3);
 	pLayer = CreateLayer("Object", 2);
 	pLayer = CreateLayer("Ground", 0);
-	m_eSceneType = SC_CURRENT;
 }
 
 Scene::~Scene()
 {
-	EraseAllPrototypes(m_eSceneType);
+	EraseAllPrototypes();
 	Safe_Delete_VecList(m_LayerList);
+	Safe_Release_VecList(m_ObjList);
 }
 
-void Scene::ErasePrototype(const string& strPrototypeKey, SCENE_CREATE sc)
+Object* Scene::FindObject(const string& tag)
 {
-	auto it = m_mapProtoType[sc].find(strPrototypeKey);
-	if (it == m_mapProtoType[sc].end())
-		return;
-
-	SAFE_RELEASE(it->second);
+	auto iterEnd = m_ObjList.end();
+	for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
+	{
+		if ((*it)->GetTag() == tag)
+		{
+			return *it;
+		}
+	}
+	return nullptr;
 }
 
-void Scene::EraseAllPrototypes(SCENE_CREATE sc)
+void Scene::EraseObject(Object* pObj)
 {
-	Safe_Release_Map(m_mapProtoType[sc]);
+	list<Object*>::iterator it;
+	list<Object*>::iterator iterEnd = m_ObjList.end();
+
+	const auto ptr = &m_ObjList;
+	for (it = m_ObjList.begin(); it != iterEnd; ++it)
+	{
+		if (*it == pObj)
+		{
+			SAFE_RELEASE((*it));
+			m_ObjList.erase(it);
+			return;
+		}
+	}
+}
+
+void Scene::EraseObject(const string& tag)
+{
+	auto iterEnd = m_ObjList.end();
+	for (auto it = m_ObjList.begin(); it != iterEnd; ++it)
+	{
+		if ((*it)->GetTag() == tag)
+		{
+			SAFE_RELEASE((*it));
+			it = m_ObjList.erase(it);
+			return;
+		}
+	}
+}
+
+void Scene::EraseAllObjects()
+{
+	Safe_Release_VecList(m_ObjList);
+}
+
+void Scene::AddObject(Object* pObj)
+{
+	pObj->AddRef();
+	m_ObjList.push_back(pObj);
+}
+
+Object* Scene::CreateCloneObject(const string& strPrototypeKey, const string& strTag, Layer* pLayer)
+{
+	Object* pObj = FindPrototype(strPrototypeKey);
+	if (pObj == nullptr)
+		return nullptr;
+
+	pObj = pObj->Clone();
+	pObj->SetTag(strTag);
+
+	if (pLayer)
+	{
+		pLayer->AddObject(pObj);
+	}
+
+	AddObject(pObj);
+	return pObj;
+}
+
+Object* Scene::FindPrototype(const string& strPrototypeKey)
+{
+	auto found = m_mapProtoType.find(strPrototypeKey);
+	if (found != m_mapProtoType.end())
+	{
+		found->second->AddRef();
+		return found->second;
+	}
+	return nullptr;
+}
+
+void Scene::ErasePrototype(const string& strPrototypeKey)
+{
+	auto found = m_mapProtoType.find(strPrototypeKey);
+	if (found != m_mapProtoType.end())
+		m_mapProtoType.erase(strPrototypeKey);
+	return;
+}
+
+void Scene::EraseAllPrototypes()
+{
+	Safe_Release_Map(m_mapProtoType);
 }
 
 Layer* Scene::FindLayer(const string& tag)
@@ -220,19 +301,4 @@ void Scene::Draw(HDC hdc, float dt)
 		}
 		else ++it;
 	}
-}
-
-Object* Scene::FindPrototype(const string& strkey, SCENE_CREATE sc)
-{
-	auto it = m_mapProtoType[sc].find(strkey);
-	if (it == m_mapProtoType[sc].end())
-		return nullptr;
-	return it->second;
-}
-
-void Scene::ChangeProtoType()
-{
-	EraseAllPrototypes(SC_CURRENT);
-	m_mapProtoType[SC_CURRENT] = std::move(m_mapProtoType[SC_NEXT]);
-	m_mapProtoType[SC_NEXT].clear();
 }

@@ -4,8 +4,7 @@ class GameScene : public Scene
 {
 private:
     friend class SceneManager;
-    class Stage* m_pGroundStage;
-    class Stage* m_pObjStage;
+    class Stage* m_pBaseStage;
     int m_iTileNumX;
     int m_iTileNumY;
 protected:

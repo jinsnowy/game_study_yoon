@@ -13,15 +13,11 @@ bool InHouseScene::Init()
 {
 	Layer* pLayer = FindLayer("Object");
 
-	Object* pPlayer = Object::CreateObject<Player>("Player", pLayer);
+	Object* pPlayer = CreateObject<Player>("Player", pLayer);
 
 	Pos camPivot = Pos(0.5f, 0.5f);
 
 	GameScene::SetUpScene(pGameDataFileName, pPlayer, camPivot);
-
-	pPlayer->SetScene(this);
-
-	pPlayer->LateInit();
 
 	SAFE_RELEASE(pPlayer);
 

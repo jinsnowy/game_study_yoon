@@ -60,8 +60,10 @@ enum SOUND_CHANNEL
 // Scene Type
 enum SCENE_CREATE
 {
-	SC_CURRENT,
-	SC_NEXT,
+	SC_START,
+	SC_MAPEDIT,
+	SC_INHOUSE,
+	SC_FARM,
 	SC_END
 };
 

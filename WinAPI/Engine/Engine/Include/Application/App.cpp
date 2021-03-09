@@ -122,15 +122,15 @@ void App::Process()
 
 	Input(dt);
 
-	if (Update(dt) == SC_CHANGE)
+	if(SCENECHANGE(Update(dt)))
 	{
-		DrawSceneChange();
+		SCENE_MANAGER->ChangeScene();
 		return;
 	}
 		
-	if (LateUpdate(dt) == SC_CHANGE)
+	if(SCENECHANGE(LateUpdate(dt)))
 	{
-		DrawSceneChange();
+		SCENE_MANAGER->ChangeScene();
 		return;
 	}
 		
@@ -147,18 +147,17 @@ void App::Input(float dt)
 
 int App::Update(float dt)
 {
-	SCENE_CHANGE sc;
-	sc = SCENE_MANAGER->Update(dt);
+	int res;
+	res = SCENE_MANAGER->Update(dt);
 	CAMERA->Update(dt);
 	SOUND_MANAGER->Update(dt);
-	return sc;
+	return res;
 }
 
 int App::LateUpdate(float dt)
 {
-	SCENE_CHANGE sc;
-	sc = SCENE_MANAGER->LateUpdate(dt);
-	return sc;
+	int res = SCENE_MANAGER->LateUpdate(dt);
+	return res;
 }
 
 void App::Collision(float dt)
@@ -181,36 +180,6 @@ void App::Draw(float dt)
 	Mouse* pMouse = INPUT->GetMouse();
 
 	pMouse->Draw(WINDOW->m_hDC, dt);
-}
-
-void App::DrawSceneChange()
-{
-	const int RSW = GETRESOLUTION.x;
-	const int RSH = GETRESOLUTION.y;
-	
-	Texture* pBackBuffer = RESOURCE_MANAGER->GetBackBuffer();
-	Texture* pEmptyTex = Texture::CreateEmptyTexture(WINDOW->m_hDC, RSW, RSH);
-
-	m_fDelay = 0.f;
-	RESOURCE_MANAGER->SetAlphaChannel(0);
-	float th = m_fSceneDrawPeriod;
-	while (m_fDelay < m_fSceneDelay)
-	{
-		const float dt = TIMER->Tick();
-		// 장면 전환 효과
-		m_fDelay += dt;
-		if (m_fDelay > th)
-		{
-			th += m_fSceneDrawPeriod;
-			int alpha = int(255.f * (m_fDelay / m_fSceneDelay));
-			RESOURCE_MANAGER->SetAlphaChannel(alpha);
-			AlphaBlend(WINDOW->m_hDC, 0, 0, RSW, RSH,
-				pEmptyTex->GetDC(), 0, 0, RSW, RSH, RESOURCE_MANAGER->GetBlendFunc());
-		}
-	}
-
-	SAFE_RELEASE(pBackBuffer);
-	SAFE_RELEASE(pEmptyTex);
 }
 
 // Error handling

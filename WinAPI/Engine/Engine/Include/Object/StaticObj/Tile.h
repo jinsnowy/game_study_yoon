@@ -5,6 +5,7 @@ class Tile :
 {
 private:
     friend class Object;
+	friend class Layer;
     friend class Stage;
 protected:
 	TILE_TYPE		m_eType = TL_NONE;

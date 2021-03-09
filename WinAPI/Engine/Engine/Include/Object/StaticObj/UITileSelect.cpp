@@ -8,6 +8,7 @@
 #include "../../Resources/PrototypeManager.h"
 #include "../../Object/Object.h"
 #include "../../Core/Input.h"
+#include "../../Scene/Scene.h"
 #include <cassert>
 
 UITileSelect::UITileSelect()
@@ -271,15 +272,17 @@ void UITileSelect::Draw(HDC hdc, float dt)
     m_eCurSelTile == SEL_OBJECT ? DrawObjectPanel(hdc, dt) : DrawTilePanel(hdc, dt);
 }
 
-void UITileSelect::SetUpTagButton(Layer* uiLayer)
+void UITileSelect::SetUpTagButton(Scene* curScene)
 {
+    Layer* pLayer = curScene->FindLayer("UI");
+
     m_btn.resize(m_btnFileName.size(), nullptr);
     wstringstream path;
     for (int i = 0; i < m_btnFileName.size(); ++i)
     {
         path << L"SV/Numbers/Tag/" << m_btnFileName[i] << L".bmp";
         string strKey(GetChar(m_btnFileName[i].c_str()));
-        m_btn[i] = Object::CreateObject<UIButton>(strKey, uiLayer);
+        m_btn[i] = curScene->CreateObject<UIButton>(strKey, pLayer);
         m_btn[i]->SetTexture(strKey, path.str().c_str());
         m_btn[i]->SetSize(120, 60);
         m_btn[i]->SetColorKey(255, 255, 255);

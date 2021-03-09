@@ -5,7 +5,8 @@ class UITileSelect :
     public UI
 {
 private:
-	friend class Object;
+	friend class Layer;
+	friend class Scene;
 	friend class MapEditScene;
 	const vector<wstring> m_btnFileName = { L"1.GroundSelTag",
 										L"2.StaticSelTag",
@@ -58,7 +59,7 @@ public:
 	virtual void Draw(HDC hdc, float dt);
 	virtual UITileSelect* Clone() { return nullptr; }
 private:
-	void SetUpTagButton(class Layer* uiLayer);
+	void SetUpTagButton(class Scene* curScene);
 	string ExtractKey(const char* str, int size);
 	Object* SelectObject(const Pos& screenPos, bool& UITouch);
 	Object* SelectTile(const Pos& screenPos, bool& UITouch);

@@ -285,6 +285,11 @@ bool Player::Init()
 	pRC->AddCollisionFunction(CS_STAY, this, &Player::Hit);
 	SAFE_RELEASE(pRC);
 
+	Layer* pLayer = m_pScene->FindLayer("Effect");
+	m_pTool = Object::CreateObject<PlayerTool>("PlayerTool");
+	m_pTool->SetPlayer(this);
+	pLayer->AddObject(m_pTool);
+
 	return true;
 }
 
@@ -404,7 +409,7 @@ void Player::HitPixel(Collider* pSrc, Collider* pDst, float dt)
 		Pos tHitPoint = static_cast<ColliderPixel*>(pDst)->GetHitPoint();
 		Rect src = static_cast<ColliderRect*>(pSrc)->GetWorldInfo();
 
-		int bottom = (src.top + src.bottom) / 2;
+		int bottom = int(src.top + src.bottom) / 2;
 		if (tHitPoint.y < bottom)
 		{
 			if (!IsMoveUp())
@@ -423,11 +428,4 @@ void Player::Save(FILE* pFile)
 
 void Player::Load(FILE* pFile)
 {
-}
-
-void Player::LateInit()
-{
-	Layer* pLayer = m_pScene->FindLayer("Effect");
-	m_pTool = Object::CreateObject<PlayerTool>("PlayerTool", pLayer);
-	m_pTool->SetPlayer(this);
 }

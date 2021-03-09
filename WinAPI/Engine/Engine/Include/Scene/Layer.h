@@ -7,6 +7,8 @@ class Layer
 {
 private:
 	friend class Scene;
+	friend class PrototypeManager;
+	friend class MapEditScene;
 	Layer();
 private:
 	bool		m_bEnable;
@@ -16,12 +18,12 @@ private:
 	Scene* m_pScene;
 	list<Object*> m_LayerObjList;
 public:
-	const list<Object*>* GetObjectList() const { return &m_LayerObjList; }
-public:
-	~Layer();
-
+	const list<Object*>* GetObjList() const { return &m_LayerObjList; }
 	void EraseObject(Object* pObj);
 	void AddObject(Object* pObj);
+	void ClearObject();
+public:
+	~Layer();
 	// Get/Set method
 	bool GetEnable() const { return m_bEnable; }
 	bool GetLife() const { return m_bLife; }

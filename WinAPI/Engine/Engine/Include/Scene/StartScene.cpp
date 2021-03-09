@@ -34,7 +34,7 @@ bool StartScene::Init()
     SOUND_MANAGER->LoadSound("StartScene_On", false, SD_EFFECT, "ClickButtonOn_StartScene.mp3");
 
     Layer* pLayer = FindLayer("Ground");
-    UIPanel* pBackPanel = Object::CreateObject<UIPanel>("BackPanel", pLayer);
+    UIPanel* pBackPanel = CreateObject<UIPanel>("BackPanel", pLayer);
 
     pBackPanel->SetSize(GETRESOLUTION.x, GETRESOLUTION.y);
     pBackPanel->SetTexture("StartBack", L"StartScene/StardewValley_TitleScreen_BitMap.bmp");
@@ -42,7 +42,7 @@ bool StartScene::Init()
     SAFE_RELEASE(pBackPanel);
 
     pLayer = FindLayer("UI");
-    UIPanel* pGameTitle = Object::CreateObject<UIPanel>("GameTitle", pLayer);
+    UIPanel* pGameTitle = CreateObject<UIPanel>("GameTitle", pLayer);
     pGameTitle->SetPos(GETRESOLUTION.x / 2.f, 200.f);
     pGameTitle->SetSize(480.f, 223.f);
     pGameTitle->SetPivot(0.5f, 0.5f);
@@ -54,7 +54,7 @@ bool StartScene::Init()
     float btnHeight = 93.f;
 
     // 시작 버튼
-    UIButton* pStartBtn = Object::CreateObject<UIButton>("NewButton", pLayer);
+    UIButton* pStartBtn = CreateObject<UIButton>("NewButton", pLayer);
     pStartBtn->SetPos(GETRESOLUTION.x/2 - 2 * btnWidth, GETRESOLUTION.y/2 + 50);
     pStartBtn->SetSize(btnWidth, btnHeight);
     pStartBtn->SetTexture("NewButton", L"StartScene/SelectScene.bmp");
@@ -75,7 +75,7 @@ bool StartScene::Init()
     SAFE_RELEASE(pStartBtn);
 
     // 편집 버튼
-    UIButton* pEditBtn = Object::CreateObject<UIButton>("EditButton", pLayer);
+    UIButton* pEditBtn = CreateObject<UIButton>("EditButton", pLayer);
     pEditBtn->SetPos(GETRESOLUTION.x / 2 - btnWidth, GETRESOLUTION.y / 2 + 50);
     pEditBtn->SetSize(btnWidth, btnHeight);
     pEditBtn->SetTexture("EditButton", L"StartScene/SelectScene.bmp");
@@ -95,7 +95,7 @@ bool StartScene::Init()
     SAFE_RELEASE(pEditBtn);
 
     // Op
-    UIButton* pOpBtn = Object::CreateObject<UIButton>("NoneButton", pLayer);
+    UIButton* pOpBtn = CreateObject<UIButton>("NoneButton", pLayer);
     pOpBtn->SetPos(GETRESOLUTION.x / 2, GETRESOLUTION.y / 2 + 50);
     pOpBtn->SetSize(btnWidth, btnHeight);
     pOpBtn->SetTexture("ExitButton", L"StartScene/SelectScene.bmp");
@@ -109,7 +109,7 @@ bool StartScene::Init()
     SAFE_RELEASE(pOpBtn);
 
     // 종료 버튼
-    UIButton* pEndBtn = Object::CreateObject<UIButton>("ExitButton", pLayer);
+    UIButton* pEndBtn = CreateObject<UIButton>("ExitButton", pLayer);
     pEndBtn->SetPos(GETRESOLUTION.x / 2 + btnWidth, GETRESOLUTION.y / 2 + 50);
     pEndBtn->SetSize(btnWidth, btnHeight);
     pEndBtn->SetTexture("ExitButton", L"StartScene/SelectScene.bmp");
@@ -136,7 +136,7 @@ void StartScene::StartButtonCallback(float fTime)
 {
     SOUND_MANAGER->PlaySound("StartScene_Click");
     SOUND_MANAGER->PauseSound(SD_BACKGROUND);
-    SCENE_MANAGER->CreateScene<InHouseScene>(SC_NEXT);
+    SCENE_MANAGER->SignalizeSceneChange(SC_INHOUSE);
 }
 
 void StartScene::EndButtonCallback(float fTime)
@@ -150,5 +150,5 @@ void StartScene::EditButtonCallback(float fTime)
 {
     SOUND_MANAGER->PlaySound("StartScene_Click");
     SOUND_MANAGER->PauseSound(SD_BACKGROUND);
-    SCENE_MANAGER->CreateScene<MapEditScene>(SC_NEXT);
+    SCENE_MANAGER->SignalizeSceneChange(SC_MAPEDIT);
 }

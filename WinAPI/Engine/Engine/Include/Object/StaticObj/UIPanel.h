@@ -3,7 +3,7 @@
 class UIPanel : public UI
 {
 private:
-	friend class Object;
+	friend class Layer;
 	friend class Scene;
 private:
 	UIPanel();

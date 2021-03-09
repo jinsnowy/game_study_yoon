@@ -1,4 +1,5 @@
 #include "Layer.h"
+#include "Scene.h"
 #include "../Object/Object.h"
 #include "../Collider/CollisionManager.h"
 
@@ -14,12 +15,17 @@ Layer::Layer()
 }
 Layer::~Layer()
 {
+    ClearObject();
+}
+
+void Layer::ClearObject()
+{
     list<Object*>::iterator it;
     list<Object*>::iterator iterEnd = m_LayerObjList.end();
 
     for (it = m_LayerObjList.begin(); it != iterEnd; it++)
     {
-        Object::EraseObject(*it);
+        m_pScene->EraseObject(*it);
         SAFE_RELEASE((*it));
     }
     m_LayerObjList.clear();
@@ -35,6 +41,7 @@ void Layer::EraseObject(Object* pObj)
         if ((*iter) == pObj)
         {
             SAFE_RELEASE((*iter));
+            m_pScene->EraseObject((*iter));
             m_LayerObjList.erase(iter);
             return;
         }
@@ -70,7 +77,7 @@ void Layer::Input(float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(*it);
+            m_pScene->EraseObject(*it);
             SAFE_RELEASE((*it));
             it = m_LayerObjList.erase(it);
             iterEnd = m_LayerObjList.end();
@@ -94,7 +101,7 @@ void Layer::Update(float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(*it);
+            m_pScene->EraseObject(*it);
             SAFE_RELEASE((*it));
             it = m_LayerObjList.erase(it);
             iterEnd = m_LayerObjList.end();
@@ -118,7 +125,7 @@ void Layer::LateUpdate(float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(*it);
+            m_pScene->EraseObject(*it);
             SAFE_RELEASE((*it));
             it = m_LayerObjList.erase(it);
             iterEnd = m_LayerObjList.end();
@@ -140,7 +147,7 @@ void Layer::Collision(float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(*it);
+            m_pScene->EraseObject(*it);
             SAFE_RELEASE((*it));
             it = m_LayerObjList.erase(it);
             iterEnd = m_LayerObjList.end();
@@ -172,7 +179,7 @@ void Layer::Draw(HDC hdc, float dt)
 
         if (!(*it)->GetLife())
         {
-            Object::EraseObject(*it);
+            m_pScene->EraseObject(*it);
             SAFE_RELEASE((*it));
             it = m_LayerObjList.erase(it);
             iterEnd = m_LayerObjList.end();

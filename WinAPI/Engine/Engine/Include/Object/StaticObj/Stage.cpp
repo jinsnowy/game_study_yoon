@@ -43,7 +43,7 @@ void Stage::CreateTile(int iNumX, int iNumY)
     {
         for (int j = 0; j < iNumX; ++j)
         {
-            Tile* pTile = Object::CreateObject<Tile>("Tile", nullptr);
+            Tile* pTile = Object::CreateObject<Tile>("Tile");
             
             offset.x = j * TILESIZE;
             offset.y = i * TILESIZE;
@@ -150,10 +150,10 @@ void Stage::Load(FILE* pFile)
         switch (tile_type)
         {
         case TL_TREE:
-            pTile = Object::CreateObject<Tree>("Tree", nullptr);
+            pTile = Object::CreateObject<Tree>("Tree");
             break;
         default:
-            pTile = Object::CreateObject<Tile>("Tile", nullptr);
+            pTile = Object::CreateObject<Tile>("Tile");
             break;
         }
         pTile->m_eType = tile_type;
@@ -190,10 +190,9 @@ void Stage::SetTileNone(const Pos& tPos)
     if (ind == -1)
         return;
 
-    Object::EraseObject(m_baseTile[ind]);
     SAFE_RELEASE(m_baseTile[ind]);
 
-    m_baseTile[ind] = Object::CreateObject<Tile>("Tile", nullptr);
+    m_baseTile[ind] = Object::CreateObject<Tile>("Tile");
     INDEX index = GetTileRowColIndex(tPos);
     Pos offset (index.x * TILESIZE, index.y * TILESIZE);
 
@@ -209,7 +208,6 @@ void Stage::ChangeTileByCloneTile(const Pos& tPos, Tile* pClone)
     if (ind == -1)
         return;
 
-    Object::EraseObject(m_baseTile[ind]);
     SAFE_RELEASE(m_baseTile[ind]);
 
     m_baseTile[ind] = pClone;
@@ -254,25 +252,7 @@ INDEX Stage::GetTileRowColIndex(float x, float y) const
 
 void Stage::ClearTile()
 {
-    for (int i = 0; i < m_baseTile.size(); ++i)
-    {
-        Object::EraseObject(m_baseTile[i]);
-    }
     Safe_Release_VecList(m_baseTile);
 }
 
-void Stage::AddAllTilesInLayer(class Layer* pLayer)
-{
-    for (Tile* tile : m_baseTile)
-    {
-        pLayer->AddObject(static_cast<Object*>(tile));
-    }
-}
 
-void Stage::DeleteAllTilesInLayer(class Layer* pLayer)
-{
-    for (Tile* tile : m_baseTile)
-    {
-        pLayer->EraseObject(static_cast<Object*>(tile));
-    }
-}

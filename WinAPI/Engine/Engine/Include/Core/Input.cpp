@@ -16,7 +16,6 @@ Input::Input()
 
 Input::~Input()
 {
-	Object::EraseObject(m_pMouse);
 	SAFE_RELEASE(m_pMouse);
 	Safe_Delete_Map(m_mapKey);
 }

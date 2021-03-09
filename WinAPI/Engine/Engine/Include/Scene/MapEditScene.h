@@ -45,13 +45,9 @@ private:
     void CameraScroll(float dt);
 private:
     vector<class Stage*> m_vecStage;
-    // 게임상에 object layer에 추가될 오브젝트 입니다.
-    list<class Object*> m_objList;
+    class Layer* m_pObjLayer = nullptr;
 public:
-    Object* CreateCloneObject(Object* const pObj, const Pos& worldPos);
-
-    void AddObject(Object* pClone);
-    void DeleteObject(Object* pObj);
+    Object* EditCloneObject(Object* const pObj, const Pos& worldPos);
     void DeleteNearObject(const Pos& worldPos);
     void EmptyMapEditScene();
 };

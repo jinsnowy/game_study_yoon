@@ -100,12 +100,11 @@ Texture* ResourceManager::LoadTexture(FILE* pFile)
 	char strPathKey[MAX_PATH] = {};
 	wchar_t strFileName[MAX_PATH] = {};
 
-	// key의 길이를 저장한다.
 	fread(&iLength, 4, 1, pFile);
 	fread(strKey, 1, iLength, pFile);
 	strKey[iLength] = 0;
 
-	// FileName 저장
+
 	iLength = 0;
 	fread(&iLength, 4, 1, pFile);
 	fread(strFileName, 2, iLength, pFile);

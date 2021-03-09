@@ -11,9 +11,8 @@ enum BUTTON_STATE
 class UIButton : public UI
 {
 private:
-	friend class Object;
+	friend class Layer;
 	friend class Scene;
-
 private:
 	UIButton();
 	UIButton(const UIButton& ui);

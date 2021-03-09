@@ -38,7 +38,7 @@ public:
 	static void RegisterProtoType(OBJECT_TYPE eType, const string& strPrototypeKey, Object* pObj);
 	static Object* FindPrototype(const string& strPrototypeKey);
 	static Object* FindPrototype(OBJECT_TYPE eType, const string& strPrototypeKey);
-	static Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, Layer* pLayer);
+	static Object* CreateCloneObject(const string& strPrototypeKey, const string& strTag, class Scene* pScene, class Layer* pLayer);
 	bool Init();
 };
 
