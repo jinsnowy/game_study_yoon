@@ -4,8 +4,7 @@
 #include "../../Core/Camera.h"
 #include "../../Animation/Animation.h"
 
-Tile::Tile():
-	m_eOption(TO_NONE)
+Tile::Tile()
 {
 }
 
@@ -15,6 +14,7 @@ Tile::Tile(const Tile& tile)
 {
 	m_eOption = tile.m_eOption;
 	m_pOptionTex = tile.m_pOptionTex;
+    m_eType = tile.m_eType;
 
 	if(m_pOptionTex)
 		m_pOptionTex->AddRef();
@@ -70,17 +70,14 @@ void Tile::Collision(float dt)
 
 void Tile::Draw(HDC hDC, float dt)
 {
-    Size tSize = GetImageSize();
-    Pos tPos = m_tPos - tSize * m_tPivot;
+    Pos tPos = m_tPos - m_tSize * m_tPivot;
     tPos -= CAMERA->GetTopLeft();
-    tPos.y += TILESIZE;
 
     // 카메라 컬링
     RESOLUTION tClientRS = CAMERA->GetClientRS();
-    if (tPos.x + tSize.x < 0 || tPos.x > tClientRS.x
-        || tPos.y + tSize.y < 0 || tPos.y > tClientRS.y)
+    if (tPos.x + m_tSize.x < 0 || tPos.x > tClientRS.x
+        || tPos.y + m_tSize.y < 0 || tPos.y > tClientRS.y)
     {
-        DrawRemains(hDC, dt);
         return;
     }
 
@@ -103,8 +100,15 @@ void Tile::Draw(HDC hDC, float dt)
             }
         }
     
-        m_pTexture->DrawImage(hDC, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
-            int(tImagePos.x), int(tImagePos.y));
+        if (m_bEnableTransparent)
+        {
+            m_pTexture->TransparentEffect(hDC, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
+                int(tImagePos.x), int(tImagePos.y));
+        }
+        else {
+            m_pTexture->DrawImage(hDC, int(tPos.x), int(tPos.y), int(m_tSize.x), int(m_tSize.y),
+                int(tImagePos.x), int(tImagePos.y));
+        }
     }
 
     list<Collider*>::iterator iter;
@@ -129,37 +133,33 @@ void Tile::Draw(HDC hDC, float dt)
         else ++iter;
     }
 #ifdef _DEBUG
-    DrawRemains(hDC, dt);
+        tPos = m_tPos;
+        tPos -= CAMERA->GetTopLeft();
+        tPos.y -= TILESIZE;
+        // 카메라 컬링
+        if (tPos.x + TILESIZE < 0 || tPos.x > tClientRS.x
+            || tPos.y + TILESIZE < 0 || tPos.y > tClientRS.y)
+        {
+            return;
+        }
+        if (m_pOptionTex)
+        {
+            if (m_pOptionTex->GetColorKeyEnable())
+            {
+                TransparentBlt(hDC, int(tPos.x), int(tPos.y), TILESIZE, TILESIZE,
+                    m_pOptionTex->GetDC(), 0, 0,
+                    TILESIZE, TILESIZE,
+                    m_pOptionTex->GetColorKey());
+            }
+            else
+            {
+                BitBlt(hDC, int(tPos.x), int(tPos.y), TILESIZE, TILESIZE,
+                    m_pOptionTex->GetDC(), 0, 0, SRCCOPY);
+            }
+        }
 #endif
 }
 
-void Tile::DrawRemains(HDC hDC, float dt)
-{
-    Pos tPos = m_tPos;
-    tPos -= CAMERA->GetTopLeft();
-    // 카메라 컬링
-    RESOLUTION tClientRS = CAMERA->GetClientRS();
-    if (tPos.x + TILESIZE < 0 || tPos.x > tClientRS.x
-        || tPos.y + TILESIZE < 0 || tPos.y > tClientRS.y)
-    {
-        return;
-    }
-    if (m_pOptionTex)
-    {
-        if (m_pOptionTex->GetColorKeyEnable())
-        {
-            TransparentBlt(hDC, int(tPos.x), int(tPos.y), TILESIZE, TILESIZE,
-                m_pOptionTex->GetDC(), 0, 0,
-                TILESIZE, TILESIZE,
-                m_pOptionTex->GetColorKey());
-        }
-        else
-        {
-            BitBlt(hDC, int(tPos.x), int(tPos.y), TILESIZE, TILESIZE,
-                m_pOptionTex->GetDC(), 0, 0, SRCCOPY);
-        }
-    }
-}
 
 Tile* Tile::Clone()
 {
@@ -180,8 +180,6 @@ void Tile::Load(FILE* pFile)
 	fread(&m_eOption, 4, 1, pFile);
 
 	SetTileOption(m_eOption);
-
-    LateInit();
 }
 
 void Tile::LateInit()

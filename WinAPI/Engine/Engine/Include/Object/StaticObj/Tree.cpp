@@ -7,11 +7,13 @@ const wchar_t* const Tree::m_strBaseName[] = { L"Tree1.bmp", L"Tree2.bmp", L"Tre
 
 Tree::Tree()
 {
+	m_eType = TL_TREE;
 }
 
 Tree::Tree(const Tree& obj)
 	: Tile(obj)
 {
+
 }
 
 Tree::~Tree()
@@ -33,7 +35,7 @@ bool Tree::Init()
 	SetPivot(0.3333f, 1.0f);
 
 	ColliderRect* pRC = AddCollider<ColliderRect>("TreeBody");
-	pRC->SetRect(-imgSize.x / 3 + 2, -imgSize.y + TILESIZE + 2, 2 * imgSize.x / 3 - 2, TILESIZE - 2);
+	pRC->SetRect(-imgSize.x / 3 + 2, -imgSize.y + 2, 2 * imgSize.x / 3 - 2, - 2);
 	pRC->AddCollisionFunction(CS_ENTER, this, &Tree::ShadeIn);
 	pRC->AddCollisionFunction(CS_STAY, this, &Tree::ShadeIn);
 	SAFE_RELEASE(pRC);
@@ -43,11 +45,6 @@ bool Tree::Init()
 void Tree::LateInit()
 {
 	StaticObject::LateInit();
-	ColliderRect* pRC = static_cast<ColliderRect*>(GetCollider("TreeBody"));
-	pRC->AddCollisionFunction(CS_ENTER, this, &Tree::ShadeIn);
-	pRC->AddCollisionFunction(CS_STAY, this, &Tree::ShadeIn);
-	// pRC->AddCollisionFunction(CS_LEAVE, this, &Tree::CollideFunc);
-	SAFE_RELEASE(pRC);
 }
 
 void Tree::ChangeTreeTexture(int id)
@@ -69,7 +66,7 @@ void Tree::ShadeIn(Collider* pSrc, Collider* pDst, float dt)
 		ColliderRect* pRC_player = static_cast<ColliderRect*>(pDst);
 		if (pRC_tree->GetWorldInfo().bottom > pRC_player->GetWorldInfo().bottom)
 		{
-			m_pTexture->EnableTransparentEffect();
+			EnableTransparentEffect();
 		}
 	}
 }
@@ -77,12 +74,12 @@ void Tree::ShadeOut(Collider* pSrc, Collider* pDst, float dt)
 {
 	if (pDst->GetTag() == "PlayerBody")
 	{
-		m_pTexture->DisableTransparentEffect();
+		DisableTransparentEffect();
 	}
 }
 void Tree::Input(float dt)
 {
-
+	DisableTransparentEffect();
 	Tile::Input(dt);
 }
 

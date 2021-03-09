@@ -12,6 +12,7 @@ Scene::Scene()
 	Layer* pLayer = CreateLayer("UI", INT_MAX);
 	pLayer = CreateLayer("HUD", INT_MAX - 1);
 	pLayer = CreateLayer("Static", 6);
+	pLayer = CreateLayer("Effect", 3);
 	pLayer = CreateLayer("Object", 2);
 	pLayer = CreateLayer("Ground", 0);
 	m_eSceneType = SC_CURRENT;

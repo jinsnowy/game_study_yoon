@@ -1,5 +1,6 @@
 #include "Stage.h"
 #include "Tile.h"
+#include "Tree.h"
 #include "../../Resources/Texture.h"
 #include "../../Resources/ResourceManager.h"
 #include "../../framework.h"
@@ -38,7 +39,7 @@ void Stage::CreateTile(int iNumX, int iNumY)
     m_iTileNumY = iNumY;
 
     Pos offset;
-    for (int i = 0; i < iNumY; ++i)
+    for (int i = 1; i <= iNumY; ++i)
     {
         for (int j = 0; j < iNumX; ++j)
         {
@@ -91,7 +92,7 @@ void Stage::Draw(HDC hDC, float dt)
 
 #ifdef _DEBUG
     // Grid를 그린다.
-    Pos tCamPos = CAMERA->GetPos();
+    Pos tCamPos = CAMERA->GetTopLeft();
     for (int i = 1; i <= m_iTileNumY; ++i)
     {
         // 가로줄을 그린다.
@@ -124,6 +125,8 @@ void Stage::Save(FILE* pFile)
 
     for (size_t i = 0; i < m_baseTile.size(); ++i)
     {
+        fwrite(&m_baseTile[i]->m_eType, 4, 1, pFile);
+
         m_baseTile[i]->Save(pFile);
     }
 }
@@ -138,9 +141,22 @@ void Stage::Load(FILE* pFile)
 
     ClearTile();
 
+    TILE_TYPE tile_type;
     for (int i = 0; i < m_iTileNumX * m_iTileNumY; ++i)
     {
-        Tile* pTile = Object::CreateObject<Tile>("Tile", nullptr);
+        Tile* pTile;
+        fread(&tile_type, 4, 1, pFile);
+
+        switch (tile_type)
+        {
+        case TL_TREE:
+            pTile = Object::CreateObject<Tree>("Tree", nullptr);
+            break;
+        default:
+            pTile = Object::CreateObject<Tile>("Tile", nullptr);
+            break;
+        }
+        pTile->m_eType = tile_type;
 
         pTile->Load(pFile);
 

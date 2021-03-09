@@ -64,11 +64,19 @@ void Texture::DrawImageFrom(int px, int py, int sx, int sy, Texture* pTex, int u
 
 void Texture::TransparentEffect(HDC hdc, int px, int py, int sx, int sy, int u, int v)
 {
+
     Texture* pBack = RESOURCE_MANAGER->GetBackBuffer();
     Texture* pTemp = RESOURCE_MANAGER->GetTempBuffer();
     pTemp->ClearBuffer(px, py, sx, sy);
     pTemp->DrawImageFrom(px, py, sx, sy, pBack, px, py);
     pTemp->DrawImageFrom(px, py, sx, sy, this, u, v);
+
+    // 알파 블렌딩 버그 (y가 0 보다 작으면 아에 출력안됨)
+    if (py < 0)
+    {
+        py = 0;
+        sy += py;
+    }
     AlphaBlend(hdc, px, py, sx, sy, pTemp->GetDC(), px, py, sx, sy, RESOURCE_MANAGER->GetTransparentFunc());
     SAFE_RELEASE(pTemp);
     SAFE_RELEASE(pBack);

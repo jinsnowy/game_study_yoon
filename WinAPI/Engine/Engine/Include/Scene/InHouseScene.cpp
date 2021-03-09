@@ -19,6 +19,10 @@ bool InHouseScene::Init()
 
 	GameScene::SetUpScene(pGameDataFileName, pPlayer, camPivot);
 
+	pPlayer->SetScene(this);
+
+	pPlayer->LateInit();
+
 	SAFE_RELEASE(pPlayer);
 
 	return true;

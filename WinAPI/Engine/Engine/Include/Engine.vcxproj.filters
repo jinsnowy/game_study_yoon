@@ -231,6 +231,9 @@
     <ClInclude Include="Object\StaticObj\Tree.h">
       <Filter>Object\05. Plant</Filter>
     </ClInclude>
+    <ClInclude Include="Object\MoveObj\PlayerTool.h">
+      <Filter>Object\01. MoveObj</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\Window.cpp">
@@ -358,6 +361,9 @@
     </ClCompile>
     <ClCompile Include="Object\StaticObj\Tree.cpp">
       <Filter>Object\05. Plant</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\MoveObj\PlayerTool.cpp">
+      <Filter>Object\01. MoveObj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

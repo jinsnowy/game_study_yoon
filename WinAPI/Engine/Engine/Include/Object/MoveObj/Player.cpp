@@ -9,7 +9,9 @@
 #include "../../Collider/ColliderPixel.h"
 #include "../../Core/Camera.h"
 #include "../../Animation/Animation.h"
+#include "../../Scene/SceneManager.h"
 #include "../../Scene/GameScene.h"
+#include "PlayerTool.h"
 
 Player::Player()
 {
@@ -21,6 +23,7 @@ Player::Player(const Player& obj) : MovableObject(obj)
 
 Player::~Player()
 {
+	SAFE_RELEASE(m_pTool);
 }
 
 void Player::InitTexture()
@@ -348,6 +351,7 @@ void Player::Input(float dt)
 				StateTransit(TOOL_DOWN);
 				break;
 			}
+			m_pTool->Play();
 		}
 	}
 }
@@ -423,4 +427,7 @@ void Player::Load(FILE* pFile)
 
 void Player::LateInit()
 {
+	Layer* pLayer = m_pScene->FindLayer("Effect");
+	m_pTool = Object::CreateObject<PlayerTool>("PlayerTool", pLayer);
+	m_pTool->SetPlayer(this);
 }

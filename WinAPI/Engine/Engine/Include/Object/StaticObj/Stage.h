@@ -32,7 +32,6 @@ public:
 	string GetTileName(const Pos& pos) const;
 
 	void SetTileNone(const Pos& tPos);
-
 	void ChangeTileByCloneTile(const Pos& tPos, Tile* pClone);
 	void ChangeTileOption(const Pos& tPos, TILE_OPTION eOption);
 
@@ -43,6 +42,8 @@ public:
 	RESOLUTION GetTileSize() const { return { TILESIZE, TILESIZE }; }
 	int GetStageWidth() const { return m_iTileNumX * TILESIZE; }
 	int GetStageHeight() const { return m_iTileNumY * TILESIZE; }
+	int GetStageTileNumX() const { return m_iTileNumX; }
+	int GetStageTileNumY() const { return m_iTileNumY; }
 
 	void AddAllTilesInLayer(class Layer* pLayer);
 	void DeleteAllTilesInLayer(class Layer* pLayer);

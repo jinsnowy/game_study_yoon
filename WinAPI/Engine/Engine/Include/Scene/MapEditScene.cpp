@@ -348,8 +348,6 @@ void MapEditScene::SaveDefaultStages(const char* fileName)
 
 void MapEditScene::SetUpBaseStage(STAGE_TAG eStageTag, const string& objTag, const string& strlayerTag, int numX, int numY)
 {
- 
-
     StageClear(eStageTag, strlayerTag);
     Layer* pStageLayer = FindLayer(strlayerTag);
     m_vecStage[eStageTag] = Object::CreateObject<Stage>(objTag, pStageLayer);
@@ -572,7 +570,7 @@ Object* MapEditScene::CreateCloneObject(Object* const pObj, const Pos& worldPos)
     Object::AddObject(pClone);
 
     Tile* tClone = dynamic_cast<Tile*>(pClone);
-    int row = clickIndex / m_iTileNumY;
+    int row = clickIndex / m_iTileNumY + 1;
     int col = clickIndex % m_iTileNumY;
     Pos offset(col * TILESIZE, row * TILESIZE);
     if (tClone)

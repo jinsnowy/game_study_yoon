@@ -3,9 +3,10 @@
 
 const wchar_t* util::GetWChar(const char* c)
 {
-	int cSize = strlen(c) + 1;
+	size_t cSize = strlen(c) + 1;
 	memset(_wchar_buffer, 0, sizeof(_wchar_buffer));
-	mbstowcs(_wchar_buffer, c, cSize);
+	mbstowcs_s(&cSize, _wchar_buffer, c, MAX_PATH);
+	// mbstowcs(_wchar_buffer, c, cSize);
 	return _wchar_buffer;
 }
 

@@ -6,6 +6,7 @@ class Player : public MovableObject
 {
 	friend class Object;
 	friend class Scene;
+	friend class PlayerTool;
 private:
 	enum PlayerState
 	{
@@ -22,6 +23,7 @@ private:
 		TOOL_DOWN,
 		TOOL_UP,
 	};
+	class PlayerTool* m_pTool = nullptr;
 	PlayerState m_eState = PlayerState::IDLE_RIGHT;
 	Player();
 	Player(const Player& obj);

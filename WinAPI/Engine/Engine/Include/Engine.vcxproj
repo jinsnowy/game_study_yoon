@@ -184,6 +184,7 @@
     <ClInclude Include="Object\Mouse.h" />
     <ClInclude Include="Object\MoveObj\MovableObject.h" />
     <ClInclude Include="Object\MoveObj\Player.h" />
+    <ClInclude Include="Object\MoveObj\PlayerTool.h" />
     <ClInclude Include="Object\Object.h" />
     <ClInclude Include="Object\Ref.h" />
     <ClInclude Include="Object\StaticObj\Stage.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="Object\Mouse.cpp" />
     <ClCompile Include="Object\MoveObj\MovableObject.cpp" />
     <ClCompile Include="Object\MoveObj\Player.cpp" />
+    <ClCompile Include="Object\MoveObj\PlayerTool.cpp" />
     <ClCompile Include="Object\Object.cpp" />
     <ClCompile Include="Object\Ref.cpp" />
     <ClCompile Include="Object\StaticObj\Stage.cpp" />

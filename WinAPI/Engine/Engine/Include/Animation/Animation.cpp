@@ -256,6 +256,7 @@ void Animation::Update(float fTime)
 				{
 				case AO_ONCE_RETURN:
 					m_pObj->StateTransit(m_pCurClip->iNextState);
+					m_pObj->SetAnimationVisibility(false);
 					break;
 				case AO_ONCE_DESTROY:
 					m_pObj->Die();

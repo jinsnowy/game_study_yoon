@@ -6,10 +6,12 @@ class Tile :
 private:
     friend class Object;
     friend class Stage;
-private:
-	TILE_OPTION		m_eOption;
+protected:
+	TILE_TYPE		m_eType = TL_NONE;
+	TILE_OPTION		m_eOption = TO_NONE;
 	class Texture*	m_pOptionTex = nullptr;
 public:
+	TILE_TYPE GetTileType() const { return m_eType; }
 	void SetTileOption(TILE_OPTION eOption);
 	TILE_OPTION GetTileOption() const
 	{

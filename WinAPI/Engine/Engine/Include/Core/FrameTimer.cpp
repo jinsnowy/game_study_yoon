@@ -7,7 +7,8 @@ FrameTimer::FrameTimer()
     : 
     m_hWnd(nullptr),
      m_Tic(steady_clock::now()),
-     m_TimeScale(1.f)
+     m_TimeScale(1.f),
+    m_fFPSTime(0.f)
 {
 }
 
@@ -42,13 +43,13 @@ float FrameTimer::Tick()
         m_fFPSTime = 0.f;
         m_iFrame = 0;
 
-#ifdef _DEBUG
+
         wchar_t strFPS[64] = {};
         swprintf_s(strFPS, L"FPS : %.f\n", m_fFPS);
-        // _cprintf(strFPS);
+        //_cwprintf(strFPS);
         SetWindowText(m_hWnd, strFPS);
         OutputDebugString(strFPS);
-#endif // DEBUG
+
     }
     return dt;
 }
