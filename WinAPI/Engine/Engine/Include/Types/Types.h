@@ -45,7 +45,6 @@ enum STAGE_SHOW {
 enum STAGE_TAG
 {
 	ST_GROUND = 0,
-	ST_OBJECT,
 	ST_STATIC,
 	ST_END
 };

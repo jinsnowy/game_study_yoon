@@ -191,24 +191,15 @@ void Stage::SetTileNone(const Pos& tPos)
         return;
 
     Object::EraseObject(m_baseTile[ind]);
-    if (m_pLayer->GetTag() == "Object")
-    {
-        m_pLayer->EraseObject(m_baseTile[ind]);
-    }
     SAFE_RELEASE(m_baseTile[ind]);
 
     m_baseTile[ind] = Object::CreateObject<Tile>("Tile", nullptr);
     INDEX index = GetTileRowColIndex(tPos);
-    Pos offset (index.x * TILESIZE, index.y*TILESIZE);
+    Pos offset (index.x * TILESIZE, index.y * TILESIZE);
 
     m_baseTile[ind]->SetSize(TILESIZE, TILESIZE);
     m_baseTile[ind]->SetPos(offset.x, offset.y);
     m_baseTile[ind]->SetPivot(0.f, 1.0f);
-
-    if (m_pLayer->GetTag() == "Object")
-    {
-        m_pLayer->AddObject(m_baseTile[ind]);
-    }
 }
 
 void Stage::ChangeTileByCloneTile(const Pos& tPos, Tile* pClone)
@@ -219,18 +210,10 @@ void Stage::ChangeTileByCloneTile(const Pos& tPos, Tile* pClone)
         return;
 
     Object::EraseObject(m_baseTile[ind]);
-    if (m_pLayer->GetTag() == "Object")
-    {
-        m_pLayer->EraseObject(m_baseTile[ind]);
-    }
     SAFE_RELEASE(m_baseTile[ind]);
 
     m_baseTile[ind] = pClone;
     m_baseTile[ind]->AddRef();
-    if (m_pLayer->GetTag() == "Object")
-    {
-        m_pLayer->AddObject(m_baseTile[ind]);
-    }
 }
 
 
