@@ -162,6 +162,7 @@ void MapEditScene::Input(float dt)
             if (sizeX > 0 && sizeY > 0)
             {
                 SetUpDefaultStages(sizeX, sizeY);
+                SetUpCamera();
             }
         }
     }
@@ -189,7 +190,7 @@ void MapEditScene::Input(float dt)
             char strFileName[MAX_PATH] = {};
             WideCharToMultiByte(CP_ACP, 0, m_strText1, -1, strFileName, lstrlen(m_strText1), 0, 0);
             LoadDefaultStages(strFileName);
-            // SetUpCamera();
+            SetUpCamera();
         }
     }
 }
@@ -576,8 +577,8 @@ Object* MapEditScene::EditCloneObject(Object* const pObj, const Pos& worldPos)
     Object* pClone = pObj->Clone();
 
     Tile* tileClone = dynamic_cast<Tile*>(pClone);
-    int row = clickIndex / m_iTileNumY + 1;
-    int col = clickIndex % m_iTileNumY;
+    int row = clickIndex / m_iTileNumX + 1;
+    int col = clickIndex % m_iTileNumX;
     Pos offset(col * TILESIZE, row * TILESIZE);
 
     if (tileClone)

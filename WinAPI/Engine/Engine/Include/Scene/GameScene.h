@@ -9,17 +9,19 @@ private:
     class Player* m_pPlayer = nullptr;
     int m_iTileNumX = -1;
     int m_iTileNumY = -1;
+
 protected:
     GameScene();
     ~GameScene() = 0;
 public:
-    bool IsBlockTile(const Pos& worldPos);
+    const Player* AccessPlayer() const { return m_pPlayer; }
+    TILE_OPTION GetTileOption(const Pos& worldPos);
     int GetTileIndex(const Pos& worldPos);
     Pos GetTilePos(const Pos& worldPos);
     INDEX GetTileRowColIndex(const Pos& worldPos);
     INDEX IndexDiff(const Pos& pos, const Pos& from);
+    bool IsBlockTile(const Pos& worldPos);
 public:
-    void SetUpScene(SceneState state, Player* player);
     virtual void SetUpScene(const char* fileName);
     virtual bool Init();
     virtual void Input(float dt);
@@ -32,6 +34,7 @@ private:
     virtual void LoadDefaultStages(const char* fileName) final;
 private:
     Pos FindBeacon(BEACON_TAG bc);
+    void SetUpScene(SceneState state, Player* player);
     void SetUpMainCharacter(Player* pPlayer);
     void SpawnMainCharacter(const Pos& worldPos);
 };

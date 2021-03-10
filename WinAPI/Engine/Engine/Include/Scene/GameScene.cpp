@@ -81,6 +81,11 @@ INDEX GameScene::IndexDiff(const Pos& pos, const Pos& from)
 }
 
 
+TILE_OPTION GameScene::GetTileOption(const Pos& worldPos)
+{
+    return m_pStaticStage->GetTileOption(worldPos);
+}
+
 bool GameScene::IsBlockTile(const Pos& worldPos)
 {
     return m_pStaticStage->IsBlockTile(worldPos);
@@ -88,6 +93,7 @@ bool GameScene::IsBlockTile(const Pos& worldPos)
 
 bool GameScene::Init()
 {
+
     return true;
 }
 

@@ -2,6 +2,7 @@
 #include "StartScene.h"
 #include "MapEditScene.h"
 #include "InHouseScene.h"
+#include "FarmScene.h"
 #include "../Object/Object.h"
 #include "../Application/Window.h"
 #include "../Resources/ResourceManager.h"
@@ -102,6 +103,9 @@ void SceneManager::ChangeScene()
 			break;
 		case SCENE_CREATE::SC_MAPEDIT:
 			CreateScene<MapEditScene>(nxt);
+			break;
+		case SCENE_CREATE::SC_FARM:
+			CreateScene<FarmScene>(nxt);
 			break;
 		}
 	}

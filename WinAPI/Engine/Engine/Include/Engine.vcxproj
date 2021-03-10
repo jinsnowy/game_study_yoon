@@ -201,6 +201,7 @@
     <ClInclude Include="Resources\PrototypeManager.h" />
     <ClInclude Include="Resources\ResourceManager.h" />
     <ClInclude Include="Resources\Texture.h" />
+    <ClInclude Include="Scene\FarmScene.h" />
     <ClInclude Include="Scene\GameScene.h" />
     <ClInclude Include="Scene\InHouseScene.h" />
     <ClInclude Include="Scene\Layer.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="Resources\PrototypeManager.cpp" />
     <ClCompile Include="Resources\ResourceManager.cpp" />
     <ClCompile Include="Resources\Texture.cpp" />
+    <ClCompile Include="Scene\FarmScene.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Scene\InHouseScene.cpp" />
     <ClCompile Include="Scene\Layer.cpp" />
