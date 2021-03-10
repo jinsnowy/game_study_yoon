@@ -4,10 +4,10 @@
 
 class Player : public MovableObject
 {
-	friend class Object;
-	friend class Scene;
 	friend class PlayerTool;
-private:
+	friend class GameScene;
+	friend class SceneManager;
+public:
 	enum PlayerState
 	{
 		IDLE_LEFT,
@@ -23,6 +23,7 @@ private:
 		TOOL_DOWN,
 		TOOL_UP,
 	};
+private:
 	class PlayerTool* m_pTool = nullptr;
 	PlayerState m_eState = PlayerState::IDLE_RIGHT;
 	Player();
@@ -35,6 +36,7 @@ public:
 	void InitAnimation();
 	PlayerState GetState() const { return m_eState; }
 public:
+	virtual void LateInit();
 	virtual void StateTransit(int iNext);
 	virtual bool Init();
 	virtual void Input(float dt);
@@ -49,5 +51,10 @@ public:
 private:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
+private:
+	inline Pos GetCenterPos() const
+	{
+		return Pos(GetPos().x + GetSize().x / 2, GetPos().y);
+	}
 };
 

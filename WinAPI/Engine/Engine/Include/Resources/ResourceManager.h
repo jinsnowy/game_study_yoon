@@ -6,12 +6,12 @@ private:
 	unordered_map<string, class Texture*> m_mapTexture;
 	HINSTANCE m_hInst;
 	HDC	      m_hDC;
-	class Texture* m_pBackBuffer;
 private:
-	class Texture* m_pTempBuffer;
-	class Texture* m_pEmptyBuffer;
-	BLENDFUNCTION m_tBlenFunc;
-	BLENDFUNCTION m_tTransparent;
+	class Texture* m_pBackBuffer = nullptr;
+	class Texture* m_pTempBuffer = nullptr;
+	class Texture* m_pEmptyBuffer = nullptr;
+	BLENDFUNCTION m_tBlenFunc = {};
+	BLENDFUNCTION m_tTransparent = {};
 public:
 	class Texture* GetBackBuffer() const;
 	class Texture* GetEmptyBuffer() const;

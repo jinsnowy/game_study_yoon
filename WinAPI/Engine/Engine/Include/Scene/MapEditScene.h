@@ -13,7 +13,7 @@ public:
     virtual bool Init();
     virtual void Input(float dt);
 private:
-    int m_iTileNumX, m_iTileNumY;
+    int m_iTileNumX = -1, m_iTileNumY = -1;
     static wchar_t m_strText1[MAX_PATH];
     static wchar_t m_strText2[MAX_PATH];
 

@@ -27,7 +27,6 @@ UITileSelect::~UITileSelect()
     Safe_Release_VecList(m_NumberTiles);
     Safe_Release_VecList(m_btn);
 
-
     INPUT->DeleteKey("NextObject");
     INPUT->DeleteKey("PreviousObject");
 }
@@ -78,6 +77,9 @@ bool UITileSelect::Init()
     m_optNameMap.insert(make_pair("1.NoOption", TO_NONE));
     m_optNameMap.insert(make_pair("2.NoMove", TO_NOMOVE));
     m_optNameMap.insert(make_pair("3.CropGround", TO_CROP_GROUND));
+    m_optNameMap.insert(make_pair("4.Beacon1", TO_BEACON_1));
+    m_optNameMap.insert(make_pair("4.Beacon2", TO_BEACON_2));
+    m_optNameMap.insert(make_pair("4.Beacon3", TO_BEACON_3));
     return true;
 }
 
@@ -222,7 +224,7 @@ void UITileSelect::LoadTiles(EDIT_MODE eSel, const wchar_t* pBaseFolderName, con
     }
 }
 
-void UITileSelect::LoadPrototypes(OBJECT_TYPE eType)
+void UITileSelect::LoadPrototypes(PR_TYPE eType)
 {
     m_PrototypeMapContainer.push_back(PROTOTYPE_MANAGER->GetPrototypes(eType));
 }

@@ -136,7 +136,12 @@ void StartScene::StartButtonCallback(float fTime)
 {
     SOUND_MANAGER->PlaySound("StartScene_Click");
     SOUND_MANAGER->PauseSound(SD_BACKGROUND);
-    SCENE_MANAGER->SignalizeSceneChange(SC_INHOUSE);
+
+    SceneState nxt;
+    nxt.nextDir = RIGHT;
+    nxt.nextBeacon = BC_NONE;
+    nxt.nextScene = SC_INHOUSE;
+    SCENE_MANAGER->SignalizeSceneChange(nxt);
 }
 
 void StartScene::EndButtonCallback(float fTime)
@@ -148,7 +153,11 @@ void StartScene::EndButtonCallback(float fTime)
 
 void StartScene::EditButtonCallback(float fTime)
 {
+    SceneState nxt;
+    nxt.nextDir = RIGHT;
+    nxt.nextBeacon = BC_NONE;
+    nxt.nextScene = SC_MAPEDIT;
     SOUND_MANAGER->PlaySound("StartScene_Click");
     SOUND_MANAGER->PauseSound(SD_BACKGROUND);
-    SCENE_MANAGER->SignalizeSceneChange(SC_MAPEDIT);
+    SCENE_MANAGER->SignalizeSceneChange(nxt);
 }

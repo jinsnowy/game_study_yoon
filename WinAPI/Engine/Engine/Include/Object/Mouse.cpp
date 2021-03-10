@@ -5,7 +5,7 @@
 #include "../Core/Camera.h"
 
 Mouse::Mouse()
-    : m_tMove()
+    : m_tMove(), m_tWorldPos()
 {
 }
 

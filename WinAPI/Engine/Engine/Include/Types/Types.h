@@ -10,18 +10,17 @@ typedef struct _tagPixel
 	unsigned char b;
 }Pixel;
 
-enum TILE_TYPE 
+enum OBJ_TYPE 
 {
-	TL_NONE = 0,
-	TL_TREE,
+	OBJ_NORMAL = 0,
+	OBJ_TILE,
+	OBJ_TREE,
 };
 
-enum OBJECT_TYPE
+enum PR_TYPE
 {
-	OBJ_BUILDING,
-	OBJ_TILE_INNER,
-	OBJ_PLANT,
-	OBJ_END
+	PR_PLANT,
+	PR_END
 };
 
 enum EDIT_MODE
@@ -35,11 +34,10 @@ enum EDIT_MODE
 };
 
 enum STAGE_SHOW {
-	SHOW_ALL,
-	SHOW_GROUND,
-	SHOW_OBJECT,
-	SHOW_STATIC,
-	SHOW_END
+	SHOW_NORMAL,
+	SHOW_TILEOPTION,
+	SHOW_GRID,
+	SHOW_COLL,
 };
 
 enum STAGE_TAG
@@ -47,6 +45,14 @@ enum STAGE_TAG
 	ST_GROUND = 0,
 	ST_STATIC,
 	ST_END
+};
+
+enum BEACON_TAG
+{
+	BC_NONE,
+	BC_ONE,
+	BC_TWO,
+	BC_THREE
 };
 
 enum SOUND_CHANNEL
@@ -60,18 +66,12 @@ enum SOUND_CHANNEL
 // Scene Type
 enum SCENE_CREATE
 {
+	SC_NONE,
 	SC_START,
 	SC_MAPEDIT,
 	SC_INHOUSE,
 	SC_FARM,
 	SC_END
-};
-
-// Sceene
-enum SCENE_CHANGE
-{
-	SC_NONE,
-	SC_CHANGE
 };
 
 // Tile Option
@@ -80,6 +80,9 @@ enum TILE_OPTION
 	TO_NONE,
 	TO_NOMOVE,
 	TO_CROP_GROUND,
+	TO_BEACON_1,
+	TO_BEACON_2,
+	TO_BEACON_3,
 	TO_END
 };
 
@@ -129,4 +132,16 @@ enum ANIMATION_OPTION
 	AO_TIME_DESTROY  // 타임 오버시 오브젝트 삭제
 };
 
+enum DIRECTION
+{
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+};
 
+struct SceneState {
+	SCENE_CREATE nextScene;
+	BEACON_TAG nextBeacon;
+	DIRECTION nextDir;
+};

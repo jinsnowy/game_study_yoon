@@ -9,6 +9,7 @@
 #include "../../Scene/Scene.h"
 #include "../../Application/Window.h"
 #include "../../Core/PathManager.h"
+#include "../../Scene/SceneManager.h"
 
 Stage::Stage()
 {
@@ -29,6 +30,18 @@ Stage::Stage(const Stage& stage)
 Stage::~Stage()
 {
     ClearTile();
+}
+
+bool Stage::IsBlockTile(const Pos& worldPos) const
+{
+    int index = GetTileIndex(worldPos);
+    if (index == -1) return false;
+    return IsBlockTile(index);
+}
+
+bool Stage::IsBlockTile(int index) const
+{
+    return m_baseTile[index]->m_eOption == TO_NOMOVE;
 }
 
 void Stage::CreateTile(int iNumX, int iNumY)
@@ -91,20 +104,23 @@ void Stage::Draw(HDC hDC, float dt)
     }
 
 #ifdef _DEBUG
-    // Grid를 그린다.
-    Pos tCamPos = CAMERA->GetTopLeft();
-    for (int i = 1; i <= m_iTileNumY; ++i)
+    if (SHOWCHECK(SHOW_GRID))
     {
-        // 가로줄을 그린다.
-        MoveToEx(hDC, 0, i * TILESIZE - tCamPos.y, NULL);
-        LineTo(hDC, m_iTileNumX * TILESIZE - tCamPos.x, i * TILESIZE - tCamPos.y);
-    }
+        // Grid를 그린다.
+        Pos tCamPos = CAMERA->GetTopLeft();
+        for (int i = 1; i <= m_iTileNumY; ++i)
+        {
+            // 가로줄을 그린다.
+            MoveToEx(hDC, 0, i * TILESIZE - tCamPos.y, NULL);
+            LineTo(hDC, m_iTileNumX * TILESIZE - tCamPos.x, i * TILESIZE - tCamPos.y);
+        }
 
-    // 세로줄을 그린다.
-    for (int i = 1; i <= m_iTileNumX; ++i)
-    {
-        MoveToEx(hDC, i * TILESIZE - tCamPos.x, 0, NULL);
-        LineTo(hDC, i * TILESIZE - tCamPos.x, m_iTileNumY * TILESIZE - tCamPos.y);
+        // 세로줄을 그린다.
+        for (int i = 1; i <= m_iTileNumX; ++i)
+        {
+            MoveToEx(hDC, i * TILESIZE - tCamPos.x, 0, NULL);
+            LineTo(hDC, i * TILESIZE - tCamPos.x, m_iTileNumY * TILESIZE - tCamPos.y);
+        }
     }
 #endif
 }
@@ -125,8 +141,6 @@ void Stage::Save(FILE* pFile)
 
     for (size_t i = 0; i < m_baseTile.size(); ++i)
     {
-        fwrite(&m_baseTile[i]->m_eType, 4, 1, pFile);
-
         m_baseTile[i]->Save(pFile);
     }
 }
@@ -141,22 +155,9 @@ void Stage::Load(FILE* pFile)
 
     ClearTile();
 
-    TILE_TYPE tile_type;
     for (int i = 0; i < m_iTileNumX * m_iTileNumY; ++i)
     {
-        Tile* pTile;
-        fread(&tile_type, 4, 1, pFile);
-
-        switch (tile_type)
-        {
-        case TL_TREE:
-            pTile = Object::CreateObject<Tree>("Tree");
-            break;
-        default:
-            pTile = Object::CreateObject<Tile>("Tile");
-            break;
-        }
-        pTile->m_eType = tile_type;
+        Tile* pTile = new Tile;
 
         pTile->Load(pFile);
 
@@ -191,11 +192,9 @@ void Stage::SetTileNone(const Pos& tPos)
         return;
 
     SAFE_RELEASE(m_baseTile[ind]);
+    Pos offset = GetTilePos(ind);
 
     m_baseTile[ind] = Object::CreateObject<Tile>("Tile");
-    INDEX index = GetTileRowColIndex(tPos);
-    Pos offset (index.x * TILESIZE, index.y * TILESIZE);
-
     m_baseTile[ind]->SetSize(TILESIZE, TILESIZE);
     m_baseTile[ind]->SetPos(offset.x, offset.y);
     m_baseTile[ind]->SetPivot(0.f, 1.0f);
@@ -247,7 +246,20 @@ INDEX Stage::GetTileRowColIndex(const Pos& tPos) const
 
 INDEX Stage::GetTileRowColIndex(float x, float y) const
 {
-    return INDEX(int(x) / TILESIZE, int(y) /TILESIZE);
+    return INDEX(int(x) / TILESIZE, int(y) / TILESIZE);
+}
+
+Pos Stage::GetTilePos(int index)
+{
+    int yIndex = index / m_iTileNumX;
+    int xIndex = index % m_iTileNumX;
+
+    return Pos(float(xIndex*TILESIZE), float(yIndex*TILESIZE));
+}
+
+Pos Stage::GetTilePos(const Pos& worldPos)
+{
+    return GetTilePos(GetTileIndex(worldPos));
 }
 
 void Stage::ClearTile()

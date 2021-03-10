@@ -14,6 +14,7 @@
 #define MOUSEMOVE       Input::Instance()->GetMouseMove()
 #define MOUSE			Input::Instance()->GetMouse()
 #define SCENECHANGE(X)  SceneManager::Instance()->NeedChangeScene(X)
+#define SHOWCHECK(X)    SceneManager::Instance()->CheckShowMode(X)
 
 #define DEFINITION_SINGLE(Type) Type* Type::INSTANCE = 0;
 #define DECLARE_SINGLE(Type)	\

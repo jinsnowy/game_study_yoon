@@ -3,9 +3,11 @@
 #include "../../Resources/Texture.h"
 #include "../../Core/Camera.h"
 #include "../../Animation/Animation.h"
+#include "../../Scene/SceneManager.h"
 
 Tile::Tile()
 {
+    m_eObjType = OBJ_TILE;
 }
 
 Tile::Tile(const Tile& tile)
@@ -14,7 +16,7 @@ Tile::Tile(const Tile& tile)
 {
 	m_eOption = tile.m_eOption;
 	m_pOptionTex = tile.m_pOptionTex;
-    m_eType = tile.m_eType;
+    m_eObjType = OBJ_TILE;
 
 	if(m_pOptionTex)
 		m_pOptionTex->AddRef();
@@ -38,6 +40,18 @@ void Tile::SetTileOption(TILE_OPTION eOption)
 	case TO_NOMOVE:
 		m_pOptionTex = RESOURCE_MANAGER->FindTexture("2.NoMove");
 		break;
+    case TO_CROP_GROUND:
+        m_pOptionTex = RESOURCE_MANAGER->FindTexture("3.CropGround");
+          break;
+    case TO_BEACON_1:
+        m_pOptionTex = RESOURCE_MANAGER->FindTexture("4.Beacon1");
+        break;
+    case TO_BEACON_2:
+        m_pOptionTex = RESOURCE_MANAGER->FindTexture("4.Beacon2");
+        break;
+    case TO_BEACON_3:
+        m_pOptionTex = RESOURCE_MANAGER->FindTexture("4.Beacon3");
+        break;
 	}
 }
 
@@ -111,39 +125,44 @@ void Tile::Draw(HDC hDC, float dt)
         }
     }
 
-    list<Collider*>::iterator iter;
-    list<Collider*>::iterator iterEnd = m_ColliderList.end();
-
-    for (iter = m_ColliderList.begin(); iter != iterEnd;)
+    if (SHOWCHECK(SHOW_COLL))
     {
-        if (!(*iter)->GetEnable())
-        {
-            ++iter;
-            continue;
-        }
+        list<Collider*>::iterator iter;
+        list<Collider*>::iterator iterEnd = m_ColliderList.end();
 
-        (*iter)->Draw(hDC, dt);
-
-        if (!(*iter)->GetLife())
+        for (iter = m_ColliderList.begin(); iter != iterEnd;)
         {
-            SAFE_RELEASE((*iter));
-            iter = m_ColliderList.erase(iter);
-            iterEnd = m_ColliderList.end();
+            if (!(*iter)->GetEnable())
+            {
+                ++iter;
+                continue;
+            }
+
+            (*iter)->Draw(hDC, dt);
+
+            if (!(*iter)->GetLife())
+            {
+                SAFE_RELEASE((*iter));
+                iter = m_ColliderList.erase(iter);
+                iterEnd = m_ColliderList.end();
+            }
+            else ++iter;
         }
-        else ++iter;
     }
-#ifdef _DEBUG
-        tPos = m_tPos;
-        tPos -= CAMERA->GetTopLeft();
-        tPos.y -= TILESIZE;
-        // 카메라 컬링
-        if (tPos.x + TILESIZE < 0 || tPos.x > tClientRS.x
-            || tPos.y + TILESIZE < 0 || tPos.y > tClientRS.y)
-        {
-            return;
-        }
+
+    if (SHOWCHECK(SHOW_TILEOPTION))
+    {
         if (m_pOptionTex)
         {
+            tPos = m_tPos;
+            tPos -= CAMERA->GetTopLeft();
+            tPos.y -= TILESIZE;
+            // 카메라 컬링
+            if (tPos.x + TILESIZE < 0 || tPos.x > tClientRS.x
+                || tPos.y + TILESIZE < 0 || tPos.y > tClientRS.y)
+            {
+                return;
+            }
             if (m_pOptionTex->GetColorKeyEnable())
             {
                 TransparentBlt(hDC, int(tPos.x), int(tPos.y), TILESIZE, TILESIZE,
@@ -157,7 +176,7 @@ void Tile::Draw(HDC hDC, float dt)
                     m_pOptionTex->GetDC(), 0, 0, SRCCOPY);
             }
         }
-#endif
+    }
 }
 
 

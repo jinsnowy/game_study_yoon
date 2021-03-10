@@ -7,13 +7,13 @@ const wchar_t* const Tree::m_strBaseName[] = { L"Tree1.bmp", L"Tree2.bmp", L"Tre
 
 Tree::Tree()
 {
-	m_eType = TL_TREE;
+	m_eObjType = OBJ_TREE;
 }
 
 Tree::Tree(const Tree& obj)
 	: Tile(obj)
 {
-
+	m_eObjType = OBJ_TREE;
 }
 
 Tree::~Tree()

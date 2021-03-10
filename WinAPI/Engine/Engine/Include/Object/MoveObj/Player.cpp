@@ -210,6 +210,15 @@ void Player::InitAnimation()
 	
 }
 
+void Player::LateInit()
+{
+	// TODO : 툴을 레이어에 추가
+	Layer* pLayer = m_pScene->FindLayer("Effect");
+	m_pTool = Object::CreateObject<PlayerTool>("PlayerTool");
+	m_pTool->SetPlayer(this);
+	pLayer->AddObject(m_pTool);
+}
+
 void Player::StateTransit(int iNext)
 {
 	m_eState = static_cast<PlayerState>(iNext);
@@ -268,7 +277,7 @@ void Player::StateTransit(int iNext)
 
 bool Player::Init()
 {
-	SetPos(400.0f, 500.0f);
+	SetPos(700.0f, 700.0f);
 	SetSize(64.0f, 128.0f);
 	SetPivot(0.0f, 1.0f);
 	SetSpeed(300.0f);
@@ -285,11 +294,6 @@ bool Player::Init()
 	pRC->AddCollisionFunction(CS_STAY, this, &Player::Hit);
 	SAFE_RELEASE(pRC);
 
-	Layer* pLayer = m_pScene->FindLayer("Effect");
-	m_pTool = Object::CreateObject<PlayerTool>("PlayerTool");
-	m_pTool->SetPlayer(this);
-	pLayer->AddObject(m_pTool);
-
 	return true;
 }
 
@@ -297,25 +301,47 @@ void Player::Input(float dt)
 {
 	MovableObject::Input(dt);
 
-	if (KEYPRESS("MoveUp"))
+	Pos prev = GetPos();
+	switch (m_eState)
 	{
-		MoveYFromSpeed(dt, MD_BACK);
-		StateTransit(WALK_UP);
+	case IDLE_RIGHT:
+	case IDLE_LEFT:
+	case IDLE_UP:
+	case IDLE_DOWN:
+	case WALK_RIGHT:
+	case WALK_LEFT:
+	case WALK_UP:
+	case WALK_DOWN:
+		if (KEYPRESS("MoveUp"))
+		{
+			MoveYFromSpeed(dt, MD_BACK);
+			StateTransit(WALK_UP);
+		}
+		else if (KEYPRESS("MoveDown"))
+		{
+			MoveYFromSpeed(dt, MD_FRONT);
+			StateTransit(WALK_DOWN);
+		}
+		else if (KEYPRESS("MoveLeft"))
+		{
+			MoveXFromSpeed(dt, MD_BACK);
+			StateTransit(WALK_LEFT);
+		}
+		else if (KEYPRESS("MoveRight"))
+		{
+			MoveXFromSpeed(dt, MD_FRONT);
+			StateTransit(WALK_RIGHT);
+		}
+		break;
 	}
-	else if (KEYPRESS("MoveDown"))
+	if (m_bMove)
 	{
-		MoveYFromSpeed(dt, MD_FRONT);
-		StateTransit(WALK_DOWN);
-	}
-	else if (KEYPRESS("MoveLeft"))
-	{
-		MoveXFromSpeed(dt, MD_BACK);
-		StateTransit(WALK_LEFT);
-	}
-	else if (KEYPRESS("MoveRight"))
-	{
-		MoveXFromSpeed(dt, MD_FRONT);
-		StateTransit(WALK_RIGHT);
+		// 다음 타일이 갈 수 없다면,
+		const auto& gameScene = static_cast<GameScene*>(m_pScene);
+		if(gameScene->IsBlockTile(GetCenterPos()))
+		{
+			SetPos(prev);
+		}
 	}
 	else
 	{
@@ -334,29 +360,28 @@ void Player::Input(float dt)
 			StateTransit(IDLE_DOWN);
 			break;
 		}
-	}
-
-	if (KEYDOWN("MouseLButton"))
-	{
-		INDEX index = static_cast<GameScene*>(m_pScene)->IndexDiff(MOUSEWORLDPOS, GetPos());
-		if (max(abs(index.x), abs(index.y)) <= 1)
+		if (KEYDOWN("MouseLButton"))
 		{
-			switch (m_eState)
+			INDEX index = static_cast<GameScene*>(m_pScene)->IndexDiff(MOUSEWORLDPOS, GetPos());
+			if (max(abs(index.x), abs(index.y)) <= 1)
 			{
-			case IDLE_RIGHT:
-				StateTransit(TOOL_RIGHT);
-				break;
-			case IDLE_LEFT:
-				StateTransit(TOOL_LEFT);
-				break;
-			case IDLE_UP:
-				StateTransit(TOOL_UP);
-				break;
-			case IDLE_DOWN:
-				StateTransit(TOOL_DOWN);
-				break;
+				switch (m_eState)
+				{
+				case IDLE_RIGHT:
+					StateTransit(TOOL_RIGHT);
+					break;
+				case IDLE_LEFT:
+					StateTransit(TOOL_LEFT);
+					break;
+				case IDLE_UP:
+					StateTransit(TOOL_UP);
+					break;
+				case IDLE_DOWN:
+					StateTransit(TOOL_DOWN);
+					break;
+				}
+				m_pTool->Play();
 			}
-			m_pTool->Play();
 		}
 	}
 }
@@ -388,6 +413,13 @@ void Player::Draw(HDC hDC, float dt)
 	tPos -= CAMERA->GetTopLeft();
 	TextOut(hDC, tPos.x, tPos.y, playerPos, lstrlen(playerPos));
 #endif
+	if (SHOWCHECK(SHOW_TILEOPTION))
+	{
+		Pos tilePos = static_cast<GameScene*>(m_pScene)->GetTilePos(GetCenterPos());
+		tilePos -= CAMERA->GetTopLeft();
+		DrawRectWithColor(hDC, MakeRect(int(tilePos.x), int(tilePos.y), TILESIZE, TILESIZE),
+			RGB(0, 200, 0));
+	}
 }
 
 Player* Player::Clone()

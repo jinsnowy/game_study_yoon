@@ -8,12 +8,14 @@ class SceneManager
 	friend class App;
 	DECLARE_SINGLE(SceneManager)
 private:
-	static constexpr int m_iChangeSignal = 0xabcdef;
+	int m_iShowMode = 1;
 	int m_iSignal = 0;
-	SCENE_CREATE m_eNext = SC_END;
-	STAGE_SHOW m_eCurShowMode = SHOW_ALL;
+	static constexpr int m_iChangeSignal = 0xabcdef;
+	SceneState m_tNextState;
+
+	class Player* m_pPlayer = nullptr;
+	Scene* m_pScene = nullptr;
 	vector<Scene*> m_vecScene;
-	Scene* m_pScene;
 	void ChangeScene();
 	void ChangeShowMode();
 private:
@@ -22,9 +24,17 @@ private:
 	float m_fDelay = 0.f;
 	void FadeOut();
 public:
-	STAGE_SHOW GetShowMode()const { return m_eCurShowMode; }
+	int GetShowMode()const { return m_iShowMode; }
+	bool CheckShowMode(STAGE_SHOW eShow)
+	{
+		return m_iShowMode & (1 << eShow);
+	}
+	void ToggleShowMode(STAGE_SHOW eShow)
+	{
+		m_iShowMode ^= (1 << eShow);
+	}
 	bool NeedChangeScene(int result) { return result == m_iChangeSignal; }
-	void SignalizeSceneChange(SCENE_CREATE next);
+	void SignalizeSceneChange(SceneState state);
 	class Scene* GetScene() const { return m_pScene; }
 public:
 	bool Init();

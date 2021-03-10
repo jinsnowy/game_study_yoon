@@ -44,7 +44,7 @@ public:
 	EDIT_MODE GetCurSelect() const { return m_eCurSelTile; }
 	Object* GetClickObject(const Pos& screenPos, bool &UITouch);
 	void LoadTiles(EDIT_MODE eSel, const wchar_t* pBaseFolderName, const string& strPathKey = TEXTURE_PATH);
-	void LoadPrototypes(OBJECT_TYPE eType);
+	void LoadPrototypes(PR_TYPE eType);
 	void ChangeState();
 protected:
 	UITileSelect();

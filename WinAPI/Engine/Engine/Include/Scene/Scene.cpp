@@ -252,37 +252,11 @@ void Scene::Draw(HDC hdc, float dt)
 {
 	DrawHDCWithColor(hdc, GETRESOLUTION.x, GETRESOLUTION.y, RGB(0, 0, 0));
 
-	STAGE_SHOW eShowMode = SCENE_MANAGER->GetShowMode();
-
 	auto iterEnd = m_LayerList.end();
 	for (auto it = m_LayerList.begin(); it != iterEnd;)
 	{
 #ifdef _DEBUG
 		const string& layerTag = (*it)->GetTag();
-		if (layerTag == "Ground")
-		{
-			if (eShowMode != SHOW_ALL && eShowMode != SHOW_GROUND)
-			{
-				++it;
-				continue;
-			}
-		}
-		else if (layerTag == "Static")
-		{
-			if (eShowMode != SHOW_ALL && eShowMode != SHOW_STATIC)
-			{
-				++it;
-				continue;
-			}
-		}
-		else if (layerTag == "Object")
-		{
-			if (eShowMode != SHOW_ALL && eShowMode != SHOW_OBJECT)
-			{
-				++it;
-				continue;
-			}
-		}
 #endif
 
 		if (!(*it)->GetEnable())

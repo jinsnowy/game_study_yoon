@@ -6,8 +6,10 @@
 #include "../Application/Window.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
+#include "../Core/Input.h"
 #include "../Collider/CollisionManager.h"
 #include "../Core/FrameTimer.h"
+#include "../Object/MoveObj/Player.h"
 
 DEFINITION_SINGLE(SceneManager)
 
@@ -25,13 +27,28 @@ SceneManager::~SceneManager()
 		SAFE_DELETE(sc);
 	}
 	m_vecScene.clear();
+	SAFE_RELEASE(m_pPlayer);
 }
 
 bool SceneManager::Init()
 {
-	m_pScene = CreateScene<StartScene>(SCENE_CREATE::SC_START);
-	CreateScene<MapEditScene>(SCENE_CREATE::SC_MAPEDIT);
-	// CreateScene<InHouseScene>(SCENE_CREATE::SC_INHOUSE);
+	INPUT->AddKey("ShowOption", VK_F1);
+	INPUT->AddKey("ShowGrid", VK_F2);
+	INPUT->AddKey("ShowColl", VK_F3);
+
+	// 모든 텍스쳐 초기화
+	CreateScene<MapEditScene>(SC_MAPEDIT);
+	SAFE_DELETE(m_vecScene[SC_MAPEDIT]);
+
+	m_pScene = CreateScene<StartScene>(SC_START);
+
+	m_pPlayer = new Player;
+	m_pPlayer->SetTag("Player");
+	m_pPlayer->Init();
+
+	SceneState state;
+	state.nextBeacon = BC_NONE;
+	state.nextDir = RIGHT;
 	return true;
 }
 
@@ -67,39 +84,56 @@ void SceneManager::ChangeScene()
 {
 	FadeOut();
 
-	if (m_vecScene[m_eNext] == nullptr)
+	SCENE_CREATE cur = m_pScene->GetSceneType();
+	switch (cur)
 	{
-		switch (m_eNext)
+	case SCENE_CREATE::SC_MAPEDIT:
+		SAFE_DELETE(m_vecScene[cur]);
+		break;
+	}
+
+	SCENE_CREATE nxt = m_tNextState.nextScene;
+	if (!m_vecScene[nxt])
+	{
+		switch (nxt)
 		{
 		case SCENE_CREATE::SC_INHOUSE:
-			CreateScene<InHouseScene>(m_eNext);
+			CreateScene<InHouseScene>(nxt);
+			break;
+		case SCENE_CREATE::SC_MAPEDIT:
+			CreateScene<MapEditScene>(nxt);
 			break;
 		}
 	}
 
-	m_pScene = m_vecScene[m_eNext];
+	m_pScene = m_vecScene[nxt];
+	
+	GameScene* gameScene = dynamic_cast<GameScene*>(m_pScene);
+	if (gameScene)
+	{
+		gameScene->SetUpScene(m_tNextState, m_pPlayer);
+	}
+
 	COLLISION_MANAGER->Clear();
 	m_iSignal = 0;
-	m_eNext = SC_END;
+	m_tNextState.nextBeacon = BC_NONE;
+	m_tNextState.nextDir = LEFT;
+	m_tNextState.nextScene = SC_NONE;
 }
 
 void SceneManager::ChangeShowMode()
 {
-	if (GetAsyncKeyState(VK_F1) & 0x8000)
+	if (KEYDOWN("ShowOption"))
 	{
-		m_eCurShowMode = SHOW_ALL;
+		ToggleShowMode(SHOW_TILEOPTION);
 	}
-	if (GetAsyncKeyState(VK_F2) & 0x8000)
+	if (KEYDOWN("ShowGrid"))
 	{
-		m_eCurShowMode = SHOW_GROUND;
+		ToggleShowMode(SHOW_GRID);
 	}
-	if (GetAsyncKeyState(VK_F3) & 0x8000)
+	if (KEYDOWN("ShowColl"))
 	{
-		m_eCurShowMode = SHOW_OBJECT;
-	}
-	if (GetAsyncKeyState(VK_F4) & 0x8000)
-	{
-		m_eCurShowMode = SHOW_STATIC;
+		ToggleShowMode(SHOW_COLL);
 	}
 }
 
@@ -133,9 +167,9 @@ void SceneManager::FadeOut()
 	SAFE_RELEASE(pEmptyTex);
 }
 
-void SceneManager::SignalizeSceneChange(SCENE_CREATE next)
+void SceneManager::SignalizeSceneChange(SceneState state)
 {
 	m_iSignal = m_iChangeSignal;
-	m_eNext = next;
+	m_tNextState = state;
 }
 

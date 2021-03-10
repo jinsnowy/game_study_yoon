@@ -8,16 +8,14 @@ private:
 	friend class Layer;
     friend class Stage;
 protected:
-	TILE_TYPE		m_eType = TL_NONE;
 	TILE_OPTION		m_eOption = TO_NONE;
 	class Texture*	m_pOptionTex = nullptr;
 public:
-	TILE_TYPE GetTileType() const { return m_eType; }
-	void SetTileOption(TILE_OPTION eOption);
 	TILE_OPTION GetTileOption() const
 	{
 		return m_eOption;
 	}
+	void SetTileOption(TILE_OPTION eOption);
 public:
     Tile();
     Tile(const Tile& tile);

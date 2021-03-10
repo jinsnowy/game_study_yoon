@@ -29,6 +29,17 @@ void util::DrawRedRect(HDC hdc, RECT rc)
 	DeleteObject(SelectObject(hdc, OldBrush));
 }
 
+void util::DrawRectWithColor(HDC hdc, RECT rc, COLORREF color)
+{
+	HPEN myPen = CreatePen(PS_SOLID, 3, color);
+	HPEN OldPen = (HPEN)SelectObject(hdc, myPen);
+	HBRUSH OldBrush = (HBRUSH)SelectObject(hdc, GetStockObject(NULL_BRUSH));
+
+	Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
+	DeleteObject(SelectObject(hdc, OldPen));
+	DeleteObject(SelectObject(hdc, OldBrush));
+}
+
 void util::DrawHDCWithColor(HDC hdc, int w, int h, COLORREF color)
 {
 	HBRUSH OldBrush = (HBRUSH)SelectObject(hdc, CreateSolidBrush(color));

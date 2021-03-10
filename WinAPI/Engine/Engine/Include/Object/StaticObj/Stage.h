@@ -15,6 +15,9 @@ private:
 	int m_iTileNumY;
 	vector<class Tile*> m_baseTile;
 public:
+	const vector<class Tile*>* GetTiles() const { return &m_baseTile; }
+	bool IsBlockTile(const Pos& worldPos) const;
+	bool IsBlockTile(int index) const;
 	void CreateTile(int iNumX, int iNumY);
 public:
 	virtual bool Init();
@@ -35,6 +38,8 @@ public:
 	void ChangeTileByCloneTile(const Pos& tPos, Tile* pClone);
 	void ChangeTileOption(const Pos& tPos, TILE_OPTION eOption);
 
+	Pos GetTilePos(const Pos& worldPos);
+	Pos GetTilePos(int index);
 	INDEX GetTileRowColIndex(const Pos& tPos) const;
 	INDEX GetTileRowColIndex(float x, float y) const;
 	int GetTileIndex(const Pos& tPos) const;

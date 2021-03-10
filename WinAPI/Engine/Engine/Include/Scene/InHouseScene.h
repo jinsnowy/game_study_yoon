@@ -5,7 +5,7 @@ class InHouseScene : public GameScene
 private:
     friend class SceneManager;
 private:
-    const char*  pGameDataFileName = "test.map";
+    const char*  pGameDataFileName = "InHouse.map";
 private:
     InHouseScene();
     ~InHouseScene();

@@ -8,6 +8,7 @@ class Object : public Ref
 	friend class PrototypeManager;
 protected:
 	// 씬, 레이어, 텍스쳐, 콜라이더
+	OBJ_TYPE m_eObjType = OBJ_NORMAL;
 	bool m_bEnableAnimation = true;
 	class Scene* m_pScene;
 	class Layer* m_pLayer;
@@ -15,6 +16,7 @@ protected:
 	list<Collider*> m_ColliderList;
 	Animation* m_pAnimation;
 public:
+	OBJ_TYPE GetObjectType() const { return m_eObjType; }
 	template<typename T>
 	static T* CreateObject(const string& strTag)
 	{
@@ -139,7 +141,7 @@ public:
 	}
 protected:
 	bool m_bEnableTransparent = false;
-	bool m_bHasPrototype;
+	bool m_bHasPrototype = false;
 	Pos   m_tPos;
 	Pos   m_tPivot;
 	Size  m_tImageOffset;

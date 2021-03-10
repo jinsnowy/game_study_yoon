@@ -19,6 +19,7 @@
 #include "../Object/MoveObj/MovableObject.h"
 #include "../Object/Object.h"
 #include "../Object/StaticObj/Tile.h"
+#include "../Object/StaticObj/Tree.h"
 #include "../Math.h"
 
 wchar_t MapEditScene::m_strText1[MAX_PATH] = {};
@@ -50,7 +51,6 @@ bool MapEditScene::Init()
         return false;
     }
 
-    SetUpCamera();
 
     SetUpDefaultStages(50, 50);
 
@@ -58,12 +58,15 @@ bool MapEditScene::Init()
 
     SetUpTileSelectUI();
 
+    SetUpCamera();
+
     INPUT->AddKey("ChangeState", VK_TAB);
     INPUT->AddKey("ResetStage", VK_CONTROL, 'R');
     INPUT->AddKey("Save", VK_CONTROL, 'S');
     INPUT->AddKey("Load", VK_CONTROL, 'O');
 
     m_pObjLayer = FindLayer("Object");
+
     return true;
 }
 
@@ -111,7 +114,7 @@ void MapEditScene::Input(float dt)
                 m_vecStage[m_eCurStage]->ChangeTileByCloneTile(tMouseWorldPos, static_cast<Tile*>(pClone));
                 break;
             case SEL_OPTION:
-                m_vecStage[ST_GROUND]->ChangeTileOption(tMouseWorldPos, m_pSelUI->GetOpt(texTag));
+                m_vecStage[ST_STATIC]->ChangeTileOption(tMouseWorldPos, m_pSelUI->GetOpt(texTag));
                 break;
             default:
                 m_pObjLayer->AddObject(pClone);
@@ -136,7 +139,7 @@ void MapEditScene::Input(float dt)
                 m_vecStage[m_eCurStage]->SetTileNone(tMouseWorldPos);
                 break;
             case SEL_OPTION:
-                m_vecStage[ST_GROUND]->ChangeTileOption(tMouseWorldPos, TO_NONE);
+                m_vecStage[ST_STATIC]->ChangeTileOption(tMouseWorldPos, TO_NONE);
                 break;
             default:
                 DeleteNearObject(tMouseWorldPos);
@@ -186,6 +189,7 @@ void MapEditScene::Input(float dt)
             char strFileName[MAX_PATH] = {};
             WideCharToMultiByte(CP_ACP, 0, m_strText1, -1, strFileName, lstrlen(m_strText1), 0, 0);
             LoadDefaultStages(strFileName);
+            // SetUpCamera();
         }
     }
 }
@@ -247,10 +251,10 @@ void MapEditScene::Draw(HDC hDC, float dt)
 
     // 마우스 선택 타일 드로우
     Pos tPos = MOUSEWORLDPOS;
-    Pos tCamPos = CAMERA->GetTopLeft();
-    int left = int(tPos.x / TILESIZE) * TILESIZE - int(tCamPos.x);
-    int top = int(tPos.y / TILESIZE) * TILESIZE - int(tCamPos.y);
-    DrawRedRect(hDC, MakeRect(left, top, TILESIZE, TILESIZE));
+    int index = m_vecStage[ST_GROUND]->GetTileIndex(tPos);
+    Pos tilePos = m_vecStage[ST_GROUND]->GetTilePos(index);
+    tilePos -= CAMERA->GetTopLeft();
+    DrawRedRect(hDC, MakeRect(int(tilePos.x), int(tilePos.y), TILESIZE, TILESIZE));
 
     if (m_pSelObject)
     {
@@ -281,7 +285,7 @@ void MapEditScene::Draw(HDC hDC, float dt)
 
 void MapEditScene::SetUpCamera()
 {
-    CAMERA->SetWorldResolution(2000.f, 2000.f);
+    CAMERA->SetWorldResolution(m_iTileNumX * TILESIZE, m_iTileNumY * TILESIZE);
     CAMERA->SetPos(0.f, 0.f);
     CAMERA->SetPivot(0.f, 0.f);
     CAMERA->ReleaseTarget();
@@ -315,12 +319,16 @@ void MapEditScene::SaveDefaultStages(const char* fileName)
         list<Object*>::const_iterator iterEnd = objList->end();
         for (; iter != iterEnd; ++iter)
         {
+            int eType = (int) (*iter)->GetObjectType();
+
+            fwrite(&eType, 4, 1, pFile);
             bool hasPrototype = (*iter)->HasPrototype();
+            fwrite(&hasPrototype, 1, 1, pFile);
             if (hasPrototype)
             {
                 string prototypeTag = (*iter)->GetPrototypeTag();
                 size_t length = prototypeTag.size();
-                fwrite(&hasPrototype, 1, 1, pFile);
+             
                 fwrite(&length, 4, 1, pFile);
                 fwrite(prototypeTag.c_str(), 1, length, pFile);
             }
@@ -347,23 +355,29 @@ void MapEditScene::LoadDefaultStages(const char* fileName)
     EmptyMapEditScene();
 
     FILE* pFile = PATH_MANAGER->FileOpen(fileName, DATA_PATH, "rb");
+    if (pFile == NULL)
+    {
+        throw EXCEPT(L"File Not Exists");
+    }
 
     LoadStage(ST_GROUND, "GroundStage", "Ground", pFile);
     LoadStage(ST_STATIC, "StaticStage", "Static", pFile);
 
-    m_iTileNumX = m_vecStage[ST_GROUND]->GetTileSize().x;
-    m_iTileNumY = m_vecStage[ST_GROUND]->GetTileSize().y;
+    m_iTileNumX = m_vecStage[ST_GROUND]->GetStageTileNumX();
+    m_iTileNumY = m_vecStage[ST_GROUND]->GetStageTileNumY();
 
     size_t objNum;
-    fread(&objNum, 4, 1, pFile);
+    fread(&objNum, sizeof(objNum), 1, pFile);
     if (objNum > 0)
     {
         int length = 0;
         char strTag[MAX_PATH] = { 0 };
+        int objType = 0;
         bool hasPrototype = false;
         Object* pObj = nullptr;
         for (int i = 0; i < objNum; ++i)
         {
+            fread(&objType, 4, 1, pFile);
             fread(&hasPrototype, 1, 1, pFile);
             if (hasPrototype)
             {
@@ -372,9 +386,21 @@ void MapEditScene::LoadDefaultStages(const char* fileName)
                 strTag[length] = 0;
                 string prototypeKey = string(strTag);
                 pObj = PROTOTYPE_MANAGER->FindPrototype(prototypeKey)->Clone();
-                pObj->Load(pFile);
-                m_pObjLayer->AddObject(pObj);
             }
+            else {
+                switch (objType)
+                {
+                case OBJ_TREE:
+                    pObj = Object::CreateObject<Tree>("Tree");
+                    break;
+                case OBJ_TILE:
+                    pObj = Object::CreateObject<Tile>("None");
+                    break;
+                }
+            }
+            pObj->Load(pFile);
+            m_pObjLayer->AddObject(pObj);
+            SAFE_RELEASE(pObj);
         }
     }
 
@@ -452,7 +478,7 @@ void MapEditScene::SetUpTileSelectUI()
     m_pSelUI->LoadTiles(SEL_TILEOBJECT, L"SV/TileObject/Wall/");
 
     // object prototype
-    m_pSelUI->LoadPrototypes(OBJ_PLANT);
+    m_pSelUI->LoadPrototypes(PR_PLANT);
 
     m_pSelUI->SetUpTagButton(this);
   
@@ -460,8 +486,12 @@ void MapEditScene::SetUpTileSelectUI()
 
 void MapEditScene::BackButtonCallback(float dt)
 {
+    SceneState state;
+    state.nextBeacon = BC_NONE;
+    state.nextDir = RIGHT;
+    state.nextScene = SC_START;
     SOUND_MANAGER->PlaySound("StartScene_Click");
-    SCENE_MANAGER->SignalizeSceneChange(SC_START);
+    SCENE_MANAGER->SignalizeSceneChange(state);
 }
 
 string MapEditScene::ConvertToNameOption(TILE_OPTION eOpt) const
@@ -474,6 +504,12 @@ string MapEditScene::ConvertToNameOption(TILE_OPTION eOpt) const
         return "NoMove";
     case TO_CROP_GROUND:
         return "CropGround";
+    case TO_BEACON_1:
+        return "Beacon1";
+    case TO_BEACON_2:
+        return "Beacond";
+    case TO_BEACON_3:
+        return "Beacon3";
     default:
         return "Invalid";
     }

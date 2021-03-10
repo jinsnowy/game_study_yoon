@@ -21,6 +21,7 @@ namespace util
 		return rc;
 	}
 	void DrawRedRect(HDC hdc, RECT rc);
+	void DrawRectWithColor(HDC hdc, RECT rc, COLORREF color);
 	void DrawHDCWithColor(HDC hdc, int w, int h, COLORREF color);
 	void DrawHDCWithColor(HDC hdc, int px, int py, int w, int h, COLORREF color);
 }
