@@ -5,12 +5,6 @@ PlayerTool::PlayerTool()
 {
 }
 
-PlayerTool::PlayerTool(const PlayerTool& obj)
-    :
-    Object(obj)
-{
-}
-
 PlayerTool::~PlayerTool()
 {
 }
@@ -144,11 +138,6 @@ void PlayerTool::Collision(float dt)
 void PlayerTool::Draw(HDC hDC, float dt)
 {
     Object::Draw(hDC, dt);
-}
-
-PlayerTool* PlayerTool::Clone()
-{
-    return new PlayerTool(*this);
 }
 
 void PlayerTool::StateTransit(int iState)

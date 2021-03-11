@@ -11,19 +11,17 @@
 #include "../../Animation/Animation.h"
 #include "../../Scene/SceneManager.h"
 #include "../../Scene/GameScene.h"
+#include "../../Sound/SoundManager.h"
 #include "PlayerTool.h"
 
 Player::Player()
-{
-}
-
-Player::Player(const Player& obj) : MovableObject(obj)
+	:
+	m_tPrev(Pos())
 {
 }
 
 Player::~Player()
 {
-	SAFE_RELEASE(m_pTool);
 }
 
 void Player::InitTexture()
@@ -210,15 +208,6 @@ void Player::InitAnimation()
 	
 }
 
-void Player::LateInit()
-{
-	// TODO : 툴을 레이어에 추가
-	Layer* pLayer = m_pScene->FindLayer("Effect");
-	m_pTool = Object::CreateObject<PlayerTool>("PlayerTool");
-	m_pTool->SetPlayer(this);
-	pLayer->AddObject(m_pTool);
-}
-
 void Player::StateTransit(int iNext)
 {
 	m_eState = static_cast<PlayerState>(iNext);
@@ -286,14 +275,24 @@ bool Player::Init()
 	InitAnimation();
 
 	StateTransit(IDLE_RIGHT);
-	m_iHP = 1000;
 
 	ColliderRect* pRC = AddCollider<ColliderRect>("PlayerBody");
-	pRC->SetRect(0, 0.f, 60.f, -120.f);
+	pRC->SetRect(0.f, -120.f, 60.f, 0.f);
 	pRC->AddCollisionFunction(CS_ENTER, this, &Player::Hit);
 	pRC->AddCollisionFunction(CS_STAY, this, &Player::Hit);
 	SAFE_RELEASE(pRC);
 
+	ColliderRect* pFoot = AddCollider <ColliderRect>("PlayerFoot");
+	pFoot->SetRect(0.f, -60.f, 60.f, 0.f);
+	pFoot->AddCollisionFunction(CS_ENTER, this, &Player::BlockFoot);
+	pFoot->AddCollisionFunction(CS_STAY, this, &Player::BlockFoot);
+	SAFE_RELEASE(pFoot);
+
+	m_iHP = 1000;
+	m_pTool->Init();
+	m_pTool->SetPlayer(this);
+
+	SOUND_MANAGER->LoadSound("InHouse_Walking", false, SD_EFFECT, "InHouse_Walking.mp3");
 	return true;
 }
 
@@ -301,7 +300,7 @@ void Player::Input(float dt)
 {
 	MovableObject::Input(dt);
 
-	Pos prev = GetPos();
+	m_tPrev = GetPos();
 	switch (m_eState)
 	{
 	case IDLE_RIGHT:
@@ -340,7 +339,11 @@ void Player::Input(float dt)
 		const auto& gameScene = static_cast<GameScene*>(m_pScene);
 		if(gameScene->IsBlockTile(GetCenterPos()))
 		{
-			SetPos(prev);
+			SetPos(m_tPrev);
+		}
+		if (m_pScene->GetSceneType() == SC_INHOUSE)
+		{
+			SOUND_MANAGER->PlaySound("InHouse_Walking");
 		}
 	}
 	else
@@ -406,6 +409,9 @@ void Player::Collision(float dt)
 void Player::Draw(HDC hDC, float dt)
 {
   	MovableObject::Draw(hDC, dt);
+
+	m_pTool->Draw(hDC, dt);
+
 #ifdef _DEBUG
 	wchar_t playerPos[32] = {};
 	swprintf_s(playerPos, L"Pos: %.1f, %.1f", GetPos().x, GetPos().y);
@@ -422,9 +428,12 @@ void Player::Draw(HDC hDC, float dt)
 	}
 }
 
-Player* Player::Clone()
+void Player::BlockFoot(Collider* pSrc, Collider* pDst, float dt)
 {
-	return new Player(*this);
+	if (pDst->GetTag() == "TileBlock")
+	{
+		SetPos(m_tPrev);
+	}
 }
 
 void Player::Hit(Collider* pSrc, Collider* pDst, float dt)

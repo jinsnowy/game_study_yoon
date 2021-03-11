@@ -1,6 +1,7 @@
 #pragma once
 #include "../../framework.h"
 #include "MovableObject.h"
+#include "PlayerTool.h"
 
 class Player : public MovableObject
 {
@@ -24,10 +25,11 @@ public:
 		TOOL_UP,
 	};
 private:
-	class PlayerTool* m_pTool = nullptr;
+	Pos m_tPrev;
+	unique_ptr<PlayerTool> m_pTool = make_unique<PlayerTool>();
 	PlayerState m_eState = PlayerState::IDLE_RIGHT;
 	Player();
-	Player(const Player& obj);
+	Player(const Player& obj) = delete;
 	~Player();
 private:
 	int m_iHP = 0;
@@ -35,8 +37,11 @@ public:
 	void InitTexture();
 	void InitAnimation();
 	PlayerState GetState() const { return m_eState; }
+	inline Pos GetCenterPos() const
+	{
+		return Pos(GetPos().x + GetSize().x / 2, GetPos().y);
+	}
 public:
-	virtual void LateInit();
 	virtual void StateTransit(int iNext);
 	virtual bool Init();
 	virtual void Input(float dt);
@@ -44,17 +49,14 @@ public:
 	virtual int LateUpdate(float dt);
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
-	virtual Player* Clone();
+	virtual Player* Clone() { throw EXCEPT(L"Player cloned"); return nullptr; }
 public:
+	void BlockFoot(class Collider* pSrc, class Collider* pDst, float dt);
 	void Hit(class Collider* pSrc, class Collider* pDst, float dt);
 	void HitPixel(class Collider* pSrc, class Collider* pDst, float dt);
 private:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
-private:
-	inline Pos GetCenterPos() const
-	{
-		return Pos(GetPos().x + GetSize().x / 2, GetPos().y);
-	}
+
 };
 

@@ -25,9 +25,9 @@ private:
 	void SetPlayer(Player* player);
 	void SetToolState(ToolState eState) { eToolState = eState; }
 	void Play();
-private:
+public:
 	PlayerTool();
-	PlayerTool(const PlayerTool& obj);
+	PlayerTool(const PlayerTool& obj) = delete;
 	~PlayerTool();
 public:
 	virtual bool Init();
@@ -36,8 +36,8 @@ public:
 	virtual int LateUpdate(float dt);
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
-	virtual PlayerTool* Clone();
 	virtual void StateTransit(int iState);
+	virtual PlayerTool* Clone() { throw EXCEPT(L"PlayerTool cloned"); return nullptr; }
 private:
 	void LoadWater();
 	void LoadPick();
