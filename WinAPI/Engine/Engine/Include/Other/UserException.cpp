@@ -19,7 +19,8 @@ UserException::UserException(int codeLine, const char* fileName) noexcept
 const wchar_t* UserException::What() const noexcept
 {
 	wstringstream oss;
-	oss << "[Type] " << GetType() << endl
+	oss << m_whatBuffer.c_str() << endl
+		<< "[Type] " << GetType() << endl
 		<< GetErrorMessage() << endl;
 
 	m_whatBuffer = oss.str();
