@@ -13,7 +13,7 @@ Tree::Tree()
 Tree::Tree(const Tree& obj)
 	: Tile(obj)
 {
-	m_eObjType = OBJ_TREE;
+
 }
 
 Tree::~Tree()
@@ -35,16 +35,13 @@ bool Tree::Init()
 	SetPivot(0.3333f, 1.0f);
 
 	ColliderRect* pRC = AddCollider<ColliderRect>("TreeBody");
-	pRC->SetRect(-imgSize.x / 3 + 2, -imgSize.y + 2, 2 * imgSize.x / 3 - 2, - 2);
-	pRC->AddCollisionFunction(CS_ENTER, this, &Tree::ShadeIn);
-	pRC->AddCollisionFunction(CS_STAY, this, &Tree::ShadeIn);
+	pRC->SetRect(-imgSize.x / 3 + 2, -imgSize.y + TILESIZE, 2 * imgSize.x / 3 - 2, - 2);
 	SAFE_RELEASE(pRC);
-	return true;
-}
 
-void Tree::LateInit()
-{
-	StaticObject::LateInit();
+	ColliderRect* pBlock = AddCollider<ColliderRect>("TileBlock");
+	pBlock->SetRect(0, 0.f, imgSize.x / 3, TILESIZE);
+	SAFE_RELEASE(pBlock);
+	return true;
 }
 
 void Tree::ChangeTreeTexture(int id)
@@ -70,6 +67,7 @@ void Tree::ShadeIn(Collider* pSrc, Collider* pDst, float dt)
 		}
 	}
 }
+
 void Tree::ShadeOut(Collider* pSrc, Collider* pDst, float dt)
 {
 	if (pDst->GetTag() == "PlayerBody")
@@ -118,4 +116,9 @@ void Tree::Save(FILE* pFile)
 void Tree::Load(FILE* pFile)
 {
 	Tile::Load(pFile);
+
+	ColliderRect* pRC = static_cast<ColliderRect*>(GetCollider("TreeBody"));
+	pRC->AddCollisionFunction(CS_ENTER, this, &Tree::ShadeIn);
+	pRC->AddCollisionFunction(CS_STAY, this, &Tree::ShadeIn);
+	SAFE_RELEASE(pRC);
 }

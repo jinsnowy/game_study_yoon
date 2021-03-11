@@ -16,7 +16,7 @@ Tile::Tile(const Tile& tile)
 {
 	m_eOption = tile.m_eOption;
 	m_pOptionTex = tile.m_pOptionTex;
-    m_eObjType = OBJ_TILE;
+    m_eObjType = tile.m_eObjType;
 
 	if(m_pOptionTex)
 		m_pOptionTex->AddRef();
@@ -26,7 +26,6 @@ Tile::~Tile()
 {
 	SAFE_RELEASE(m_pOptionTex);
 }
-
 
 void Tile::SetTileOption(TILE_OPTION eOption)
 {
@@ -156,7 +155,6 @@ void Tile::Draw(HDC hDC, float dt)
         {
             tPos = m_tPos;
             tPos -= CAMERA->GetTopLeft();
-            tPos.y -= TILESIZE;
             // 카메라 컬링
             if (tPos.x + TILESIZE < 0 || tPos.x > tClientRS.x
                 || tPos.y + TILESIZE < 0 || tPos.y > tClientRS.y)

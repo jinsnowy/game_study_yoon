@@ -44,7 +44,6 @@ void PrototypeManager::RegisterProtoType(PR_TYPE eType, const string& strPrototy
 
     assert(pObj != nullptr);
 
-    pObj->SetPrototypeTag(strPrototypeKey);
     m_mapProtoType[eType].insert(make_pair(strPrototypeKey, pObj));
 }
 
@@ -68,45 +67,6 @@ Object* PrototypeManager::FindPrototype(PR_TYPE eType, const string& strPrototyp
 	}
 	return found->second;
 }
-
-//void PrototypeManager::LoadTileObjectInFolder(PR_TYPE eType, const wchar_t* pBaseFolderName, const string& strPathKey)
-//{
-//    const wchar_t* pPath = PATH_MANAGER->FindPath(strPathKey);
-//    wstring strPath;
-//    if (pPath)
-//        strPath = pPath;
-//
-//    strPath += pBaseFolderName;
-//    assert(strPath.back() == L'\\' || strPath.back() == L'/');
-//
-//    const auto extract_key = [](const char* str, int size)
-//    {
-//        int ed = size - 1;
-//        while (str[ed] != L'.') --ed;
-//        int st = ed - 1;
-//        while (str[st] != L'\\' && str[st] != L'/') st--;
-//        return string(str + st + 1, str + ed);
-//    };
-//
-//    Texture* pTex;
-//    for (const auto& entry : fs::directory_iterator(strPath))
-//    {
-//        const wchar_t* path = entry.path().c_str();
-//        string strTag = extract_key(GetChar(path), lstrlen(path));
-//        string prototypeStrKey = strTag + "_Prototype";
-//        Tile* tObject = new Tile;
-//        pTex = RESOURCE_MANAGER->LoadTexture(strTag, path, "");
-//        pTex->SetColorKey(255, 255, 255);
-//
-//        tObject->SetPivot(0.f, 1.0f);
-//        tObject->SetTexture(pTex);
-//        tObject->SetPrototypeTag(prototypeStrKey);
-//        tObject->SetTag(strTag);
-//        tObject->SetAsTextureSize();
-//        SAFE_RELEASE(pTex);
-//        RegisterProtoType(eType, prototypeStrKey, tObject);
-//    }
-//}
 
 Object* PrototypeManager::CreateCloneObject(const string& strPrototypeKey, const string& strTag, Scene* pScene, Layer* pLayer)
 {

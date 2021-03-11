@@ -28,8 +28,6 @@ public:
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hDC, float dt);
 	virtual Tile* Clone();
-private:
-	void DrawRemains(HDC hDC, float dt);
 public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);

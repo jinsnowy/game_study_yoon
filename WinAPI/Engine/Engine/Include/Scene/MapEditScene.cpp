@@ -74,8 +74,11 @@ void MapEditScene::Input(float dt)
 {
     Scene::Input(dt);
     CameraScroll(dt);
-
     m_pSelUI->Input(dt);
+    bool touchUI = false;
+    Pos tMouseClientPos = MOUSECLIENTPOS;
+    Pos tMouseWorldPos = MOUSEWORLDPOS;
+
     if (KEYDOWN("ChangeState"))
     {
         m_pSelUI->ChangeState();
@@ -94,10 +97,6 @@ void MapEditScene::Input(float dt)
 
     if (KEYPRESS("MouseLButton"))
     {
-        Pos tMouseClientPos = MOUSECLIENTPOS;
-        Pos tMouseWorldPos = MOUSEWORLDPOS;
-
-        bool touchUI = false;
         Object* pObj = m_pSelUI->GetClickObject(tMouseClientPos, touchUI);
         if (pObj)
         {
@@ -117,12 +116,16 @@ void MapEditScene::Input(float dt)
                 m_vecStage[ST_STATIC]->ChangeTileOption(tMouseWorldPos, m_pSelUI->GetOpt(texTag));
                 break;
             default:
-                m_pObjLayer->AddObject(pClone);
+                if (!ExistsNearObject(tMouseWorldPos) && KEYDOWN("MouseLButton"))
+                {
+                    m_pObjLayer->AddObject(pClone);
+                }
                 break;
             }
             SAFE_RELEASE(pClone);
         }
     }
+
 
     if (KEYPRESS("MouseRButton"))
     {
@@ -250,6 +253,9 @@ void MapEditScene::Draw(HDC hDC, float dt)
 {
     Scene::Draw(hDC, dt);
 
+    memset(m_strText1, 0, sizeof(m_strText1));
+    wsprintf(m_strText1, L"Object num %d\n", m_pObjLayer->GetObjList()->size());
+    TextOut(hDC, 0, 10, m_strText1, lstrlen(m_strText1));
     // 마우스 선택 타일 드로우
     Pos tPos = MOUSEWORLDPOS;
     int index = m_vecStage[ST_GROUND]->GetTileIndex(tPos);
@@ -266,10 +272,10 @@ void MapEditScene::Draw(HDC hDC, float dt)
     stringstream ss;
     for (int i = 0; i < ST_END; ++i)
     {
-        const string& tileOption = ConvertToNameOption(m_vecStage[i]->GetTileOption(MOUSEWORLDPOS));
+        const string& tileOption = Scene::ConvertToNameOption(m_vecStage[i]->GetTileOption(MOUSEWORLDPOS));
         const string& tileName = m_vecStage[i]->GetTileName(MOUSEWORLDPOS);
         const string& stageName = m_vecStage[i]->GetTag();
-        const string& objName = GetNearObjectName(MOUSEWORLDPOS);
+        const string& objName = Scene::GetNearObjectName(this, MOUSEWORLDPOS);
         ss << "[" << stageName << "]: " << tileName << ", " << tileOption;
         if (objName.size())
         {
@@ -311,28 +317,16 @@ void MapEditScene::SaveDefaultStages(const char* fileName)
     m_vecStage[ST_STATIC]->SaveFromFile(pFile);
 
     const auto& objList = m_pObjLayer->GetObjList();
-    size_t objNum = objList->size();
+    int objNum = (int) objList->size();
+    fwrite(&objNum, 4, 1, pFile);
     if (objNum > 0)
     {
-        fwrite(&objNum, sizeof(objNum), 1, pFile);
-
         list<Object*>::const_iterator iter = objList->begin();
         list<Object*>::const_iterator iterEnd = objList->end();
         for (; iter != iterEnd; ++iter)
         {
             int eType = (int) (*iter)->GetObjectType();
-
             fwrite(&eType, 4, 1, pFile);
-            bool hasPrototype = (*iter)->HasPrototype();
-            fwrite(&hasPrototype, 1, 1, pFile);
-            if (hasPrototype)
-            {
-                string prototypeTag = (*iter)->GetPrototypeTag();
-                size_t length = prototypeTag.size();
-             
-                fwrite(&length, 4, 1, pFile);
-                fwrite(prototypeTag.c_str(), 1, length, pFile);
-            }
             (*iter)->SaveFromFile(pFile);
         }
     }
@@ -367,43 +361,30 @@ void MapEditScene::LoadDefaultStages(const char* fileName)
     m_iTileNumX = m_vecStage[ST_GROUND]->GetStageTileNumX();
     m_iTileNumY = m_vecStage[ST_GROUND]->GetStageTileNumY();
 
-    size_t objNum;
-    fread(&objNum, sizeof(objNum), 1, pFile);
-    if (objNum > 0)
+    Layer* pLayer = FindLayer("Object");
+    Object* pObj = nullptr;
+    int objNum, objType;
+    fread(&objNum, 4, 1, pFile);
+    for (int i = 0; i < objNum; ++i)
     {
-        int length = 0;
-        char strTag[MAX_PATH] = { 0 };
-        int objType = 0;
-        bool hasPrototype = false;
-        Object* pObj = nullptr;
-        for (int i = 0; i < objNum; ++i)
+        fread(&objType, 4, 1, pFile);
+        switch (objType)
         {
-            fread(&objType, 4, 1, pFile);
-            fread(&hasPrototype, 1, 1, pFile);
-            if (hasPrototype)
-            {
-                fread(&length, 4, 1, pFile);
-                fread(strTag, 1, length, pFile);
-                strTag[length] = 0;
-                string prototypeKey = string(strTag);
-                pObj = PROTOTYPE_MANAGER->FindPrototype(prototypeKey)->Clone();
-            }
-            else {
-                switch (objType)
-                {
-                case OBJ_TREE:
-                    pObj = Object::CreateObject<Tree>("Tree");
-                    break;
-                case OBJ_TILE:
-                    pObj = Object::CreateObject<Tile>("None");
-                    break;
-                }
-            }
+        case OBJ_TREE:
+            pObj = Object::CreateObject<Tree>("Tree");
+            break;
+        case OBJ_TILE:
+            pObj = Object::CreateObject<Tile>("Tile");
+            break;
+        }
+        if (pObj)
+        {
             pObj->Load(pFile);
-            m_pObjLayer->AddObject(pObj);
+            AddObject(pObj, pLayer);
             SAFE_RELEASE(pObj);
         }
     }
+
 
     if (pFile)
     {
@@ -495,54 +476,6 @@ void MapEditScene::BackButtonCallback(float dt)
     SCENE_MANAGER->SignalizeSceneChange(state);
 }
 
-string MapEditScene::ConvertToNameOption(TILE_OPTION eOpt) const
-{
-    switch (eOpt)
-    {
-    case TO_NONE:
-        return "NoOption";
-    case TO_NOMOVE:
-        return "NoMove";
-    case TO_CROP_GROUND:
-        return "CropGround";
-    case TO_BEACON_1:
-        return "Beacon1";
-    case TO_BEACON_2:
-        return "Beacond";
-    case TO_BEACON_3:
-        return "Beacon3";
-    default:
-        return "Invalid";
-    }
-}
-
-string MapEditScene::GetNearObjectName(const Pos &worldPos)
-{
-  
-    float minDist = FLT_MAX;
-    Object* pObj = nullptr;
-    Pos tPos = worldPos - Pos(TILESIZE / 2, -TILESIZE/2);
-
-    const auto& objList = m_pObjLayer->GetObjList();
-    auto iterEnd = objList->end();
-    for (auto iter = objList->begin(); iter != iterEnd; ++iter)
-    {
-        float dist = Math::Distance( (*iter)->GetPos(), tPos);
-        if (dist < TILESIZE/2 && dist < minDist)
-        {
-            pObj = (*iter);
-            minDist = dist;
-        }
-    }
-    if (pObj)
-    {
-        char buffer[30] = { 0 };
-        sprintf_s(buffer, "Pos (%.1f,%.1f)", pObj->GetPos().x, pObj->GetPos().y);
-        return pObj->GetPrototypeTag() + string(buffer);
-    }
-    return "";
-}
-
 void MapEditScene::SetSelectObject(Object* pObj)
 {
     SAFE_RELEASE(m_pSelObject);
@@ -571,24 +504,68 @@ void MapEditScene::CameraScroll(float dt)
 
 Object* MapEditScene::EditCloneObject(Object* const pObj, const Pos& worldPos)
 {
-    int clickIndex = m_vecStage[ST_GROUND]->GetTileIndex(worldPos);
-    if (clickIndex == -1) return nullptr;
+    if (m_vecStage[ST_GROUND]->GetTileIndex(worldPos) == -1)
+        return nullptr;
+    Pos offset = m_vecStage[ST_GROUND]->GetTilePos(worldPos);
 
     Object* pClone = pObj->Clone();
-
     Tile* tileClone = dynamic_cast<Tile*>(pClone);
-    int row = clickIndex / m_iTileNumX + 1;
-    int col = clickIndex % m_iTileNumX;
-    Pos offset(col * TILESIZE, row * TILESIZE);
 
     if (tileClone)
     {
         tileClone->SetPos(offset);
+        switch (m_pSelUI->GetCurSelect())
+        {
+        case SEL_GROUND:
+            tileClone->SetPivot(0.f, 0.f);
+            break;
+        case SEL_STATIC:
+        case SEL_TILEOBJECT:
+        case SEL_OBJECT:
+            tileClone->SetPivot(tileClone->GetPivot().x, 
+                        (tileClone->GetImageSize().y - TILESIZE) / tileClone->GetImageSize().y);
+            break;
+        }
+
+        const string& texTag = tileClone->AccessTexture()->GetTag();
+        if (texTag.starts_with("farmhouse"))
+        {
+            tileClone->SetPivot(0.f,0.f);
+        }
+
         return tileClone;
     }
 
     pClone->AddOffset(offset);
     return pClone;
+}
+
+bool MapEditScene::ExistsNearObject(const Pos& worldPos)
+{
+    float minDist = FLT_MAX;
+    Object* pObj = nullptr;
+
+    const auto& objList = m_pObjLayer->GetObjList();
+    auto iterEnd = objList->end();
+
+    for (auto iter = objList->begin(); iter != iterEnd; ++iter)
+    {
+        if ((*iter))
+        {
+            float dist = Math::Distance((*iter)->GetPos(), worldPos);
+            if (dist < TILESIZE/2 && dist < minDist)
+            {
+                pObj = (*iter);
+                minDist = dist;
+            }
+        }
+    }
+
+    if (pObj)
+    {
+        return true;
+    }
+    return false;
 }
 
 void MapEditScene::DeleteNearObject(const Pos& worldPos)

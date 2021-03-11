@@ -29,6 +29,5 @@ public:
 public:
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);
-	virtual void LateInit();
 };
 

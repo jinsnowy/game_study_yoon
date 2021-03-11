@@ -3,6 +3,7 @@
 #include "../Resources/PrototypeManager.h"
 #include "../Object/Object.h"
 #include "../Core/PathManager.h"
+#include "../Core/Input.h"
 #include "../Object/StaticObj/Tile.h"
 #include "../Object/StaticObj/Tree.h"
 #include "../Core/Camera.h"
@@ -93,7 +94,6 @@ bool GameScene::IsBlockTile(const Pos& worldPos)
 
 bool GameScene::Init()
 {
-
     return true;
 }
 
@@ -110,7 +110,7 @@ void GameScene::Update(float dt)
 void GameScene::LateUpdate(float dt)
 {
     Scene::LateUpdate(dt);
-    
+  
 }
 
 void GameScene::Collision(float dt)
@@ -121,10 +121,33 @@ void GameScene::Collision(float dt)
 void GameScene::Draw(HDC hdc, float dt)
 {
     Scene::Draw(hdc, dt);
+
+#ifdef _DEBUG
+    stringstream ss;
+    Pos playerPos = AccessPlayer()->GetPos();
+    const string& tileOption = Scene::ConvertToNameOption(m_pStaticStage->GetTileOption(playerPos));
+    const string& tileName = m_pGroundStage->GetTileName(playerPos);
+    const string& stageName = m_pGroundStage->GetTag();
+    const string& objName = Scene::GetNearObjectName(this, playerPos);
+    ss << "[" << stageName << "]: " << tileName << ", " << tileOption;
+    if (objName.size())
+    {
+        ss << " Object: " << objName;
+    }
+    ss << "\n";
+    size_t length = ss.str().size();
+    playerPos -= CAMERA->GetTopLeft();
+    TextOut(hdc, playerPos.x, playerPos.y + 10, GetWChar(ss.str().c_str()), length);
+    ss.clear();
+    ss.str("");
+#endif
 }
 
 void GameScene::SetUpScene(SceneState state, Player* player)
 {
+    player->SetScene(this);
+    player->SetLayer(FindLayer("Object"));
+
     if (m_pPlayer == nullptr)
     {
         SetUpMainCharacter(player);
@@ -133,6 +156,21 @@ void GameScene::SetUpScene(SceneState state, Player* player)
     if (state.nextBeacon != BC_NONE)
     {
         Pos tPos = FindBeacon(state.nextBeacon);
+        switch (state.nextDir)
+        {
+        case LEFT:
+            tPos.x -= TILESIZE;
+            break;
+        case RIGHT:
+            tPos.x += TILESIZE;
+            break;
+        case UP:
+            tPos.y -= TILESIZE;
+            break;
+        case DOWN:
+            tPos.y += TILESIZE;
+            break;
+        }
         SpawnMainCharacter(tPos);
     }
     switch (state.nextDir)
@@ -180,44 +218,30 @@ void GameScene::LoadDefaultStages(const char* fileName)
     LoadStage("GroundStage", "Ground", pFile);
     LoadStage("StaticStage", "Static", pFile);
 
-    Layer* objLayer = FindLayer("Object");
-    size_t objNum;
-    fread(&objNum, sizeof(objNum), 1, pFile);
-    if (objNum > 0)
+    Layer* pLayer = FindLayer("Object");
+    Object* pObj = nullptr;
+    int objNum, objType;    
+    fread(&objNum, 4, 1, pFile);
+    for (int i = 0; i < objNum; ++i)
     {
-        int length = 0;
-        char strTag[MAX_PATH] = { 0 };
-        int objType = 0;
-        bool hasPrototype = false;
-        Object* pObj = nullptr;
-        for (int i = 0; i < objNum; ++i)
+        fread(&objType, 4, 1, pFile);
+        switch (objType)
         {
-            fread(&objType, 4, 1, pFile);
-            fread(&hasPrototype, 1, 1, pFile);
-            if (hasPrototype)
-            {
-                fread(&length, 4, 1, pFile);
-                fread(strTag, 1, length, pFile);
-                strTag[length] = 0;
-                string prototypeKey = string(strTag);
-                pObj = PROTOTYPE_MANAGER->FindPrototype(prototypeKey)->Clone();
-            }
-            else {
-                switch (objType)
-                {
-                case OBJ_TREE:
-                    pObj = Object::CreateObject<Tree>("Tree");
-                    break;
-                case OBJ_TILE:
-                    pObj = Object::CreateObject<Tile>("Tile");
-                    break;
-                }
-            }
+        case OBJ_TREE:
+            pObj = Object::CreateObject<Tree>("Tree");
+            break;
+        case OBJ_TILE:
+            pObj = Object::CreateObject<Tile>("Tile");
+            break;
+        }
+        if (pObj)
+        {
             pObj->Load(pFile);
-            objLayer->AddObject(pObj);
+            AddObject(pObj, pLayer);
             SAFE_RELEASE(pObj);
         }
     }
+
 
     if (pFile)
     {
