@@ -8,7 +8,9 @@
 #include "../Core/Camera.h"
 #include "../Object/StaticObj/UIPanel.h"
 #include "../Object/StaticObj/UIButton.h"
+#include "../Resources/ResourceManager.h"
 #include "../Collider/ColliderRect.h"
+#include "../Resources/Texture.h"
 #include "MapEditScene.h"
 #include "../Sound/SoundManager.h"
 
@@ -29,7 +31,7 @@ bool StartScene::Init()
     }
 
     // 사운드 로드
-    SOUND_MANAGER->LoadSound("StartScene_BGM", true, SD_BACKGROUND, "BGM_StartScene_Long.mp3");
+    SOUND_MANAGER->LoadSound("StartScene_BGM", true, SD_BACKGROUND, "StartScene_BGM.mp3");
     SOUND_MANAGER->LoadSound("StartScene_Click", false, SD_EFFECT, "ClickButton_StartScene.mp3");
     SOUND_MANAGER->LoadSound("StartScene_On", false, SD_EFFECT, "ClickButtonOn_StartScene.mp3");
 
@@ -43,21 +45,25 @@ bool StartScene::Init()
 
     pLayer = FindLayer("UI");
     UIPanel* pGameTitle = CreateObject<UIPanel>("GameTitle", pLayer);
-    pGameTitle->SetPos(GETRESOLUTION.x / 2.f, 200.f);
-    pGameTitle->SetSize(480.f, 223.f);
-    pGameTitle->SetPivot(0.5f, 0.5f);
     pGameTitle->SetTexture("GameTitle", L"StartScene/NameTitle.bmp");
     pGameTitle->SetColorKey(255, 255, 255);
-    SAFE_RELEASE(pGameTitle);
+    pGameTitle->SetPos(GETRESOLUTION.x / 2.f, 200.f);
+    pGameTitle->SetAsTextureSize();
+    pGameTitle->SetPivot(0.5f, 0.5f);
 
-    float btnWidth = 120.f;
-    float btnHeight = 93.f;
+    Texture* pTex = RESOURCE_MANAGER->LoadTexture("StartButton", L"StartScene/SelectScene.bmp");
+    const float btnWidth = pTex->GetWidth() / 4.f;
+    const float btnHeight = pTex->GetHeight() / 2.f;
+    const float margin = 30.f;
+
+    float stX = GETRESOLUTION.x / 2 - margin * 3 / 2 - 2 * btnWidth;
+    float stY = pGameTitle->GetPos().y + pGameTitle->GetSize().y / 2.f + 50;
 
     // 시작 버튼
     UIButton* pStartBtn = CreateObject<UIButton>("NewButton", pLayer);
-    pStartBtn->SetPos(GETRESOLUTION.x/2 - 2 * btnWidth, GETRESOLUTION.y/2 + 50);
+    pStartBtn->SetPos(stX, stY);
     pStartBtn->SetSize(btnWidth, btnHeight);
-    pStartBtn->SetTexture("NewButton", L"StartScene/SelectScene.bmp");
+    pStartBtn->SetTexture(pTex);
     pStartBtn->SetImageOffset(0.f, 0.f);
     pStartBtn->SetMouseOnOutImage(true);
     pStartBtn->SetMouseOutImageOffset(pStartBtn->GetImageOffset());
@@ -66,19 +72,18 @@ bool StartScene::Init()
     pStartBtn->SetColorKey(255, 255, 255);
     pStartBtn->SetSoundTag("StartScene_On");
 
-
     ColliderRect* pRC = static_cast<ColliderRect*>(pStartBtn->GetCollider("ButtonBody"));
-    Size tSize = pStartBtn->GetSize();
-    pRC->SetRect(0.f, 0.f, tSize.x, tSize.y);
+    pRC->SetRect(0.f, 0.f, btnWidth, btnHeight);
     SAFE_RELEASE(pRC);
     pStartBtn->SetCallback(this, &StartScene::StartButtonCallback);
     SAFE_RELEASE(pStartBtn);
 
     // 편집 버튼
+    stX += margin + btnWidth;
     UIButton* pEditBtn = CreateObject<UIButton>("EditButton", pLayer);
-    pEditBtn->SetPos(GETRESOLUTION.x / 2 - btnWidth, GETRESOLUTION.y / 2 + 50);
+    pEditBtn->SetPos(stX, stY);
     pEditBtn->SetSize(btnWidth, btnHeight);
-    pEditBtn->SetTexture("EditButton", L"StartScene/SelectScene.bmp");
+    pEditBtn->SetTexture(pTex);
     pEditBtn->SetImageOffset(btnWidth, 0.f);
     pEditBtn->SetMouseOnOutImage(true);
     pEditBtn->SetMouseOutImageOffset(pEditBtn->GetImageOffset());
@@ -88,17 +93,17 @@ bool StartScene::Init()
     pEditBtn->SetSoundTag("StartScene_On");
 
     pRC = static_cast<ColliderRect*>(pEditBtn->GetCollider("ButtonBody"));
-    tSize = pEditBtn->GetSize();
-    pRC->SetRect(0.f, 0.f, tSize.x, tSize.y);
+    pRC->SetRect(0.f, 0.f, btnWidth, btnHeight);
     SAFE_RELEASE(pRC);
     pEditBtn->SetCallback(this, &StartScene::EditButtonCallback);
     SAFE_RELEASE(pEditBtn);
 
     // Op
+    stX += margin + btnWidth;
     UIButton* pOpBtn = CreateObject<UIButton>("NoneButton", pLayer);
-    pOpBtn->SetPos(GETRESOLUTION.x / 2, GETRESOLUTION.y / 2 + 50);
+    pOpBtn->SetPos(stX, stY);
     pOpBtn->SetSize(btnWidth, btnHeight);
-    pOpBtn->SetTexture("ExitButton", L"StartScene/SelectScene.bmp");
+    pOpBtn->SetTexture(pTex);
     pOpBtn->SetImageOffset(2 * btnWidth, 0.f);
     pOpBtn->SetMouseOnOutImage(true);
     pOpBtn->SetMouseOutImageOffset(pOpBtn->GetImageOffset());
@@ -109,10 +114,11 @@ bool StartScene::Init()
     SAFE_RELEASE(pOpBtn);
 
     // 종료 버튼
+    stX += margin + btnWidth;
     UIButton* pEndBtn = CreateObject<UIButton>("ExitButton", pLayer);
-    pEndBtn->SetPos(GETRESOLUTION.x / 2 + btnWidth, GETRESOLUTION.y / 2 + 50);
+    pEndBtn->SetPos(stX, stY);
     pEndBtn->SetSize(btnWidth, btnHeight);
-    pEndBtn->SetTexture("ExitButton", L"StartScene/SelectScene.bmp");
+    pEndBtn->SetTexture(pTex);
     pEndBtn->SetImageOffset(3 * btnWidth, 0.f);
     pEndBtn->SetMouseOnOutImage(true);
     pEndBtn->SetMouseOutImageOffset(pEndBtn->GetImageOffset());
@@ -122,12 +128,13 @@ bool StartScene::Init()
     pEndBtn->SetSoundTag("StartScene_On");
 
     pRC = static_cast<ColliderRect*>(pEndBtn->GetCollider("ButtonBody"));
-    tSize = pEndBtn->GetSize();
-    pRC->SetRect(0.f, 0.f, tSize.x, tSize.y);
+    pRC->SetRect(0.f, 0.f, btnWidth, btnHeight);
     SAFE_RELEASE(pRC);
     pEndBtn->SetCallback(this, &StartScene::EndButtonCallback);
     SAFE_RELEASE(pEndBtn);
 
+    SAFE_RELEASE(pGameTitle);
+    SAFE_RELEASE(pTex);
     SOUND_MANAGER->PlaySound("StartScene_BGM");
 	return true;
 }

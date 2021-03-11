@@ -15,7 +15,7 @@ bool InHouseScene::Init()
 {
 	GameScene::SetUpScene(pGameDataFileName);
 
-	SOUND_MANAGER->PlaySound("StartLongBGM");
+	SOUND_MANAGER->PlaySound("LongBGM");
 	return true;
 }
 

@@ -76,7 +76,7 @@ bool SoundManager::IsEnd(SOUND_CHANNEL eChannel)
 {
 	bool isPlaying;
 	m_pChannel[eChannel]->isPlaying(&isPlaying);
-	return isPlaying;
+	return !isPlaying;
 }
 
 bool SoundManager::IsEnd(const string& strKey)
@@ -87,7 +87,7 @@ bool SoundManager::IsEnd(const string& strKey)
 
 	bool isPlaying;
 	m_pChannel[sound->eChannel]->isPlaying(&isPlaying);
-	return isPlaying;
+	return !isPlaying;
 }
 
 void SoundManager::PlaySound(const string& strKey)

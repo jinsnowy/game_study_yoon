@@ -38,9 +38,8 @@ bool SceneManager::Init()
 	INPUT->AddKey("ShowGrid", VK_F2);
 	INPUT->AddKey("ShowColl", VK_F3);
 
-	SOUND_MANAGER->LoadSound("StartLongBGM", false, SD_BACKGROUND, "StartLongBGM.mp3");
+	SOUND_MANAGER->LoadSound("LongBGM", false, SD_BACKGROUND, "LongBGM.mp3");
 	SOUND_MANAGER->LoadSound("BGM", true, SD_BACKGROUND, "BGM.mp3");
-	SOUND_MANAGER->AdjustVolume(SD_BACKGROUND, 0.5f);
 	// 모든 텍스쳐 초기화
 	CreateScene<MapEditScene>(SC_MAPEDIT);
 	SAFE_DELETE(m_vecScene[SC_MAPEDIT]);
