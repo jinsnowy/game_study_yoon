@@ -71,25 +71,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>../Bin/x86/</OutDir>
     <LibraryPath>../Bin/x86;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>../Bin/x86/</OutDir>
     <LibraryPath>../Bin/x86;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>../Bin/x64/</OutDir>
     <LibraryPath>../Bin/x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>../Bin/x64/</OutDir>
     <LibraryPath>../Bin/x64;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
@@ -99,9 +95,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -113,12 +109,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -134,9 +129,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,12 +143,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -1,6 +1,7 @@
 #include "InHouseScene.h"
 #include "../Object/MoveObj/Player.h"
 #include "SceneManager.h"
+#include "../Sound/SoundManager.h"
 
 InHouseScene::InHouseScene()
 {
@@ -14,6 +15,7 @@ bool InHouseScene::Init()
 {
 	GameScene::SetUpScene(pGameDataFileName);
 
+	SOUND_MANAGER->PlaySound("StartLongBGM");
 	return true;
 }
 
@@ -31,7 +33,7 @@ void InHouseScene::LateUpdate(float dt)
 {
 	GameScene::LateUpdate(dt);
 
-	Pos curPos = AccessPlayer()->GetPos();
+	Pos curPos = AccessPlayer()->GetCenterPos();
 	TILE_OPTION option = GetTileOption(curPos);
 	switch (option)
 	{

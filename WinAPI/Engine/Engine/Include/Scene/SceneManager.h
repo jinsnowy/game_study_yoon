@@ -11,7 +11,7 @@ private:
 	int m_iShowMode = 1;
 	int m_iSignal = 0;
 	static constexpr int m_iChangeSignal = 0xabcdef;
-	SceneState m_tNextState;
+	SceneState m_tNextState = {};
 
 	class Player* m_pPlayer = nullptr;
 	Scene* m_pScene = nullptr;

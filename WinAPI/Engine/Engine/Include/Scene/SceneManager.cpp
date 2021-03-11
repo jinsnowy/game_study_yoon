@@ -10,6 +10,7 @@
 #include "../Core/Input.h"
 #include "../Collider/CollisionManager.h"
 #include "../Core/FrameTimer.h"
+#include "../Sound/SoundManager.h"
 #include "../Object/MoveObj/Player.h"
 
 DEFINITION_SINGLE(SceneManager)
@@ -37,6 +38,9 @@ bool SceneManager::Init()
 	INPUT->AddKey("ShowGrid", VK_F2);
 	INPUT->AddKey("ShowColl", VK_F3);
 
+	SOUND_MANAGER->LoadSound("StartLongBGM", false, SD_BACKGROUND, "StartLongBGM.mp3");
+	SOUND_MANAGER->LoadSound("BGM", true, SD_BACKGROUND, "BGM.mp3");
+	SOUND_MANAGER->AdjustVolume(SD_BACKGROUND, 0.5f);
 	// 모든 텍스쳐 초기화
 	CreateScene<MapEditScene>(SC_MAPEDIT);
 	SAFE_DELETE(m_vecScene[SC_MAPEDIT]);
@@ -57,6 +61,11 @@ void SceneManager::Input(float dt)
 {
 	m_pScene->Input(dt);
 	ChangeShowMode();
+
+	//if (SOUND_MANAGER->IsEnd("StartLongBGM") && SOUND_MANAGER->IsEnd(SD_BACKGROUND))
+	//{
+	//	SOUND_MANAGER->PlaySound("BGM");
+	//}
 }
 
 int SceneManager::Update(float dt)

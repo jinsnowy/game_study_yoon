@@ -243,11 +243,11 @@ void UITileSelect::Input(float dt)
     int containerSize = m_PrototypeMapContainer.size();
     if (KEYDOWN("NextObject"))
     {
-        m_iCurSelObject = (m_iCurSelObject + 1) % containerSize;
+        m_iCurPageNum = (m_iCurPageNum + 1) % containerSize;
     }
     if (KEYDOWN("PreviousObject"))
     {
-        m_iCurSelObject = (m_iCurSelObject + containerSize - 1) % containerSize;
+        m_iCurPageNum = (m_iCurPageNum + containerSize - 1) % containerSize;
     }
 }
 

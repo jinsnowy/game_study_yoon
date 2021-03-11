@@ -21,7 +21,7 @@ protected:
 	const list<class Object* >* GetObjList() const { return &m_ObjList; }
 	Object* FindObject(const string& tag);
 public:
-	void AddObject(Object* pObj);
+	void AddObject(Object* pObj, class Layer* pLayer = nullptr);
 	void EraseObject(Object* pObj);
 	void EraseObject(const string& tag);
 	template<typename T>
@@ -80,5 +80,9 @@ protected:
 	virtual void LateUpdate(float dt);
 	virtual void Collision(float dt);
 	virtual void Draw(HDC hdc, float dt);
+public:
+	static string GetNearObjectName(Scene* pScene, const Pos& worldPos);
+	static string ConvertToNameOption(TILE_OPTION eOpt);
+	
 };
 

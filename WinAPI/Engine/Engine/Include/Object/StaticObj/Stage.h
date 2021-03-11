@@ -11,8 +11,8 @@ private:
 	Stage(const Stage& obj);
 	~Stage();
 private:
-	int m_iTileNumX;
-	int m_iTileNumY;
+	int m_iTileNumX = -1;
+	int m_iTileNumY = -1;
 	vector<class Tile*> m_baseTile;
 public:
 	const vector<class Tile*>* GetTiles() const { return &m_baseTile; }

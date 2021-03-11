@@ -138,8 +138,8 @@ void StartScene::StartButtonCallback(float fTime)
     SOUND_MANAGER->PauseSound(SD_BACKGROUND);
 
     SceneState nxt;
-    nxt.nextDir = RIGHT;
-    nxt.nextBeacon = BC_NONE;
+    nxt.nextDir = LEFT;
+    nxt.nextBeacon = BC_TWO;
     nxt.nextScene = SC_INHOUSE;
     SCENE_MANAGER->SignalizeSceneChange(nxt);
 }

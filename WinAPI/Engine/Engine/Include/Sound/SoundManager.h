@@ -34,6 +34,8 @@ public:
 	void Update(float dt);
 	bool LoadSound(const string& strKey, bool bLoop, SOUND_CHANNEL eChannel,
 					const char* pFileName, const string& strPathKey = SOUND_PATH);
+	bool IsEnd(SOUND_CHANNEL eChannel);
+	bool IsEnd(const string& strKey);
 	void PlaySound(const string& strKey);
 	void PauseSound(const string& strKey);
 	void PauseSound(SOUND_CHANNEL eChannel);

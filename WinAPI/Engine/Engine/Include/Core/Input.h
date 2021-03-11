@@ -45,7 +45,7 @@ public:
 		const char* pTType = typeid(T).name();
 		if (strcmp(pTType, "char") == 0 || strcmp(pTType, "int") == 0)
 		{
-			m_pCreateKey->vecKey.push_back((DWORD)data);
+			m_pCreateKey->vecKey.push_back((DWORD) data);
 		}
 		else {
 			m_pCreateKey->strName = data;

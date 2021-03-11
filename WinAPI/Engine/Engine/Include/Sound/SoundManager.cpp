@@ -72,6 +72,24 @@ bool SoundManager::LoadSound(const string& strKey,
 	return true;
 }
 
+bool SoundManager::IsEnd(SOUND_CHANNEL eChannel)
+{
+	bool isPlaying;
+	m_pChannel[eChannel]->isPlaying(&isPlaying);
+	return isPlaying;
+}
+
+bool SoundManager::IsEnd(const string& strKey)
+{
+	PSOUNDINFO sound = FindSound(strKey);
+	if (sound == nullptr)
+		throw EXCEPT(L"Sound not found");
+
+	bool isPlaying;
+	m_pChannel[sound->eChannel]->isPlaying(&isPlaying);
+	return isPlaying;
+}
+
 void SoundManager::PlaySound(const string& strKey)
 {
 	PSOUNDINFO sound = FindSound(strKey);

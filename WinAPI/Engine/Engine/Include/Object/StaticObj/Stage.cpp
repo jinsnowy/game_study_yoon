@@ -19,7 +19,7 @@ Stage::Stage(const Stage& stage)
     :
     StaticObject(stage)
 {
-    m_baseTile.clear();
+    ClearTile();
 
     for (size_t i = 0; i < stage.m_baseTile.size(); ++i)
     {
@@ -52,7 +52,7 @@ void Stage::CreateTile(int iNumX, int iNumY)
     m_iTileNumY = iNumY;
 
     Pos offset;
-    for (int i = 1; i <= iNumY; ++i)
+    for (int i = 0; i < iNumY; ++i)
     {
         for (int j = 0; j < iNumX; ++j)
         {
@@ -63,7 +63,7 @@ void Stage::CreateTile(int iNumX, int iNumY)
 
             pTile->SetSize(TILESIZE, TILESIZE);
             pTile->SetPos(offset.x, offset.y);
-            pTile->SetPivot(0.f, 1.0f);
+            pTile->SetPivot(0.f, 0.0f);
             m_baseTile.push_back(pTile);
         }
     }
@@ -157,7 +157,7 @@ void Stage::Load(FILE* pFile)
 
     for (int i = 0; i < m_iTileNumX * m_iTileNumY; ++i)
     {
-        Tile* pTile = new Tile;
+        Tile* pTile = Object::CreateObject<Tile>("Tile");
 
         pTile->Load(pFile);
 
@@ -197,7 +197,7 @@ void Stage::SetTileNone(const Pos& tPos)
     m_baseTile[ind] = Object::CreateObject<Tile>("Tile");
     m_baseTile[ind]->SetSize(TILESIZE, TILESIZE);
     m_baseTile[ind]->SetPos(offset.x, offset.y);
-    m_baseTile[ind]->SetPivot(0.f, 1.0f);
+    m_baseTile[ind]->SetPivot(0.f, 0.0f);
 }
 
 void Stage::ChangeTileByCloneTile(const Pos& tPos, Tile* pClone)

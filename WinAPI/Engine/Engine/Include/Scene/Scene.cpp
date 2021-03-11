@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Layer.h"
+#include "../Math.h"
 #include "../Object/Object.h"
 #include "../Scene/SceneManager.h"
 #include "../Application/Window.h"
@@ -18,8 +19,8 @@ Scene::Scene()
 Scene::~Scene()
 {
 	EraseAllPrototypes();
-	Safe_Delete_VecList(m_LayerList);
 	Safe_Release_VecList(m_ObjList);
+	Safe_Delete_VecList(m_LayerList);
 }
 
 Object* Scene::FindObject(const string& tag)
@@ -71,8 +72,13 @@ void Scene::EraseAllObjects()
 	Safe_Release_VecList(m_ObjList);
 }
 
-void Scene::AddObject(Object* pObj)
+void Scene::AddObject(Object* pObj, Layer* pLayer)
 {
+	if (pLayer)
+	{
+		pLayer->AddObject(pObj);
+	}
+
 	pObj->AddRef();
 	m_ObjList.push_back(pObj);
 }
@@ -274,5 +280,53 @@ void Scene::Draw(HDC hdc, float dt)
 			iterEnd = m_LayerList.end();
 		}
 		else ++it;
+	}
+}
+
+string Scene::GetNearObjectName(Scene* pScene, const Pos& worldPos)
+{
+	float minDist = FLT_MAX;
+	Object* pObj = nullptr;
+
+	Layer* pLayer = pScene->FindLayer("Object");
+	const auto& objList = pLayer->GetObjList();
+	auto iterEnd = objList->end();
+	for (auto iter = objList->begin(); iter != iterEnd; ++iter)
+	{
+		float dist = Math::Distance((*iter)->GetPos(), worldPos);
+		if (dist < TILESIZE / 2 && dist < minDist)
+		{
+			pObj = (*iter);
+			minDist = dist;
+		}
+	}
+	if (pObj)
+	{
+		char buffer[30] = { 0 };
+		sprintf_s(buffer, "Pos (%.1f,%.1f)", pObj->GetPos().x, pObj->GetPos().y);
+		return pObj->GetTag() + string(buffer);
+	}
+	return "";
+
+}
+
+string Scene::ConvertToNameOption(TILE_OPTION eOpt)
+{
+	switch (eOpt)
+	{
+	case TO_NONE:
+		return "NoOption";
+	case TO_NOMOVE:
+		return "NoMove";
+	case TO_CROP_GROUND:
+		return "CropGround";
+	case TO_BEACON_1:
+		return "Beacon1";
+	case TO_BEACON_2:
+		return "Beacond";
+	case TO_BEACON_3:
+		return "Beacon3";
+	default:
+		return "Invalid";
 	}
 }
