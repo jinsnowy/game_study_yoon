@@ -9,6 +9,7 @@ private:
     Texture();
     ~Texture();
 public:
+
     bool LoadTexture(HINSTANCE hInst,
                      HDC hDC,
                      const string& strKey,
@@ -20,13 +21,16 @@ public:
         DrawHDCWithColor(GetDC(), px, py, w, h, RGB(0, 0, 0));
     }
     void DrawImageFrom(int px, int py, int sx, int sy, Texture* pTex, int u, int v);
+    void DrawImageFrom(int px, int py, int sx, int sy, HDC orgin_hDC, int u, int v);
+
     void TransparentEffect(HDC hdc, int px, int py, int sx, int sy, int u, int v);
     void DrawImage(HDC hdc, int px, int py, int sx, int sy, int u, int v);
-    void DrawImageAt(HDC hdc, const Pos& at)
+    
+    inline void DrawImageAt(HDC hdc, const Pos& at)
     {
         DrawImageAt(hdc, int(at.x), int(at.y));
     }
-    void DrawImageAt(HDC hdc, int px, int py)
+    inline void DrawImageAt(HDC hdc, int px, int py)
     {
         Size tSize = GetSize();
         if (GetColorKeyEnable())
@@ -42,25 +46,34 @@ public:
                 GetDC(), 0, 0, SRCCOPY);
         }
     }
-    void DrawImageAtFixedSize(HDC hdc, const Pos& at, int size)
+    inline void DrawImageAtFixedSize(HDC hdc, const Pos& at, int size)
     {
         DrawImageAtFixedSize(hdc, int(at.x), int(at.y), size);
     }
-    void DrawImageAtFixedSize(HDC hdc, int px, int py, int size)
+    inline void DrawImageAtFixedSize(HDC hdc, int px, int py, int size)
     {
         Size tSize = GetSize();
         StretchBlt(hdc, px, py, size, size, GetDC(), 0, 0, int(tSize.x), int(tSize.y), SRCCOPY);
+    }
+    inline void DrawImageAtFixedSize(HDC hdc, const Pos& at, int size_x, int size_y)
+    {
+        DrawImageAtFixedSize(hdc, int(at.x), int(at.y), size_x, size_y);
+    }
+    inline void DrawImageAtFixedSize(HDC hdc, int px, int py, int size_x, int size_y)
+    {
+        Size tSize = GetSize();
+        StretchBlt(hdc, px, py, size_x, size_y, GetDC(), 0, 0, int(tSize.x), int(tSize.y), SRCCOPY);
     }
     HDC GetDC() const { return m_hMemDC; }
     static Texture* CreateEmptyTexture(HDC hDC, int w, int h, COLORREF color = RGB(0,0,0));
     static Texture* CreateCopyTexture(HDC hDC, int w, int h);
 private:
-    HDC         m_hMemDC;
-    HBITMAP     m_hBitmap;
-    HBITMAP     m_hOldBitmap;
-    BITMAP      m_tInfo;
+    HDC         m_hMemDC = nullptr;
+    HBITMAP     m_hBitmap = nullptr;
+    HBITMAP     m_hOldBitmap = nullptr;
+    BITMAP      m_tInfo = {};
     COLORREF    m_ColorKey;
-    bool        m_bColorKeyEnable;
+    bool        m_bColorKeyEnable = false;
     wstring     m_strFileName;
     string      m_strKey;
     string      m_strPathKey;

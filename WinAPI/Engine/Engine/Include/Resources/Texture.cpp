@@ -44,6 +44,9 @@ bool Texture::LoadTexture(HINSTANCE hInst, HDC hDC,
     m_hOldBitmap = (HBITMAP)SelectObject(m_hMemDC, m_hBitmap);
     GetObject(m_hBitmap, sizeof(m_tInfo), &m_tInfo);
 
+    if (!m_hBitmap)
+        return false;
+
     return true;
 }
 
@@ -62,21 +65,30 @@ void Texture::DrawImageFrom(int px, int py, int sx, int sy, Texture* pTex, int u
     }
 }
 
+void Texture::DrawImageFrom(int px, int py, int sx, int sy, HDC orgin_hDC, int u, int v)
+{
+    BitBlt(m_hMemDC, px, py, sx, sy, orgin_hDC, u, v, SRCCOPY);
+}
+
 void Texture::TransparentEffect(HDC hdc, int px, int py, int sx, int sy, int u, int v)
 {
-
+    // 알파 블렌딩 버그 (y가 0 보다 작으면 아에 출력안됨 혹은 최대 클라이언트 y 영역 벗어나도)
+    if (py < 0)
+    {
+        py = 0;
+        sy += py;
+    }
+    else if (py + sy >= GETRESOLUTION.y)
+    {
+        sy -= (py + sy - GETRESOLUTION.y + 1);
+    }
     Texture* pBack = RESOURCE_MANAGER->GetBackBuffer();
     Texture* pTemp = RESOURCE_MANAGER->GetTempBuffer();
     pTemp->ClearBuffer(px, py, sx, sy);
     pTemp->DrawImageFrom(px, py, sx, sy, pBack, px, py);
     pTemp->DrawImageFrom(px, py, sx, sy, this, u, v);
 
-    // 알파 블렌딩 버그 (y가 0 보다 작으면 아에 출력안됨)
-    if (py < 0)
-    {
-        py = 0;
-        sy += py;
-    }
+
     AlphaBlend(hdc, px, py, sx, sy, pTemp->GetDC(), px, py, sx, sy, RESOURCE_MANAGER->GetTransparentFunc());
     SAFE_RELEASE(pTemp);
     SAFE_RELEASE(pBack);
