@@ -24,7 +24,6 @@ Object::Object() :
     m_tPivot(0, 0),
     m_tSize(0, 0),
     m_tImageOffset(0, 0),
-    m_bHasPrototype(false),
     m_blsPhysics(false),
     m_bEnableAnimation(false),
     m_fGravityTime(0.f)
@@ -157,13 +156,6 @@ void Object::SetAsTextureSize()
 
     m_tSize.x = float(m_pTexture->GetWidth());
     m_tSize.y = float(m_pTexture->GetHeight());
-}
-
-void Object::SetPrototypeTag(const string& prototypeTag)
-{
-    assert(prototypeTag.size());
-    m_strPrototypeTag = prototypeTag;
-    m_bHasPrototype = true;
 }
 
 // ----------------------- Texture
@@ -527,6 +519,9 @@ void Object::Load(FILE* pFile)
     }
 
     // 충돌체 수를 읽어온다.
+
+    EraseAllColiders();
+
     iLength = 0;
     fread(&iLength, 4, 1, pFile);
 

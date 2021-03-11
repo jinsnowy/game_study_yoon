@@ -83,8 +83,11 @@ public:
 	{
 		return &m_ColliderList;
 	}
+	void EraseAllColiders()
+	{
+		Safe_Release_VecList(m_ColliderList);
+	}
 	Collider* GetCollider(const string& strTag);
-
 	template<typename T>
 	void AddCollisionFunction(const string& strTag, COLLISION_STATE eState, T* pObj, void (T::* pFunc)(Collider*, Collider*, float))
 	{
@@ -141,13 +144,11 @@ public:
 	}
 protected:
 	bool m_bEnableTransparent = false;
-	bool m_bHasPrototype = false;
 	Pos   m_tPos;
 	Pos   m_tPivot;
 	Size  m_tImageOffset;
 	Size  m_tSize;
-	mutable string m_strPrototypeTag;
-public:
+protected:
 	void EnableTransparentEffect() { m_bEnableTransparent = true; }
 	void DisableTransparentEffect() { m_bEnableTransparent = false; }
 	void SetPrototypeTag(const string& prototypeTag);
@@ -174,8 +175,6 @@ public:
 	Size GetImageSize() const;
 	Size GetImageOffset() const { return m_tImageOffset; }
 	Texture* AccessTexture() const { return m_pTexture; }
-	string GetPrototypeTag() const { return m_strPrototypeTag; }
-	bool HasPrototype() const { return m_bHasPrototype; }
 
 	void SetAsTextureSize();
 	void AddOffset(float x, float y) { m_tPos.x += x; m_tPos.y += y; }
