@@ -79,7 +79,7 @@ bool ColliderRect::CheckCollision(Collider* pDst)
 
 void ColliderRect::Draw(HDC hDC, float dt)
 {
-#ifdef _DEBUG
+
 	Collider::Draw(hDC, dt);
 
 	Pos tPos = Pos(0, 0);
@@ -93,7 +93,6 @@ void ColliderRect::Draw(HDC hDC, float dt)
 	rc.right = int(m_tWorldInfo.right - tPos.x);
 
 	DrawRedRect(hDC, rc);
-#endif
 }
 
 void ColliderRect::Save(FILE* pFile)
