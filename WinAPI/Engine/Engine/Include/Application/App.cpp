@@ -40,6 +40,7 @@ App::~App()
 
 int App::Go()
 {
+	TIMER->Reset();
 	MSG msg;
 	while (true)
 	{
@@ -125,12 +126,14 @@ void App::Process()
 	if(SCENECHANGE(Update(dt)))
 	{
 		SCENE_MANAGER->ChangeScene();
+		TIMER->Reset();
 		return;
 	}
 		
 	if(SCENECHANGE(LateUpdate(dt)))
 	{
 		SCENE_MANAGER->ChangeScene();
+		TIMER->Reset();
 		return;
 	}
 		

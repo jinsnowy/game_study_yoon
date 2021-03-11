@@ -6,9 +6,11 @@ DEFINITION_SINGLE(FrameTimer)
 FrameTimer::FrameTimer()
     : 
     m_hWnd(nullptr),
-     m_Tic(steady_clock::now()),
-     m_TimeScale(1.f),
-    m_fFPSTime(0.f)
+    m_Tic(steady_clock::now()),
+    m_iFrame(0),
+    m_TimeScale(1.f),
+    m_fFPSTime(0.f),
+    m_fFPS(0.f)
 {
 }
 
@@ -21,6 +23,14 @@ bool FrameTimer::Init(HWND hWnd)
     m_hWnd = hWnd;
     m_Tic = steady_clock::now();
     return true;
+}
+
+void FrameTimer::Reset()
+{
+    m_Tic = steady_clock::now();
+    m_iFrame = 0;
+    m_TimeScale = 1.f;
+    m_fFPSTime = 0.f;
 }
 
 float FrameTimer::Peek()

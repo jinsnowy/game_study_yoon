@@ -9,6 +9,7 @@ public:
 	bool Init(HWND hWnd);
 	void SetTimeScale(float timeScale) { m_TimeScale = timeScale; }
 
+	void Reset();
 	float Peek();
 	float Tick();
 	float ScaledTick();
