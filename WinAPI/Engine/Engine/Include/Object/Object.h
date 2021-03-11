@@ -151,7 +151,6 @@ protected:
 protected:
 	void EnableTransparentEffect() { m_bEnableTransparent = true; }
 	void DisableTransparentEffect() { m_bEnableTransparent = false; }
-	void SetPrototypeTag(const string& prototypeTag);
 public:
 	Object();
 	Object(const Object& obj);

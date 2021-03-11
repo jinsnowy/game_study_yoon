@@ -16,6 +16,8 @@
 #endif
 
 // 매크로
+#define GLYPHX 20
+#define GLYPHY 24
 #define PI		3.141592f
 #define GRAVITY 600.f
 #define TILESIZE 64
@@ -43,7 +45,7 @@
 #define CAMERA Camera::Instance()
 #define INPUT Input::Instance()
 #define SOUND_MANAGER SoundManager::Instance()
-
+#define UI_MANAGER UIGameManager::Instance()
 
 
 // C 런타임 헤더 파일입니다.

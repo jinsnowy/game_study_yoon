@@ -1,7 +1,10 @@
 #include "InHouseScene.h"
 #include "../Object/MoveObj/Player.h"
-#include "SceneManager.h"
 #include "../Sound/SoundManager.h"
+#include "../Resources/ResourceManager.h"
+#include "../Resources/Texture.h"
+#include "SceneManager.h"
+
 
 InHouseScene::InHouseScene()
 {

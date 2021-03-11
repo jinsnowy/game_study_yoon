@@ -3,12 +3,14 @@
 #include "MapEditScene.h"
 #include "InHouseScene.h"
 #include "FarmScene.h"
+#include "../Core/FrameTimer.h"
 #include "../Object/Object.h"
 #include "../Application/Window.h"
 #include "../Resources/ResourceManager.h"
 #include "../Resources/Texture.h"
 #include "../Core/Input.h"
 #include "../Collider/CollisionManager.h"
+#include "../Object/StaticObj/UIGameManager.h"
 #include "../Core/FrameTimer.h"
 #include "../Sound/SoundManager.h"
 #include "../Object/MoveObj/Player.h"
@@ -30,6 +32,8 @@ SceneManager::~SceneManager()
 	}
 	m_vecScene.clear();
 	SAFE_RELEASE(m_pPlayer);
+
+	UI_MANAGER->Release();
 }
 
 bool SceneManager::Init()
@@ -37,9 +41,11 @@ bool SceneManager::Init()
 	INPUT->AddKey("ShowOption", VK_F1);
 	INPUT->AddKey("ShowGrid", VK_F2);
 	INPUT->AddKey("ShowColl", VK_F3);
-
+	INPUT->AddKey("TimeElapse", VK_CONTROL, 'T');
+	// INPUT->AddKey("TimeReset", VK_CONTROL, 'R');
 	SOUND_MANAGER->LoadSound("LongBGM", false, SD_BACKGROUND, "LongBGM.mp3");
 	SOUND_MANAGER->LoadSound("BGM", true, SD_BACKGROUND, "BGM.mp3");
+
 	// 모든 텍스쳐 초기화
 	CreateScene<MapEditScene>(SC_MAPEDIT);
 	SAFE_DELETE(m_vecScene[SC_MAPEDIT]);
@@ -50,16 +56,29 @@ bool SceneManager::Init()
 	m_pPlayer->SetTag("Player");
 	m_pPlayer->Init();
 
-	SceneState state;
-	state.nextBeacon = BC_NONE;
-	state.nextDir = RIGHT;
+	UI_MANAGER->SetPlayer(m_pPlayer);
+
+	m_tNextState.nextScene = SC_NONE;
+	m_tNextState.nextBeacon = BC_NONE;
+	m_tNextState.nextDir = RIGHT;
+
+	if (!UI_MANAGER->Init())
+	{
+		throw EXCEPT(L"UI init failed.\n");
+	}
+
 	return true;
 }
 
 void SceneManager::Input(float dt)
 {
-	m_pScene->Input(dt);
 	ChangeShowMode();
+	if (KEYPRESS("TimeElapse"))
+	{
+		UI_MANAGER->IncreaseTime();
+	}
+	m_pScene->Input(dt);
+	UI_MANAGER->Input(dt);
 
 	//if (SOUND_MANAGER->IsEnd("StartLongBGM") && SOUND_MANAGER->IsEnd(SD_BACKGROUND))
 	//{
@@ -70,6 +89,7 @@ void SceneManager::Input(float dt)
 int SceneManager::Update(float dt)
 {
 	m_pScene->Update(dt);
+	UI_MANAGER->Update(dt);
 	return m_iSignal;
 }
 
@@ -87,6 +107,9 @@ void SceneManager::Collision(float dt)
 void SceneManager::Draw(HDC hdc, float dt)
 {
 	m_pScene->Draw(hdc, dt);
+
+	if(m_pScene->GetSceneType() != SC_START && m_pScene->GetSceneType() != SC_MAPEDIT)
+		UI_MANAGER->Draw(hdc, dt);
 }
 
 void SceneManager::ChangeScene()
@@ -108,6 +131,7 @@ void SceneManager::ChangeScene()
 		{
 		case SCENE_CREATE::SC_INHOUSE:
 			CreateScene<InHouseScene>(nxt);
+			UI_MANAGER->StartTick();
 			break;
 		case SCENE_CREATE::SC_MAPEDIT:
 			CreateScene<MapEditScene>(nxt);

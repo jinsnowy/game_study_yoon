@@ -62,7 +62,7 @@ void Player::InitAnimation()
 		}
 		AddAnimationClip("WalkRight",
 			AT_FRAME, AO_LOOP,
-			0.0f, 0.55f,
+			0.0f, 0.8f,
 			6, 1,
 			0, 0,
 			6, 1,
@@ -80,7 +80,7 @@ void Player::InitAnimation()
 		}
 		AddAnimationClip("WalkLeft",
 			AT_FRAME, AO_LOOP,
-			0.0f, 0.55f,
+			0.0f, 0.8f,
 			6, 1,
 			0, 0,
 			6, 1,
@@ -98,7 +98,7 @@ void Player::InitAnimation()
 		}
 		AddAnimationClip("WalkDown",
 			AT_FRAME, AO_LOOP,
-			0.0f, 0.55f,
+			0.0f, 0.8f,
 			9, 1,
 			0, 0,
 			9, 1,
@@ -116,7 +116,7 @@ void Player::InitAnimation()
 		}
 		AddAnimationClip("WalkUp",
 			AT_FRAME, AO_LOOP,
-			0.0f, 0.55f,
+			0.0f, 0.8f,
 			9, 1,
 			0, 0,
 			9, 1,
@@ -269,7 +269,7 @@ bool Player::Init()
 	SetPos(700.0f, 700.0f);
 	SetSize(64.0f, 128.0f);
 	SetPivot(0.0f, 1.0f);
-	SetSpeed(300.0f);
+	SetSpeed(400.0f);
 
 	InitTexture();
 	InitAnimation();
@@ -341,7 +341,7 @@ void Player::Input(float dt)
 		{
 			SetPos(m_tPrev);
 		}
-		if (m_pScene->GetSceneType() == SC_INHOUSE)
+		if (m_pScene->GetSceneType() == SC_INHOUSE && SOUND_MANAGER->IsEnd(SD_EFFECT))
 		{
 			SOUND_MANAGER->PlaySound("InHouse_Walking");
 		}

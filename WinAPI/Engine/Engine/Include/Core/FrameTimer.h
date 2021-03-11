@@ -8,7 +8,7 @@ class FrameTimer
 public:
 	bool Init(HWND hWnd);
 	void SetTimeScale(float timeScale) { m_TimeScale = timeScale; }
-
+	void IncreaseTimeScale(float ratio) { m_TimeScale *= ratio; }
 	void Reset();
 	float Peek();
 	float Tick();

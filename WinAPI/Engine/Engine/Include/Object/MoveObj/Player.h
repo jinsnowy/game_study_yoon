@@ -33,7 +33,9 @@ private:
 	~Player();
 private:
 	int m_iHP = 0;
+	int m_iMoney = 12341234;
 public:
+	int GetMoney() const { return m_iMoney; }
 	void InitTexture();
 	void InitAnimation();
 	PlayerState GetState() const { return m_eState; }

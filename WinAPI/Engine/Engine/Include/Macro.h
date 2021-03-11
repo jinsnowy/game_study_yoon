@@ -15,6 +15,7 @@
 #define MOUSE			Input::Instance()->GetMouse()
 #define SCENECHANGE(X)  SceneManager::Instance()->NeedChangeScene(X)
 #define SHOWCHECK(X)    SceneManager::Instance()->CheckShowMode(X)
+#define DRAWGLYPH(hdc, c, x, y) ResourceManager::Instance()->DrawGlyph(hdc, c, x, y) 
 
 #define DEFINITION_SINGLE(Type) Type* Type::INSTANCE = 0;
 #define DECLARE_SINGLE(Type)	\

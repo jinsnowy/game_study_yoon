@@ -1,9 +1,10 @@
 #pragma once
 #include <string>
+#include <string.h>
 #include <sstream>
 #include <memory>
-#include <cstring>
 #include <windows.h>
+
 
 namespace util
 {
@@ -24,4 +25,5 @@ namespace util
 	void DrawRectWithColor(HDC hdc, RECT rc, COLORREF color);
 	void DrawHDCWithColor(HDC hdc, int w, int h, COLORREF color);
 	void DrawHDCWithColor(HDC hdc, int px, int py, int w, int h, COLORREF color);
+	std::string ExtractKeyFromPathString(const char* str, int size);
 }

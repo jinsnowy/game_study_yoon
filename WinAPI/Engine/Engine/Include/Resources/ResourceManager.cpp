@@ -2,8 +2,10 @@
 #include "Texture.h"
 #include "../Object/Object.h"
 #include "../Application/Window.h"
+#include "../Core/PathManager.h"
 
 DEFINITION_SINGLE(ResourceManager)
+unordered_map<char, class Texture*> ResourceManager::m_mapGlyph;
 
 ResourceManager::ResourceManager()
 	: m_hInst(nullptr),
@@ -17,7 +19,21 @@ ResourceManager::~ResourceManager()
 	SAFE_RELEASE(m_pTempBuffer);
 	SAFE_RELEASE(m_pEmptyBuffer);
 	Safe_Release_Map(m_mapTexture);
+	Safe_Release_Map(m_mapGlyph);
 }
+
+void ResourceManager::LoadGlyphs()
+{
+	vector<Texture*> fonts = LoadTextureFromDirectory(L"SV/Fonts/", RGB(255, 255, 255));
+	for (Texture* pTex : fonts)
+	{
+		string strKey = pTex->GetTag();
+		char ch = (char) stoi(strKey);
+		m_mapGlyph.insert(make_pair(ch, pTex));
+	}
+	Safe_Release_VecList(fonts);
+}
+
 
 Texture* ResourceManager::GetBackBuffer() const
 {
@@ -47,6 +63,7 @@ bool ResourceManager::Init(HINSTANCE hInst, HDC hDC)
 	m_hInst = hInst;
 	m_hDC = hDC;
 
+	LoadGlyphs();
 	// 백버퍼를 불러온다.
 	m_pBackBuffer = LoadTexture("BackBuffer", L"BackBuffer.bmp");
 
@@ -90,6 +107,39 @@ Texture* ResourceManager::LoadTexture(const string& strKey,
 	m_mapTexture.insert(make_pair(strKey, pTexture));
 
 	return pTexture;
+}
+
+vector<Texture*> ResourceManager::LoadTextureFromDirectory(const wchar_t* folderPath, COLORREF chromaKey, const string& strPathKey)
+{
+	vector<Texture*> vecTex;
+	const wchar_t* pPath = PATH_MANAGER->FindPath(strPathKey);
+	wstring strPath;
+	if (pPath)
+		strPath = pPath;
+
+	strPath += folderPath;
+	assert(strPath.back() == L'\\' || strPath.back() == L'/');
+
+	string strPathString(strPath.begin(), strPath.end());
+	for (const auto& entry : fs::directory_iterator(strPath))
+	{
+		const wchar_t* imgPath = entry.path().c_str();
+		string strTexkey = ExtractKeyFromPathString(GetChar(imgPath), lstrlen(imgPath));
+		Texture* pTexture = new Texture;
+
+		if (!pTexture->LoadTexture(m_hInst, m_hDC, strTexkey, imgPath, ""))
+		{
+			SAFE_RELEASE(pTexture);
+			continue;
+		}
+
+		m_mapTexture.insert(make_pair(strTexkey, pTexture));
+		pTexture->AddRef();
+		pTexture->SetColorKey(chromaKey);
+
+		vecTex.push_back(pTexture);
+	}
+	return vecTex;
 }
 
 Texture* ResourceManager::LoadTexture(FILE* pFile)

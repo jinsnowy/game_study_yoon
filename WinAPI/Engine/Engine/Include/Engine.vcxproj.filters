@@ -237,6 +237,9 @@
     <ClInclude Include="Scene\FarmScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Object\StaticObj\UIGameManager.h">
+      <Filter>Object\04. UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\Window.cpp">
@@ -370,6 +373,9 @@
     </ClCompile>
     <ClCompile Include="Scene\FarmScene.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\StaticObj\UIGameManager.cpp">
+      <Filter>Object\04. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

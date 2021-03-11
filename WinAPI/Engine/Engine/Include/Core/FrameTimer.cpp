@@ -61,7 +61,7 @@ float FrameTimer::Tick()
         OutputDebugString(strFPS);
 
     }
-    return dt;
+    return dt * m_TimeScale;
 }
 
 float FrameTimer::ScaledTick()

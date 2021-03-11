@@ -1,5 +1,5 @@
 #include "utils.h"
-
+#include "Resources/ResourceManager.h"
 
 const wchar_t* util::GetWChar(const char* c)
 {
@@ -56,4 +56,13 @@ void util::DrawHDCWithColor(HDC hdc, int px, int py, int w, int h, COLORREF colo
 	Rectangle(hdc, px-5, py-5, px + w + 5, py + h + 5);
 
 	DeleteObject(SelectObject(hdc, OldBrush));
+}
+
+std::string util::ExtractKeyFromPathString(const char* str, int size)
+{
+	int ed = size - 1;
+	while (str[ed] != L'.') --ed;
+	int st = ed - 1;
+	while (str[st] != L'\\' && str[st] != L'/') st--;
+	return std::string(str + st + 1, str + ed);
 }

@@ -9,6 +9,7 @@
 #include "../Resources/ResourceManager.h"
 #include "../Resources/PrototypeManager.h"
 #include "../Resources/Texture.h"
+#include "../Object/StaticObj/UIGameManager.h"
 #include "../Sound/SoundManager.h"
 #include "../Object/Mouse.h"
 

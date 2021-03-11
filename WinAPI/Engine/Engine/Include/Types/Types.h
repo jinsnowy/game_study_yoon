@@ -138,6 +138,7 @@ enum DIRECTION
 	RIGHT,
 	UP,
 	DOWN,
+	CENTER,
 };
 
 struct SceneState {

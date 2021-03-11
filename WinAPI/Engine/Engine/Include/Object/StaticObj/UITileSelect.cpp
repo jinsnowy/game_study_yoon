@@ -202,19 +202,22 @@ void UITileSelect::LoadTiles(EDIT_MODE eSel, const wchar_t* pBaseFolderName, con
 
     strPath += pBaseFolderName;
     assert(strPath.back() == L'\\' || strPath.back() == L'/');
-
+    std::error_code ec; 
     for (const auto& entry : fs::directory_iterator(strPath))
     {
         const wchar_t * imgPath = entry.path().c_str();
+        if (fs::is_directory(imgPath, ec))
+        {
+            continue;
+        }
         string strTexkey = ExtractKey(GetChar(imgPath), lstrlen(imgPath));
- 
         Tile* pTile = new Tile;
 
         wstring pFileName = pBaseFolderName;
         wstring strwTexKey(strTexkey.begin(), strTexkey.end());
         pFileName += strwTexKey;
         pFileName += L".bmp";
-
+   
         pTile->SetTexture(strTexkey, pFileName.c_str());
         pTile->SetColorKey(255, 255, 255);
         pTile->SetPivot(0.f, 1.0f);
